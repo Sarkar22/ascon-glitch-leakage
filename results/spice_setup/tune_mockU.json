@@ -1,0 +1,191 @@
+{
+ "note": "Final tuning table (sim/spice_tune.py, final code: step-charge binning, data-independent PWL breakpoints), mock U (27 cells), period 4 ns, 60 random rows, 3 chunks of 20 in parallel. s_per_sim_cycle measured with 6 ngspice processes running on the machine.",
+ "dut": "dut_U",
+ "n_cells": 27,
+ "n_dff": 10,
+ "rows": 60,
+ "chunk": 20,
+ "jobs": 3,
+ "seed": 7,
+ "base_params": {
+  "period": 4.0,
+  "t_in": 0.75,
+  "rise": 0.1,
+  "clk_rise": 0.1,
+  "pre": 0.2,
+  "dt": 0.01,
+  "chunk": 500,
+  "warmup": 4,
+  "corner": "tt",
+  "temp": 27.0,
+  "vdd": 1.8,
+  "out_load_fF": 2.0,
+  "tmax": 0.01,
+  "options": "",
+  "method": "trap",
+  "seed": 0
+ },
+ "results": {
+  "ref_trap_1ps": {
+   "params": {
+    "tmax": 0.001,
+    "options": "reltol=1e-4 vntol=1e-7 abstol=1e-13 chgtol=1e-16",
+    "method": "trap"
+   },
+   "s_per_sim_cycle": 5.1896396396396405,
+   "load_s": 5.073999999999998,
+   "timepoints_per_cycle": 4018.532818532819,
+   "peak_rss_MB": 158.8,
+   "accepted": true
+  },
+  "ref_gear_1ps": {
+   "params": {
+    "tmax": 0.001,
+    "options": "reltol=1e-4 vntol=1e-7 abstol=1e-13 chgtol=1e-16",
+    "method": "gear"
+   },
+   "s_per_sim_cycle": 5.124568854568855,
+   "load_s": 6.530333333333336,
+   "timepoints_per_cycle": 4026.8211068211076,
+   "peak_rss_MB": 159.0,
+   "windows": 60,
+   "charge_rel_err_max": 7.74782076464244e-05,
+   "charge_rel_err_mean": 3.055340823721749e-05,
+   "corr_window_min": 0.999999872008795,
+   "corr_window_mean": 0.999999932929536,
+   "corr_all": 0.9999999336462365,
+   "corr_data_dependent": 0.9999997312108051,
+   "corr_charge_data_dependent": 0.9999999987336445,
+   "corr_all_100ps": 0.9999999939701568,
+   "corr_data_dependent_100ps": 0.999999972716629,
+   "accepted": true
+  },
+  "tmax50": {
+   "params": {
+    "tmax": 0.05,
+    "options": ""
+   },
+   "s_per_sim_cycle": 0.20822393822393823,
+   "load_s": 6.6883333333333335,
+   "timepoints_per_cycle": 97.76061776061778,
+   "peak_rss_MB": 158.7,
+   "windows": 60,
+   "charge_rel_err_max": 0.04330470759700928,
+   "charge_rel_err_mean": 0.006225516622740762,
+   "corr_window_min": 0.9650949448830431,
+   "corr_window_mean": 0.9736515254637118,
+   "corr_all": 0.9742667227105937,
+   "corr_data_dependent": 0.9501065913479506,
+   "corr_charge_data_dependent": 0.9983382986195594,
+   "corr_all_100ps": 0.9971753954947418,
+   "corr_data_dependent_100ps": 0.9902538244916522,
+   "accepted": false
+  },
+  "gear_tmax10": {
+   "params": {
+    "tmax": 0.01,
+    "options": "",
+    "method": "gear"
+   },
+   "s_per_sim_cycle": 0.597953667953668,
+   "load_s": 6.724666666666667,
+   "timepoints_per_cycle": 417.76061776061783,
+   "peak_rss_MB": 158.3,
+   "windows": 60,
+   "charge_rel_err_max": 0.008228197246947297,
+   "charge_rel_err_mean": 0.0027639550961495343,
+   "corr_window_min": 0.9988776909527843,
+   "corr_window_mean": 0.9992010926954379,
+   "corr_all": 0.9992179184667316,
+   "corr_data_dependent": 0.9979622076489258,
+   "corr_charge_data_dependent": 0.9999878515745614,
+   "corr_all_100ps": 0.9999426756977295,
+   "corr_data_dependent_100ps": 0.9997791505885849,
+   "accepted": true
+  },
+  "tmax200_chg1e-17": {
+   "params": {
+    "tmax": 0.2,
+    "options": "chgtol=1e-17"
+   },
+   "s_per_sim_cycle": 0.5160875160875161,
+   "load_s": 6.872666666666667,
+   "timepoints_per_cycle": 212.5740025740026,
+   "peak_rss_MB": 159.2,
+   "windows": 60,
+   "charge_rel_err_max": 0.0035210839402842957,
+   "charge_rel_err_mean": 0.0011216661418690925,
+   "corr_window_min": 0.9986892909065692,
+   "corr_window_mean": 0.9992858633112554,
+   "corr_all": 0.9993166258764498,
+   "corr_data_dependent": 0.9970285489128774,
+   "corr_charge_data_dependent": 0.999992087593656,
+   "corr_all_100ps": 0.9999729000718568,
+   "corr_data_dependent_100ps": 0.9999078555860701,
+   "accepted": true
+  },
+  "tmax200_chg1e-16_trtol3": {
+   "params": {
+    "tmax": 0.2,
+    "options": "chgtol=1e-16 trtol=3"
+   },
+   "s_per_sim_cycle": 0.5350579150579151,
+   "load_s": 6.759333333333333,
+   "timepoints_per_cycle": 210.70785070785075,
+   "peak_rss_MB": 158.9,
+   "windows": 60,
+   "charge_rel_err_max": 0.003243690180976407,
+   "charge_rel_err_mean": 0.0011334376946757878,
+   "corr_window_min": 0.9990308970764316,
+   "corr_window_mean": 0.9995491935811358,
+   "corr_all": 0.9995735622559964,
+   "corr_data_dependent": 0.9984816104119859,
+   "corr_charge_data_dependent": 0.9999948667105499,
+   "corr_all_100ps": 0.9999557641304292,
+   "corr_data_dependent_100ps": 0.9999293396607121,
+   "accepted": true
+  },
+  "default_tmax10": {
+   "params": {
+    "tmax": 0.01,
+    "options": ""
+   },
+   "s_per_sim_cycle": 0.7200257400257402,
+   "load_s": 6.895333333333334,
+   "timepoints_per_cycle": 417.76061776061783,
+   "peak_rss_MB": 159.0,
+   "windows": 60,
+   "charge_rel_err_max": 0.0013574340144136136,
+   "charge_rel_err_mean": 0.0006859969191799119,
+   "corr_window_min": 0.9992431648733486,
+   "corr_window_mean": 0.9994328945118626,
+   "corr_all": 0.9994496886021151,
+   "corr_data_dependent": 0.99918727210496,
+   "corr_charge_data_dependent": 0.9999986031352731,
+   "corr_all_100ps": 0.9999717518571591,
+   "corr_data_dependent_100ps": 0.9999552562313617,
+   "accepted": true
+  },
+  "fast_tmax20": {
+   "params": {
+    "tmax": 0.02,
+    "options": ""
+   },
+   "s_per_sim_cycle": 0.41411840411840417,
+   "load_s": 6.657,
+   "timepoints_per_cycle": 217.7606177606178,
+   "peak_rss_MB": 159.0,
+   "windows": 60,
+   "charge_rel_err_max": 0.00503240991719017,
+   "charge_rel_err_mean": 0.0015707022486176577,
+   "corr_window_min": 0.990944753723739,
+   "corr_window_mean": 0.9938683628567462,
+   "corr_all": 0.9940777949915496,
+   "corr_data_dependent": 0.9911973932572808,
+   "corr_charge_data_dependent": 0.9999545106282783,
+   "corr_all_100ps": 0.9998998197467711,
+   "corr_data_dependent_100ps": 0.9995528777623279,
+   "accepted": true
+  }
+ }
+}

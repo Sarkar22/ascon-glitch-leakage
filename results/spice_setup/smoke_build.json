@@ -1,0 +1,57 @@
+{
+ "what": "smoke test of sim/spice_campaign.py on the generator's build/<V> netlists (40 random rows each, tmax 10 ps, period 5 ns, earlier PWL binning; the function check is independent of binning)",
+ "variants": {
+  "U": {
+   "rows": 40,
+   "output_match_fraction": 1.0,
+   "charge_fC_mean": 295.9412268598661,
+   "charge_fC_std": 56.97062511429599,
+   "corr_charge_hd_all_nets": 0.9265356458697986,
+   "corr_charge_hd_fanout_weighted": 0.9575368025019284,
+   "n_cells": 27,
+   "n_dff": 10,
+   "latency": 1,
+   "peak_rss_MB": 158.8,
+   "period_ns": 5.0
+  },
+  "N": {
+   "rows": 40,
+   "output_match_fraction": 1.0,
+   "charge_fC_mean": 940.8844147200809,
+   "charge_fC_std": 111.96397930674382,
+   "corr_charge_hd_all_nets": 0.6919003236506975,
+   "corr_charge_hd_fanout_weighted": 0.8442008200140448,
+   "n_cells": 88,
+   "n_dff": 25,
+   "latency": 1,
+   "peak_rss_MB": 176.1,
+   "period_ns": 5.0
+  },
+  "D": {
+   "rows": 40,
+   "output_match_fraction": 1.0,
+   "charge_fC_mean": 2694.3721208958887,
+   "charge_fC_std": 130.30426406540036,
+   "corr_charge_hd_all_nets": 0.8379956136820289,
+   "corr_charge_hd_fanout_weighted": 0.9411036301704749,
+   "n_cells": 118,
+   "n_dff": 55,
+   "latency": 2,
+   "peak_rss_MB": 308.1,
+   "period_ns": 5.0
+  },
+  "DA": {
+   "rows": 40,
+   "output_match_fraction": 1.0,
+   "charge_fC_mean": 2620.9085458221225,
+   "charge_fC_std": 125.14151281856263,
+   "corr_charge_hd_all_nets": 0.8720965648156074,
+   "corr_charge_hd_fanout_weighted": 0.936712845369982,
+   "n_cells": 118,
+   "n_dff": 55,
+   "latency": 2,
+   "peak_rss_MB": 307.7,
+   "period_ns": 5.0
+  }
+ }
+}

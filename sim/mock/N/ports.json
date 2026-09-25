@@ -1,0 +1,168 @@
+{
+ "variant": "N",
+ "subckt": "dut_N",
+ "ports": [
+  "CLK",
+  "xs0_0",
+  "xs0_1",
+  "xs0_2",
+  "xs0_3",
+  "xs0_4",
+  "xs1_0",
+  "xs1_1",
+  "xs1_2",
+  "xs1_3",
+  "xs1_4",
+  "r_0",
+  "r_1",
+  "r_2",
+  "r_3",
+  "r_4",
+  "ys0_0",
+  "ys0_1",
+  "ys0_2",
+  "ys0_3",
+  "ys0_4",
+  "ys1_0",
+  "ys1_1",
+  "ys1_2",
+  "ys1_3",
+  "ys1_4",
+  "VPWR",
+  "VGND"
+ ],
+ "inputs": [
+  {
+   "name": "xs0_0",
+   "role": "share0",
+   "bit": 0
+  },
+  {
+   "name": "xs0_1",
+   "role": "share0",
+   "bit": 1
+  },
+  {
+   "name": "xs0_2",
+   "role": "share0",
+   "bit": 2
+  },
+  {
+   "name": "xs0_3",
+   "role": "share0",
+   "bit": 3
+  },
+  {
+   "name": "xs0_4",
+   "role": "share0",
+   "bit": 4
+  },
+  {
+   "name": "xs1_0",
+   "role": "share1",
+   "bit": 0
+  },
+  {
+   "name": "xs1_1",
+   "role": "share1",
+   "bit": 1
+  },
+  {
+   "name": "xs1_2",
+   "role": "share1",
+   "bit": 2
+  },
+  {
+   "name": "xs1_3",
+   "role": "share1",
+   "bit": 3
+  },
+  {
+   "name": "xs1_4",
+   "role": "share1",
+   "bit": 4
+  },
+  {
+   "name": "r_0",
+   "role": "rand",
+   "bit": 0
+  },
+  {
+   "name": "r_1",
+   "role": "rand",
+   "bit": 1
+  },
+  {
+   "name": "r_2",
+   "role": "rand",
+   "bit": 2
+  },
+  {
+   "name": "r_3",
+   "role": "rand",
+   "bit": 3
+  },
+  {
+   "name": "r_4",
+   "role": "rand",
+   "bit": 4
+  }
+ ],
+ "outputs": [
+  {
+   "name": "ys0_0",
+   "role": "share0",
+   "bit": 0
+  },
+  {
+   "name": "ys0_1",
+   "role": "share0",
+   "bit": 1
+  },
+  {
+   "name": "ys0_2",
+   "role": "share0",
+   "bit": 2
+  },
+  {
+   "name": "ys0_3",
+   "role": "share0",
+   "bit": 3
+  },
+  {
+   "name": "ys0_4",
+   "role": "share0",
+   "bit": 4
+  },
+  {
+   "name": "ys1_0",
+   "role": "share1",
+   "bit": 0
+  },
+  {
+   "name": "ys1_1",
+   "role": "share1",
+   "bit": 1
+  },
+  {
+   "name": "ys1_2",
+   "role": "share1",
+   "bit": 2
+  },
+  {
+   "name": "ys1_3",
+   "role": "share1",
+   "bit": 3
+  },
+  {
+   "name": "ys1_4",
+   "role": "share1",
+   "bit": 4
+  }
+ ],
+ "latency": 1,
+ "n_cells": 88,
+ "n_dff": 25,
+ "wire_cap_fF": 1.0,
+ "note": "mock DUT for runner development, not a kill-test netlist"
+}

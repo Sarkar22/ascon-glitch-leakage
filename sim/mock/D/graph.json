@@ -1,0 +1,1261 @@
+{
+ "cells": [
+  {
+   "name": "u1_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "xs0_0",
+    "Q": "q0_0"
+   }
+  },
+  {
+   "name": "u2_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "xs0_1",
+    "Q": "q0_1"
+   }
+  },
+  {
+   "name": "u3_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "xs0_2",
+    "Q": "q0_2"
+   }
+  },
+  {
+   "name": "u4_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "xs0_3",
+    "Q": "q0_3"
+   }
+  },
+  {
+   "name": "u5_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "xs0_4",
+    "Q": "q0_4"
+   }
+  },
+  {
+   "name": "u6_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "xs1_0",
+    "Q": "q1_0"
+   }
+  },
+  {
+   "name": "u7_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "xs1_1",
+    "Q": "q1_1"
+   }
+  },
+  {
+   "name": "u8_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "xs1_2",
+    "Q": "q1_2"
+   }
+  },
+  {
+   "name": "u9_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "xs1_3",
+    "Q": "q1_3"
+   }
+  },
+  {
+   "name": "u10_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "xs1_4",
+    "Q": "q1_4"
+   }
+  },
+  {
+   "name": "u11_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "r_0",
+    "Q": "qr_0"
+   }
+  },
+  {
+   "name": "u12_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "r_1",
+    "Q": "qr_1"
+   }
+  },
+  {
+   "name": "u13_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "r_2",
+    "Q": "qr_2"
+   }
+  },
+  {
+   "name": "u14_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "r_3",
+    "Q": "qr_3"
+   }
+  },
+  {
+   "name": "u15_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "r_4",
+    "Q": "qr_4"
+   }
+  },
+  {
+   "name": "u16_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "q0_0",
+    "B": "q0_4",
+    "X": "a0_0"
+   }
+  },
+  {
+   "name": "u17_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "q0_4",
+    "B": "q0_3",
+    "X": "a4_0"
+   }
+  },
+  {
+   "name": "u18_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "q0_2",
+    "B": "q0_1",
+    "X": "a2_0"
+   }
+  },
+  {
+   "name": "u19_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "q1_0",
+    "B": "q1_4",
+    "X": "a0_1"
+   }
+  },
+  {
+   "name": "u20_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "q1_4",
+    "B": "q1_3",
+    "X": "a4_1"
+   }
+  },
+  {
+   "name": "u21_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "q1_2",
+    "B": "q1_1",
+    "X": "a2_1"
+   }
+  },
+  {
+   "name": "u22_and2b",
+   "type": "sky130_fd_sc_hd__and2b_1",
+   "pins": {
+    "A_N": "a0_0",
+    "B": "q0_1",
+    "X": "p00_0"
+   }
+  },
+  {
+   "name": "u23_and2b",
+   "type": "sky130_fd_sc_hd__and2b_1",
+   "pins": {
+    "A_N": "a0_0",
+    "B": "q1_1",
+    "X": "m01_0"
+   }
+  },
+  {
+   "name": "u24_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "m01_0",
+    "B": "qr_0",
+    "X": "p01_0"
+   }
+  },
+  {
+   "name": "u25_and2",
+   "type": "sky130_fd_sc_hd__and2_1",
+   "pins": {
+    "A": "a0_1",
+    "B": "q1_1",
+    "X": "p11_0"
+   }
+  },
+  {
+   "name": "u26_and2",
+   "type": "sky130_fd_sc_hd__and2_1",
+   "pins": {
+    "A": "a0_1",
+    "B": "q0_1",
+    "X": "m10_0"
+   }
+  },
+  {
+   "name": "u27_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "m10_0",
+    "B": "qr_0",
+    "X": "p10_0"
+   }
+  },
+  {
+   "name": "u28_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p00_0",
+    "Q": "Rp00_0"
+   }
+  },
+  {
+   "name": "u29_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p01_0",
+    "Q": "Rp01_0"
+   }
+  },
+  {
+   "name": "u30_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p11_0",
+    "Q": "Rp11_0"
+   }
+  },
+  {
+   "name": "u31_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p10_0",
+    "Q": "Rp10_0"
+   }
+  },
+  {
+   "name": "u32_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Rp00_0",
+    "B": "Rp01_0",
+    "X": "z0_0"
+   }
+  },
+  {
+   "name": "u33_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Rp11_0",
+    "B": "Rp10_0",
+    "X": "z1_0"
+   }
+  },
+  {
+   "name": "u34_and2b",
+   "type": "sky130_fd_sc_hd__and2b_1",
+   "pins": {
+    "A_N": "q0_1",
+    "B": "a2_0",
+    "X": "p00_1"
+   }
+  },
+  {
+   "name": "u35_and2b",
+   "type": "sky130_fd_sc_hd__and2b_1",
+   "pins": {
+    "A_N": "q0_1",
+    "B": "a2_1",
+    "X": "m01_1"
+   }
+  },
+  {
+   "name": "u36_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "m01_1",
+    "B": "qr_1",
+    "X": "p01_1"
+   }
+  },
+  {
+   "name": "u37_and2",
+   "type": "sky130_fd_sc_hd__and2_1",
+   "pins": {
+    "A": "q1_1",
+    "B": "a2_1",
+    "X": "p11_1"
+   }
+  },
+  {
+   "name": "u38_and2",
+   "type": "sky130_fd_sc_hd__and2_1",
+   "pins": {
+    "A": "q1_1",
+    "B": "a2_0",
+    "X": "m10_1"
+   }
+  },
+  {
+   "name": "u39_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "m10_1",
+    "B": "qr_1",
+    "X": "p10_1"
+   }
+  },
+  {
+   "name": "u40_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p00_1",
+    "Q": "Rp00_1"
+   }
+  },
+  {
+   "name": "u41_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p01_1",
+    "Q": "Rp01_1"
+   }
+  },
+  {
+   "name": "u42_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p11_1",
+    "Q": "Rp11_1"
+   }
+  },
+  {
+   "name": "u43_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p10_1",
+    "Q": "Rp10_1"
+   }
+  },
+  {
+   "name": "u44_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Rp00_1",
+    "B": "Rp01_1",
+    "X": "z0_1"
+   }
+  },
+  {
+   "name": "u45_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Rp11_1",
+    "B": "Rp10_1",
+    "X": "z1_1"
+   }
+  },
+  {
+   "name": "u46_and2b",
+   "type": "sky130_fd_sc_hd__and2b_1",
+   "pins": {
+    "A_N": "a2_0",
+    "B": "q0_3",
+    "X": "p00_2"
+   }
+  },
+  {
+   "name": "u47_and2b",
+   "type": "sky130_fd_sc_hd__and2b_1",
+   "pins": {
+    "A_N": "a2_0",
+    "B": "q1_3",
+    "X": "m01_2"
+   }
+  },
+  {
+   "name": "u48_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "m01_2",
+    "B": "qr_2",
+    "X": "p01_2"
+   }
+  },
+  {
+   "name": "u49_and2",
+   "type": "sky130_fd_sc_hd__and2_1",
+   "pins": {
+    "A": "a2_1",
+    "B": "q1_3",
+    "X": "p11_2"
+   }
+  },
+  {
+   "name": "u50_and2",
+   "type": "sky130_fd_sc_hd__and2_1",
+   "pins": {
+    "A": "a2_1",
+    "B": "q0_3",
+    "X": "m10_2"
+   }
+  },
+  {
+   "name": "u51_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "m10_2",
+    "B": "qr_2",
+    "X": "p10_2"
+   }
+  },
+  {
+   "name": "u52_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p00_2",
+    "Q": "Rp00_2"
+   }
+  },
+  {
+   "name": "u53_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p01_2",
+    "Q": "Rp01_2"
+   }
+  },
+  {
+   "name": "u54_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p11_2",
+    "Q": "Rp11_2"
+   }
+  },
+  {
+   "name": "u55_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p10_2",
+    "Q": "Rp10_2"
+   }
+  },
+  {
+   "name": "u56_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Rp00_2",
+    "B": "Rp01_2",
+    "X": "z0_2"
+   }
+  },
+  {
+   "name": "u57_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Rp11_2",
+    "B": "Rp10_2",
+    "X": "z1_2"
+   }
+  },
+  {
+   "name": "u58_and2b",
+   "type": "sky130_fd_sc_hd__and2b_1",
+   "pins": {
+    "A_N": "q0_3",
+    "B": "a4_0",
+    "X": "p00_3"
+   }
+  },
+  {
+   "name": "u59_and2b",
+   "type": "sky130_fd_sc_hd__and2b_1",
+   "pins": {
+    "A_N": "q0_3",
+    "B": "a4_1",
+    "X": "m01_3"
+   }
+  },
+  {
+   "name": "u60_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "m01_3",
+    "B": "qr_3",
+    "X": "p01_3"
+   }
+  },
+  {
+   "name": "u61_and2",
+   "type": "sky130_fd_sc_hd__and2_1",
+   "pins": {
+    "A": "q1_3",
+    "B": "a4_1",
+    "X": "p11_3"
+   }
+  },
+  {
+   "name": "u62_and2",
+   "type": "sky130_fd_sc_hd__and2_1",
+   "pins": {
+    "A": "q1_3",
+    "B": "a4_0",
+    "X": "m10_3"
+   }
+  },
+  {
+   "name": "u63_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "m10_3",
+    "B": "qr_3",
+    "X": "p10_3"
+   }
+  },
+  {
+   "name": "u64_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p00_3",
+    "Q": "Rp00_3"
+   }
+  },
+  {
+   "name": "u65_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p01_3",
+    "Q": "Rp01_3"
+   }
+  },
+  {
+   "name": "u66_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p11_3",
+    "Q": "Rp11_3"
+   }
+  },
+  {
+   "name": "u67_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p10_3",
+    "Q": "Rp10_3"
+   }
+  },
+  {
+   "name": "u68_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Rp00_3",
+    "B": "Rp01_3",
+    "X": "z0_3"
+   }
+  },
+  {
+   "name": "u69_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Rp11_3",
+    "B": "Rp10_3",
+    "X": "z1_3"
+   }
+  },
+  {
+   "name": "u70_and2b",
+   "type": "sky130_fd_sc_hd__and2b_1",
+   "pins": {
+    "A_N": "a4_0",
+    "B": "a0_0",
+    "X": "p00_4"
+   }
+  },
+  {
+   "name": "u71_and2b",
+   "type": "sky130_fd_sc_hd__and2b_1",
+   "pins": {
+    "A_N": "a4_0",
+    "B": "a0_1",
+    "X": "m01_4"
+   }
+  },
+  {
+   "name": "u72_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "m01_4",
+    "B": "qr_4",
+    "X": "p01_4"
+   }
+  },
+  {
+   "name": "u73_and2",
+   "type": "sky130_fd_sc_hd__and2_1",
+   "pins": {
+    "A": "a4_1",
+    "B": "a0_1",
+    "X": "p11_4"
+   }
+  },
+  {
+   "name": "u74_and2",
+   "type": "sky130_fd_sc_hd__and2_1",
+   "pins": {
+    "A": "a4_1",
+    "B": "a0_0",
+    "X": "m10_4"
+   }
+  },
+  {
+   "name": "u75_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "m10_4",
+    "B": "qr_4",
+    "X": "p10_4"
+   }
+  },
+  {
+   "name": "u76_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p00_4",
+    "Q": "Rp00_4"
+   }
+  },
+  {
+   "name": "u77_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p01_4",
+    "Q": "Rp01_4"
+   }
+  },
+  {
+   "name": "u78_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p11_4",
+    "Q": "Rp11_4"
+   }
+  },
+  {
+   "name": "u79_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "p10_4",
+    "Q": "Rp10_4"
+   }
+  },
+  {
+   "name": "u80_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Rp00_4",
+    "B": "Rp01_4",
+    "X": "z0_4"
+   }
+  },
+  {
+   "name": "u81_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Rp11_4",
+    "B": "Rp10_4",
+    "X": "z1_4"
+   }
+  },
+  {
+   "name": "u82_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "a0_0",
+    "Q": "Ra0_0"
+   }
+  },
+  {
+   "name": "u83_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "q0_1",
+    "Q": "Ra0_1"
+   }
+  },
+  {
+   "name": "u84_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "a2_0",
+    "Q": "Ra0_2"
+   }
+  },
+  {
+   "name": "u85_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "q0_3",
+    "Q": "Ra0_3"
+   }
+  },
+  {
+   "name": "u86_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "a4_0",
+    "Q": "Ra0_4"
+   }
+  },
+  {
+   "name": "u87_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "a0_1",
+    "Q": "Ra1_0"
+   }
+  },
+  {
+   "name": "u88_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "q1_1",
+    "Q": "Ra1_1"
+   }
+  },
+  {
+   "name": "u89_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "a2_1",
+    "Q": "Ra1_2"
+   }
+  },
+  {
+   "name": "u90_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "q1_3",
+    "Q": "Ra1_3"
+   }
+  },
+  {
+   "name": "u91_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "a4_1",
+    "Q": "Ra1_4"
+   }
+  },
+  {
+   "name": "u92_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Ra0_0",
+    "B": "z0_1",
+    "X": "b0_0"
+   }
+  },
+  {
+   "name": "u93_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Ra0_1",
+    "B": "z0_2",
+    "X": "b0_1"
+   }
+  },
+  {
+   "name": "u94_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Ra0_2",
+    "B": "z0_3",
+    "X": "b0_2"
+   }
+  },
+  {
+   "name": "u95_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Ra0_3",
+    "B": "z0_4",
+    "X": "b0_3"
+   }
+  },
+  {
+   "name": "u96_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Ra0_4",
+    "B": "z0_0",
+    "X": "b0_4"
+   }
+  },
+  {
+   "name": "u97_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "b0_1",
+    "B": "b0_0",
+    "X": "c1_0"
+   }
+  },
+  {
+   "name": "u98_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "b0_0",
+    "B": "b0_4",
+    "X": "c0_0"
+   }
+  },
+  {
+   "name": "u99_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "b0_3",
+    "B": "b0_2",
+    "X": "c3_0"
+   }
+  },
+  {
+   "name": "u100_inv",
+   "type": "sky130_fd_sc_hd__inv_1",
+   "pins": {
+    "A": "b0_2",
+    "Y": "c2_0"
+   }
+  },
+  {
+   "name": "u101_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "c0_0",
+    "Q": "ys0_0"
+   }
+  },
+  {
+   "name": "u102_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "c1_0",
+    "Q": "ys0_1"
+   }
+  },
+  {
+   "name": "u103_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "c2_0",
+    "Q": "ys0_2"
+   }
+  },
+  {
+   "name": "u104_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "c3_0",
+    "Q": "ys0_3"
+   }
+  },
+  {
+   "name": "u105_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "b0_4",
+    "Q": "ys0_4"
+   }
+  },
+  {
+   "name": "u106_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Ra1_0",
+    "B": "z1_1",
+    "X": "b1_0"
+   }
+  },
+  {
+   "name": "u107_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Ra1_1",
+    "B": "z1_2",
+    "X": "b1_1"
+   }
+  },
+  {
+   "name": "u108_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Ra1_2",
+    "B": "z1_3",
+    "X": "b1_2"
+   }
+  },
+  {
+   "name": "u109_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Ra1_3",
+    "B": "z1_4",
+    "X": "b1_3"
+   }
+  },
+  {
+   "name": "u110_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "Ra1_4",
+    "B": "z1_0",
+    "X": "b1_4"
+   }
+  },
+  {
+   "name": "u111_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "b1_1",
+    "B": "b1_0",
+    "X": "c1_1"
+   }
+  },
+  {
+   "name": "u112_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "b1_0",
+    "B": "b1_4",
+    "X": "c0_1"
+   }
+  },
+  {
+   "name": "u113_xor2",
+   "type": "sky130_fd_sc_hd__xor2_1",
+   "pins": {
+    "A": "b1_3",
+    "B": "b1_2",
+    "X": "c3_1"
+   }
+  },
+  {
+   "name": "u114_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "c0_1",
+    "Q": "ys1_0"
+   }
+  },
+  {
+   "name": "u115_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "c1_1",
+    "Q": "ys1_1"
+   }
+  },
+  {
+   "name": "u116_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "b1_2",
+    "Q": "ys1_2"
+   }
+  },
+  {
+   "name": "u117_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "c3_1",
+    "Q": "ys1_3"
+   }
+  },
+  {
+   "name": "u118_dfxtp",
+   "type": "sky130_fd_sc_hd__dfxtp_1",
+   "pins": {
+    "CLK": "CLK",
+    "D": "b1_4",
+    "Q": "ys1_4"
+   }
+  }
+ ],
+ "nets": [
+  "CLK",
+  "Ra0_0",
+  "Ra0_1",
+  "Ra0_2",
+  "Ra0_3",
+  "Ra0_4",
+  "Ra1_0",
+  "Ra1_1",
+  "Ra1_2",
+  "Ra1_3",
+  "Ra1_4",
+  "Rp00_0",
+  "Rp00_1",
+  "Rp00_2",
+  "Rp00_3",
+  "Rp00_4",
+  "Rp01_0",
+  "Rp01_1",
+  "Rp01_2",
+  "Rp01_3",
+  "Rp01_4",
+  "Rp10_0",
+  "Rp10_1",
+  "Rp10_2",
+  "Rp10_3",
+  "Rp10_4",
+  "Rp11_0",
+  "Rp11_1",
+  "Rp11_2",
+  "Rp11_3",
+  "Rp11_4",
+  "VGND",
+  "VPWR",
+  "a0_0",
+  "a0_1",
+  "a2_0",
+  "a2_1",
+  "a4_0",
+  "a4_1",
+  "b0_0",
+  "b0_1",
+  "b0_2",
+  "b0_3",
+  "b0_4",
+  "b1_0",
+  "b1_1",
+  "b1_2",
+  "b1_3",
+  "b1_4",
+  "c0_0",
+  "c0_1",
+  "c1_0",
+  "c1_1",
+  "c2_0",
+  "c3_0",
+  "c3_1",
+  "m01_0",
+  "m01_1",
+  "m01_2",
+  "m01_3",
+  "m01_4",
+  "m10_0",
+  "m10_1",
+  "m10_2",
+  "m10_3",
+  "m10_4",
+  "p00_0",
+  "p00_1",
+  "p00_2",
+  "p00_3",
+  "p00_4",
+  "p01_0",
+  "p01_1",
+  "p01_2",
+  "p01_3",
+  "p01_4",
+  "p10_0",
+  "p10_1",
+  "p10_2",
+  "p10_3",
+  "p10_4",
+  "p11_0",
+  "p11_1",
+  "p11_2",
+  "p11_3",
+  "p11_4",
+  "q0_0",
+  "q0_1",
+  "q0_2",
+  "q0_3",
+  "q0_4",
+  "q1_0",
+  "q1_1",
+  "q1_2",
+  "q1_3",
+  "q1_4",
+  "qr_0",
+  "qr_1",
+  "qr_2",
+  "qr_3",
+  "qr_4",
+  "r_0",
+  "r_1",
+  "r_2",
+  "r_3",
+  "r_4",
+  "xs0_0",
+  "xs0_1",
+  "xs0_2",
+  "xs0_3",
+  "xs0_4",
+  "xs1_0",
+  "xs1_1",
+  "xs1_2",
+  "xs1_3",
+  "xs1_4",
+  "ys0_0",
+  "ys0_1",
+  "ys0_2",
+  "ys0_3",
+  "ys0_4",
+  "ys1_0",
+  "ys1_1",
+  "ys1_2",
+  "ys1_3",
+  "ys1_4",
+  "z0_0",
+  "z0_1",
+  "z0_2",
+  "z0_3",
+  "z0_4",
+  "z1_0",
+  "z1_1",
+  "z1_2",
+  "z1_3",
+  "z1_4"
+ ],
+ "dffs": [
+  "u1_dfxtp",
+  "u2_dfxtp",
+  "u3_dfxtp",
+  "u4_dfxtp",
+  "u5_dfxtp",
+  "u6_dfxtp",
+  "u7_dfxtp",
+  "u8_dfxtp",
+  "u9_dfxtp",
+  "u10_dfxtp",
+  "u11_dfxtp",
+  "u12_dfxtp",
+  "u13_dfxtp",
+  "u14_dfxtp",
+  "u15_dfxtp",
+  "u28_dfxtp",
+  "u29_dfxtp",
+  "u30_dfxtp",
+  "u31_dfxtp",
+  "u40_dfxtp",
+  "u41_dfxtp",
+  "u42_dfxtp",
+  "u43_dfxtp",
+  "u52_dfxtp",
+  "u53_dfxtp",
+  "u54_dfxtp",
+  "u55_dfxtp",
+  "u64_dfxtp",
+  "u65_dfxtp",
+  "u66_dfxtp",
+  "u67_dfxtp",
+  "u76_dfxtp",
+  "u77_dfxtp",
+  "u78_dfxtp",
+  "u79_dfxtp",
+  "u82_dfxtp",
+  "u83_dfxtp",
+  "u84_dfxtp",
+  "u85_dfxtp",
+  "u86_dfxtp",
+  "u87_dfxtp",
+  "u88_dfxtp",
+  "u89_dfxtp",
+  "u90_dfxtp",
+  "u91_dfxtp",
+  "u101_dfxtp",
+  "u102_dfxtp",
+  "u103_dfxtp",
+  "u104_dfxtp",
+  "u105_dfxtp",
+  "u114_dfxtp",
+  "u115_dfxtp",
+  "u116_dfxtp",
+  "u117_dfxtp",
+  "u118_dfxtp"
+ ],
+ "wire_cap_fF": 1.0
+}

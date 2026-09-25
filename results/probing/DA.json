@@ -1,0 +1,1990 @@
+{
+ "variant": "DA",
+ "n_nets": 133,
+ "value_fail": [],
+ "glitch_fail": [],
+ "nets": [
+  {
+   "net": "xs0_0",
+   "kind": "port",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "xs0_0"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "xs0_1",
+   "kind": "port",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "xs0_1"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "xs0_2",
+   "kind": "port",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "xs0_2"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "xs0_3",
+   "kind": "port",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "xs0_3"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "xs0_4",
+   "kind": "port",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "xs0_4"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "xs1_0",
+   "kind": "port",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "xs1_0"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "xs1_1",
+   "kind": "port",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "xs1_1"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "xs1_2",
+   "kind": "port",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "xs1_2"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "xs1_3",
+   "kind": "port",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "xs1_3"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "xs1_4",
+   "kind": "port",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "xs1_4"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "r_0",
+   "kind": "port",
+   "domain": "r",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "r_0"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "r_1",
+   "kind": "port",
+   "domain": "r",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "r_1"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "r_2",
+   "kind": "port",
+   "domain": "r",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "r_2"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "r_3",
+   "kind": "port",
+   "domain": "r",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "r_3"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "r_4",
+   "kind": "port",
+   "domain": "r",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "r_4"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as0_0",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "xs0_0",
+    "xs0_4"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as0_4",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "xs0_3",
+    "xs0_4"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as0_2",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "xs0_1",
+    "xs0_2"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as0_0_q",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_0_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as0_1_q",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_1_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as0_2_q",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_2_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as0_3_q",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_3_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as0_4_q",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_4_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as1_0",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "xs1_0",
+    "xs1_4"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as1_4",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "xs1_3",
+    "xs1_4"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as1_2",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "xs1_1",
+    "xs1_2"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as1_0_q",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as1_0_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as1_1_q",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as1_1_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as1_2_q",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as1_2_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as1_3_q",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as1_3_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as1_4_q",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as1_4_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "r_0_q",
+   "kind": "dff",
+   "domain": "r",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "r_0_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "r_1_q",
+   "kind": "dff",
+   "domain": "r",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "r_1_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "r_2_q",
+   "kind": "dff",
+   "domain": "r",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "r_2_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "r_3_q",
+   "kind": "dff",
+   "domain": "r",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "r_3_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "r_4_q",
+   "kind": "dff",
+   "domain": "r",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "r_4_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p00_0",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as0_0_q",
+    "as0_1_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "m01_0",
+   "kind": "comb",
+   "domain": "cross",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as0_0_q",
+    "as1_1_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p01_0",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_0_q",
+    "as1_1_q",
+    "r_0_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p11_0",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as1_0_q",
+    "as1_1_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "m10_0",
+   "kind": "comb",
+   "domain": "cross",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as0_1_q",
+    "as1_0_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p10_0",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_1_q",
+    "as1_0_q",
+    "r_0_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p00_0_q",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "p00_0_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p01_0_q",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p01_0_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p11_0_q",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "p11_0_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p10_0_q",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p10_0_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "ts0_0",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p00_0_q",
+    "p01_0_q"
+   ],
+   "both_shares_of": [
+    1
+   ]
+  },
+  {
+   "net": "ts1_0",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p11_0_q",
+    "p10_0_q"
+   ],
+   "both_shares_of": [
+    1
+   ]
+  },
+  {
+   "net": "p00_1",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as0_1_q",
+    "as0_2_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "m01_1",
+   "kind": "comb",
+   "domain": "cross",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as0_1_q",
+    "as1_2_q"
+   ],
+   "both_shares_of": [
+    1
+   ]
+  },
+  {
+   "net": "p01_1",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_1_q",
+    "as1_2_q",
+    "r_1_q"
+   ],
+   "both_shares_of": [
+    1
+   ]
+  },
+  {
+   "net": "p11_1",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as1_1_q",
+    "as1_2_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "m10_1",
+   "kind": "comb",
+   "domain": "cross",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as0_2_q",
+    "as1_1_q"
+   ],
+   "both_shares_of": [
+    1
+   ]
+  },
+  {
+   "net": "p10_1",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_2_q",
+    "as1_1_q",
+    "r_1_q"
+   ],
+   "both_shares_of": [
+    1
+   ]
+  },
+  {
+   "net": "p00_1_q",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "p00_1_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p01_1_q",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p01_1_q"
+   ],
+   "both_shares_of": [
+    1
+   ]
+  },
+  {
+   "net": "p11_1_q",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "p11_1_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p10_1_q",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p10_1_q"
+   ],
+   "both_shares_of": [
+    1
+   ]
+  },
+  {
+   "net": "ts0_1",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p00_1_q",
+    "p01_1_q"
+   ],
+   "both_shares_of": [
+    1,
+    2
+   ]
+  },
+  {
+   "net": "ts1_1",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p11_1_q",
+    "p10_1_q"
+   ],
+   "both_shares_of": [
+    1,
+    2
+   ]
+  },
+  {
+   "net": "p00_2",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as0_2_q",
+    "as0_3_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "m01_2",
+   "kind": "comb",
+   "domain": "cross",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as0_2_q",
+    "as1_3_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p01_2",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_2_q",
+    "as1_3_q",
+    "r_2_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p11_2",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as1_2_q",
+    "as1_3_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "m10_2",
+   "kind": "comb",
+   "domain": "cross",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as0_3_q",
+    "as1_2_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p10_2",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_3_q",
+    "as1_2_q",
+    "r_2_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p00_2_q",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "p00_2_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p01_2_q",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p01_2_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p11_2_q",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "p11_2_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p10_2_q",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p10_2_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "ts0_2",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p00_2_q",
+    "p01_2_q"
+   ],
+   "both_shares_of": [
+    3
+   ]
+  },
+  {
+   "net": "ts1_2",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p11_2_q",
+    "p10_2_q"
+   ],
+   "both_shares_of": [
+    3
+   ]
+  },
+  {
+   "net": "p00_3",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as0_3_q",
+    "as0_4_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "m01_3",
+   "kind": "comb",
+   "domain": "cross",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as0_3_q",
+    "as1_4_q"
+   ],
+   "both_shares_of": [
+    3
+   ]
+  },
+  {
+   "net": "p01_3",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_3_q",
+    "as1_4_q",
+    "r_3_q"
+   ],
+   "both_shares_of": [
+    3
+   ]
+  },
+  {
+   "net": "p11_3",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as1_3_q",
+    "as1_4_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "m10_3",
+   "kind": "comb",
+   "domain": "cross",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as0_4_q",
+    "as1_3_q"
+   ],
+   "both_shares_of": [
+    3
+   ]
+  },
+  {
+   "net": "p10_3",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_4_q",
+    "as1_3_q",
+    "r_3_q"
+   ],
+   "both_shares_of": [
+    3
+   ]
+  },
+  {
+   "net": "p00_3_q",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "p00_3_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p01_3_q",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p01_3_q"
+   ],
+   "both_shares_of": [
+    3
+   ]
+  },
+  {
+   "net": "p11_3_q",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "p11_3_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p10_3_q",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p10_3_q"
+   ],
+   "both_shares_of": [
+    3
+   ]
+  },
+  {
+   "net": "ts0_3",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p00_3_q",
+    "p01_3_q"
+   ],
+   "both_shares_of": [
+    3,
+    4
+   ]
+  },
+  {
+   "net": "ts1_3",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p11_3_q",
+    "p10_3_q"
+   ],
+   "both_shares_of": [
+    3,
+    4
+   ]
+  },
+  {
+   "net": "p00_4",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as0_0_q",
+    "as0_4_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "m01_4",
+   "kind": "comb",
+   "domain": "cross",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as0_4_q",
+    "as1_0_q"
+   ],
+   "both_shares_of": [
+    4
+   ]
+  },
+  {
+   "net": "p01_4",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_4_q",
+    "as1_0_q",
+    "r_4_q"
+   ],
+   "both_shares_of": [
+    4
+   ]
+  },
+  {
+   "net": "p11_4",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as1_0_q",
+    "as1_4_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "m10_4",
+   "kind": "comb",
+   "domain": "cross",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "as0_0_q",
+    "as1_4_q"
+   ],
+   "both_shares_of": [
+    4
+   ]
+  },
+  {
+   "net": "p10_4",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_0_q",
+    "as1_4_q",
+    "r_4_q"
+   ],
+   "both_shares_of": [
+    4
+   ]
+  },
+  {
+   "net": "p00_4_q",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "p00_4_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p01_4_q",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p01_4_q"
+   ],
+   "both_shares_of": [
+    4
+   ]
+  },
+  {
+   "net": "p11_4_q",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.25,
+   "p1_max": 0.25,
+   "glitch_ok": true,
+   "cone": [
+    "p11_4_q"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "p10_4_q",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p10_4_q"
+   ],
+   "both_shares_of": [
+    4
+   ]
+  },
+  {
+   "net": "ts0_4",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p00_4_q",
+    "p01_4_q"
+   ],
+   "both_shares_of": [
+    0,
+    4
+   ]
+  },
+  {
+   "net": "ts1_4",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p11_4_q",
+    "p10_4_q"
+   ],
+   "both_shares_of": [
+    0,
+    4
+   ]
+  },
+  {
+   "net": "as0_0_qq",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_0_qq"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as0_1_qq",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_1_qq"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as0_2_qq",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_2_qq"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as0_3_qq",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_3_qq"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as0_4_qq",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as0_4_qq"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as1_0_qq",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as1_0_qq"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as1_1_qq",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as1_1_qq"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as1_2_qq",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as1_2_qq"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as1_3_qq",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as1_3_qq"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "as1_4_qq",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "as1_4_qq"
+   ],
+   "both_shares_of": []
+  },
+  {
+   "net": "bs0_0",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p00_1_q",
+    "p01_1_q",
+    "as0_0_qq"
+   ],
+   "both_shares_of": [
+    1,
+    2
+   ]
+  },
+  {
+   "net": "bs0_1",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p00_2_q",
+    "p01_2_q",
+    "as0_1_qq"
+   ],
+   "both_shares_of": [
+    3
+   ]
+  },
+  {
+   "net": "bs0_2",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p00_3_q",
+    "p01_3_q",
+    "as0_2_qq"
+   ],
+   "both_shares_of": [
+    3,
+    4
+   ]
+  },
+  {
+   "net": "bs0_3",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p00_4_q",
+    "p01_4_q",
+    "as0_3_qq"
+   ],
+   "both_shares_of": [
+    0,
+    4
+   ]
+  },
+  {
+   "net": "bs0_4",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p00_0_q",
+    "p01_0_q",
+    "as0_4_qq"
+   ],
+   "both_shares_of": [
+    1
+   ]
+  },
+  {
+   "net": "ys0_1_d",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p00_1_q",
+    "p01_1_q",
+    "p00_2_q",
+    "p01_2_q",
+    "as0_0_qq",
+    "as0_1_qq"
+   ],
+   "both_shares_of": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "net": "ys0_0_d",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p00_0_q",
+    "p01_0_q",
+    "p00_1_q",
+    "p01_1_q",
+    "as0_0_qq",
+    "as0_4_qq"
+   ],
+   "both_shares_of": [
+    1,
+    2
+   ]
+  },
+  {
+   "net": "ys0_3_d",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p00_3_q",
+    "p01_3_q",
+    "p00_4_q",
+    "p01_4_q",
+    "as0_2_qq",
+    "as0_3_qq"
+   ],
+   "both_shares_of": [
+    0,
+    3,
+    4
+   ]
+  },
+  {
+   "net": "ys0_2_d",
+   "kind": "comb",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p00_3_q",
+    "p01_3_q",
+    "as0_2_qq"
+   ],
+   "both_shares_of": [
+    3,
+    4
+   ]
+  },
+  {
+   "net": "ys0_0",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "ys0_0"
+   ],
+   "both_shares_of": [
+    1,
+    2
+   ]
+  },
+  {
+   "net": "ys0_1",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "ys0_1"
+   ],
+   "both_shares_of": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "net": "ys0_2",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "ys0_2"
+   ],
+   "both_shares_of": [
+    3,
+    4
+   ]
+  },
+  {
+   "net": "ys0_3",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "ys0_3"
+   ],
+   "both_shares_of": [
+    0,
+    3,
+    4
+   ]
+  },
+  {
+   "net": "ys0_4",
+   "kind": "dff",
+   "domain": "s0",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "ys0_4"
+   ],
+   "both_shares_of": [
+    1
+   ]
+  },
+  {
+   "net": "bs1_0",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p11_1_q",
+    "p10_1_q",
+    "as1_0_qq"
+   ],
+   "both_shares_of": [
+    1,
+    2
+   ]
+  },
+  {
+   "net": "bs1_1",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p11_2_q",
+    "p10_2_q",
+    "as1_1_qq"
+   ],
+   "both_shares_of": [
+    3
+   ]
+  },
+  {
+   "net": "bs1_2",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p11_3_q",
+    "p10_3_q",
+    "as1_2_qq"
+   ],
+   "both_shares_of": [
+    3,
+    4
+   ]
+  },
+  {
+   "net": "bs1_3",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p11_4_q",
+    "p10_4_q",
+    "as1_3_qq"
+   ],
+   "both_shares_of": [
+    0,
+    4
+   ]
+  },
+  {
+   "net": "bs1_4",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p11_0_q",
+    "p10_0_q",
+    "as1_4_qq"
+   ],
+   "both_shares_of": [
+    1
+   ]
+  },
+  {
+   "net": "ys1_1_d",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p11_1_q",
+    "p10_1_q",
+    "p11_2_q",
+    "p10_2_q",
+    "as1_0_qq",
+    "as1_1_qq"
+   ],
+   "both_shares_of": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "net": "ys1_0_d",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p11_0_q",
+    "p10_0_q",
+    "p11_1_q",
+    "p10_1_q",
+    "as1_0_qq",
+    "as1_4_qq"
+   ],
+   "both_shares_of": [
+    1,
+    2
+   ]
+  },
+  {
+   "net": "ys1_3_d",
+   "kind": "comb",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "p11_3_q",
+    "p10_3_q",
+    "p11_4_q",
+    "p10_4_q",
+    "as1_2_qq",
+    "as1_3_qq"
+   ],
+   "both_shares_of": [
+    0,
+    3,
+    4
+   ]
+  },
+  {
+   "net": "ys1_0",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "ys1_0"
+   ],
+   "both_shares_of": [
+    1,
+    2
+   ]
+  },
+  {
+   "net": "ys1_1",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "ys1_1"
+   ],
+   "both_shares_of": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "net": "ys1_2",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "ys1_2"
+   ],
+   "both_shares_of": [
+    3,
+    4
+   ]
+  },
+  {
+   "net": "ys1_3",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "ys1_3"
+   ],
+   "both_shares_of": [
+    0,
+    3,
+    4
+   ]
+  },
+  {
+   "net": "ys1_4",
+   "kind": "dff",
+   "domain": "s1",
+   "value_ok": true,
+   "p1_min": 0.5,
+   "p1_max": 0.5,
+   "glitch_ok": true,
+   "cone": [
+    "ys1_4"
+   ],
+   "both_shares_of": [
+    1
+   ]
+  }
+ ]
+}

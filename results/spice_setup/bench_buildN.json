@@ -1,0 +1,48 @@
+{
+ "note": "Throughput of the final defaults (period 4 ns, tmax 10 ps) on the generator netlist build/N (88 cells, 25 DFF), 20 rows per chunk.",
+ "dut": "dut_N",
+ "rows_per_chunk": 20,
+ "params": {
+  "period": 4.0,
+  "t_in": 0.75,
+  "rise": 0.1,
+  "clk_rise": 0.1,
+  "pre": 0.2,
+  "dt": 0.01,
+  "chunk": 500,
+  "warmup": 4,
+  "corner": "tt",
+  "temp": 27.0,
+  "vdd": 1.8,
+  "out_load_fF": 2.0,
+  "tmax": 0.01,
+  "options": "",
+  "method": "trap",
+  "seed": 0
+ },
+ "idle_mem_available_MB": 7113,
+ "configs": {
+  "11x2": {
+   "jobs": 11,
+   "threads": 2,
+   "wall_s": 137.0,
+   "rows_per_s": 1.6054,
+   "sim_cycles_per_s": 2.079,
+   "s_per_sim_cycle_per_process": 4.816,
+   "load_s": 8.7,
+   "peak_rss_MB": 176.0,
+   "min_mem_available_MB": 5086
+  },
+  "16x1": {
+   "jobs": 16,
+   "threads": 1,
+   "wall_s": 207.3,
+   "rows_per_s": 1.5434,
+   "sim_cycles_per_s": 1.9987,
+   "s_per_sim_cycle_per_process": 7.074,
+   "load_s": 14.2,
+   "peak_rss_MB": 176.4,
+   "min_mem_available_MB": 4254
+  }
+ }
+}

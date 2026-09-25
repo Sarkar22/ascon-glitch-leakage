@@ -1,0 +1,78 @@
+{
+ "variant": "U",
+ "subckt": "dut_U",
+ "ports": [
+  "CLK",
+  "x_0",
+  "x_1",
+  "x_2",
+  "x_3",
+  "x_4",
+  "y_0",
+  "y_1",
+  "y_2",
+  "y_3",
+  "y_4",
+  "VPWR",
+  "VGND"
+ ],
+ "inputs": [
+  {
+   "name": "x_0",
+   "role": "plain",
+   "bit": 0
+  },
+  {
+   "name": "x_1",
+   "role": "plain",
+   "bit": 1
+  },
+  {
+   "name": "x_2",
+   "role": "plain",
+   "bit": 2
+  },
+  {
+   "name": "x_3",
+   "role": "plain",
+   "bit": 3
+  },
+  {
+   "name": "x_4",
+   "role": "plain",
+   "bit": 4
+  }
+ ],
+ "outputs": [
+  {
+   "name": "y_0",
+   "role": "plain",
+   "bit": 0
+  },
+  {
+   "name": "y_1",
+   "role": "plain",
+   "bit": 1
+  },
+  {
+   "name": "y_2",
+   "role": "plain",
+   "bit": 2
+  },
+  {
+   "name": "y_3",
+   "role": "plain",
+   "bit": 3
+  },
+  {
+   "name": "y_4",
+   "role": "plain",
+   "bit": 4
+  }
+ ],
+ "latency": 1,
+ "n_cells": 27,
+ "n_dff": 10,
+ "wire_cap_fF": 1.0,
+ "note": "mock DUT for runner development, not a kill-test netlist"
+}

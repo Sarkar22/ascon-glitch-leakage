@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+build/
+runs/
+results/raw/
+*.raw
+*.npz
+.ipynb_checkpoints/
