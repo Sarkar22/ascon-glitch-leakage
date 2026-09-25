@@ -345,10 +345,20 @@ all numbers below are from `results/kill_test/summary.json`. Every SPICE row's o
   3.69 at any checkpoint), although its net-level leak is confirmed and
   level 2 predicts 12.2
   on the same rows. D's leak therefore remains unresolved in the supply current at the A3 count; it is not shown to
-  be absent. A further D run to 20,000 rows is in progress (exploratory, beyond A3).
+  be absent. A further D run to 20,000 rows followed (addendum below).
 - *Level 2 is pessimistic for D* at 10 ps resolution, which confirms the first run's reading.
 - The GO/NO-GO statement above is unchanged: K1 fails on its CPA part, K2, K3, K5 and C pass, and the user decided
   to proceed with option A.
+
+**Addendum (2026-09-25, exploratory, beyond A3): D at 20,000 rows.** The D run was continued to 20,000 rows on the
+same stimulus; `analysis/kill_test.py` was re-run, so `summary.json` and the D files now hold 19,997
+traces. SPICE max\|t\| 3.08 (at most 3.62 at any checkpoint; never above
+4.5; 100 ps bins 3.00; charge per window 1.21; second order
+19.0), while level 2 predicts 16.7 on the same rows. D's net-level leak therefore still does not
+show in the supply current at 20,000 noiseless traces; at this count TVLA would detect a first-order effect about a
+quarter as strong as N's. This is consistent with the circuit-level reading in `docs/reviews/spice-circuit.md`: D's
+pre-barrier glitches end at the barrier flip-flops' D pins. It is not a proof that D is secure; the glitch-extended
+probing model, which is conservative by design, still flags it.
 
 **Limits of these numbers.** Pre-layout netlists with estimated wire capacitance. The stock sky130_fd_sc_hd SPICE
 cells carry no diffusion or junction capacitance (every FET has ad = as = pd = ps = 0) and no intra-cell wiring, so
