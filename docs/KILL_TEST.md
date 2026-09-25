@@ -117,6 +117,10 @@ path to the author's Ascon model was replaced by `$ASCON_REF_DIR` for privacy. N
 
 ### Run of 2026-09-24
 
+_The numbers in this subsection are for the first run (D and DA at 4,997 traces) and are preserved in
+`results/kill_test/summary_run1.json`. `summary.json`, the CSVs and the figures now hold the extended data of
+2026-09-25 (next subsection)._
+
 All numbers below come from `results/kill_test/summary.json` (written by `analysis/kill_test.py`); the tables are
 printed by `analysis/report.py` from that file, except the Criteria table, which is hand-written from it. Per-sample t curves: `results/kill_test/tcurve_<campaign>.csv`;
 max|t| against the number of traces: `results/kill_test/maxt_vs_traces_<campaign>.csv`; CPA ranks:
@@ -298,8 +302,9 @@ correlation; model columns: the same CPA on the level-1 and level-2 traces of th
    processes was 2.0 simulated cycles/s for N and 1.0 for D and DA (the per-process costs in A3 do not scale to
    10 processes: this CPU is power-limited, and one D process slows from about 4 s to about 10 s per cycle).
    D and DA at the A3 counts would have needed about 5.4 h more; the task's rule was to reduce D first. D and DA ran on
-   the same 5,000 input rows, so they are compared at equal trace counts. **K5 is therefore incomplete** (5,000 of
-   20,000), and K4 ran on half of A3's minimum. Both campaigns are resumable (commands below).
+   the same 5,000 input rows, so they are compared at equal trace counts. **K5 was therefore incomplete** (5,000 of
+   20,000) in the first run, and K4 ran on half of A3's minimum. Both were completed on 2026-09-25 (see the
+   extension subsection).
 2. The N stop rule of A3 was applied: max|t| was above 4.5 at the 5,000 and the 10,000 checkpoints, so N stopped
    at 10,000.
 3. The first L+1 rows of every campaign are dropped (see Setup).
@@ -313,6 +318,37 @@ correlation; model columns: the same CPA on the level-1 and level-2 traces of th
    reported alongside.
 6. Added noise: white Gaussian noise per 10 ps sample, standard deviation 0.5, 1 or 2 times the largest
    per-sample standard deviation of the noiseless traces (for N: 341 uA). Not used for pass/fail.
+
+### Extension of 2026-09-25: A3 trace counts reached
+
+DA was extended to 20,000 rows and D to 10,000 rows (`runs/kt/ext.sh`, same stimulus file `M_tvla.npy`, so the
+first 5,000 rows are the ones above), with the SPICE container capped at 6 CPUs. `analysis/kill_test.py` was re-run;
+all numbers below are from `results/kill_test/summary.json`. Every SPICE row's output still matched the S-box.
+
+| Variant | Traces | SPICE max\|t\| (final) | max over all checkpoints | first > 4.5 | peak (ns after first edge) | 2nd order | charge per window \|t\| | SPICE, 1x noise | level 2 (worst weighting) | level 1 (worst weighting) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| D | 9,997 | 3.35 | 3.69 | never | 2.405 | 13.1 | 1.21 | 3.20 | 12.2 | 2.26 |
+| DA | 19,997 | 3.08 | 3.60 | never | 2.175 | 21.5 | 2.61 | 3.04 | 3.0 | 2.71 |
+
+| Id | Measured | Traces | Result |
+|---|---|---|---|
+| K4 | D max\|t\| 3.35; never above 4.5 | 9,997 (A3 minimum met) | below 4.5 (informational) |
+| K5 | DA max\|t\| 3.08; never above 4.5 | 19,997 of 20,000 | **pass, complete** |
+
+**What this adds.**
+- *The second part of the registered question is answered for DA.* With the register barrier placed after
+  Ascon's affine layer (DA, amendment A1), the supply current shows no first-order leak within 19,997
+  noiseless traces; TVLA at this count excludes a leak about a quarter as strong as N's or stronger. Second-order
+  t is large (21.5), as expected for two-share (first-order)
+  masking.
+- *D (the registered DOM) stays below 4.5 at 9,997 traces* (3.35; at most
+  3.69 at any checkpoint), although its net-level leak is confirmed and
+  level 2 predicts 12.2
+  on the same rows. D's leak therefore remains unresolved in the supply current at the A3 count; it is not shown to
+  be absent. A further D run to 20,000 rows is in progress (exploratory, beyond A3).
+- *Level 2 is pessimistic for D* at 10 ps resolution, which confirms the first run's reading.
+- The GO/NO-GO statement above is unchanged: K1 fails on its CPA part, K2, K3, K5 and C pass, and the user decided
+  to proceed with option A.
 
 **Limits of these numbers.** Pre-layout netlists with estimated wire capacitance. The stock sky130_fd_sc_hd SPICE
 cells carry no diffusion or junction capacitance (every FET has ad = as = pd = ps = 0) and no intra-cell wiring, so
