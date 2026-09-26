@@ -37,6 +37,9 @@ def src(cell):
     return "".join(cell["source"])
 
 
+
+AUTHOR_EMAIL = "esarkar" + "@" + "uwaterloo.ca"   # the only e-mail the notebook may contain
+
 class TestNotebook(unittest.TestCase):
     def test_text_matches_results(self):
         """The committed notebook's cells are what make_notebook.py builds from the current
@@ -77,9 +80,9 @@ class TestNotebook(unittest.TestCase):
         self.assertIn("os.environ.setdefault('ASCON_REPO_REF', '%s')" % ref, setup)
 
     def test_todo_markers(self):
-        """Only the author's item is open: the e-mail."""
+        """No open markers remain."""
         text = "\n".join(src(c) for c in load_nb()["cells"])
-        self.assertEqual(re.findall(r"TODO\([a-z]+\)[^|\n]*", text), ["TODO(user): e-mail "])
+        self.assertEqual(re.findall(r"TODO\([a-z]+\)[^|\n]*", text), [])
         self.assertNotIn("Acknowledgments", text)
 
     def test_ai_use_text(self):
@@ -168,7 +171,7 @@ class TestNotebook(unittest.TestCase):
                 for c in nb["cells"]:
                     for o in c.get("outputs", []):
                         text += "".join(o.get("text", "")) + "".join(o.get("data", {}).get("text/plain", ""))
-            m = pat.search(text)
+            m = pat.search(text.replace(AUTHOR_EMAIL, ""))   # the author's contact e-mail is intended
             self.assertIsNone(m, "%s: %s" % (os.path.basename(p), m and m.group(0)))
 
 

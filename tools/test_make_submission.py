@@ -76,7 +76,7 @@ class TestBuild(unittest.TestCase):
         self.assertIn(ms.COLAB_URL, text)
         self.assertNotRegex(text, r"[{}]")                        # every placeholder filled
         self.assertNotRegex(text, r"/home/|/media/|/Users/")
-        self.assertEqual(re.findall(r"TODO\(\w+\)[^|\n]*", text), ["TODO(user): e-mail "])
+        self.assertEqual(re.findall(r"TODO\(\w+\)[^|\n]*", text), [])
         ai = ("AI coding assistants were used in this project. All results come from open-source tools (ngspice, "
               "the sky130 PDK, OpenLane, Magic, KLayout, netgen, Python), and the author is responsible for all "
               "content.")

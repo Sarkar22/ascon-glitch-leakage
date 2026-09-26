@@ -10,7 +10,7 @@ whenever the results change, then execute the notebook to refresh its saved outp
   python3 notebook/make_notebook.py
   jupyter nbconvert --to notebook --execute --inplace notebook/ascon_glitch_leakage.ipynb
 
-Marker for work that is not done yet: "TODO(user)" (the author must fill it in: the e-mail).
+No open markers remain (the author table carries the contact e-mail).
 The live-mode times in LIVE are measured with notebook/tests/colab_live.sh.
 Section 6 (layout and post-layout) is filled
 from results/layout/summary.json and results/pex/summary_postlayout.json (data/layout__*, pex__*); its
@@ -83,7 +83,7 @@ or 12. Python 3.10 to 3.12 with NumPy and Matplotlib.
 
 | Name | Affiliation | Role | IEEE member | SSCS member | Contact |
 |---|---|---|---|---|---|
-| Emon Sarkar | University of Waterloo, Electrical and Computer Engineering | author | yes | no | TODO(user): e-mail |
+| Emon Sarkar | University of Waterloo, Electrical and Computer Engineering | author | yes | no | esarkar@uwaterloo.ca |
 """)
 
 md(r"""

@@ -58,7 +58,7 @@ LOCAL_NOTEBOOK=1 CPUS=2 bash notebook/tests/colab_live.sh    # this working tree
 
 ## Open items in the text
 
-`TODO(user)` marks what only the author can fill in: the e-mail. §5 (key recovery), §6
+No `TODO` markers remain; the author table carries the contact e-mail. §5 (key recovery), §6
 (layout and post-layout) and §7 (cost) are filled from `data/key_recovery__summary.json`, `data/layout__summary.json`,
 `data/layout__placement_<V>.csv`, `data/pex__summary_postlayout.json`, `data/pex__*.csv` and `data/cost__cost.csv`;
 §6.3 (the post-hoc negative controls and RC bracket) from `data/layout__negative_controls.json` and
