@@ -3,7 +3,7 @@
 Draft of the pull request to github.com/sscs-ose/sscs-ose-code-a-chip.github.io.
 Title: [ISSCC27] Safe on paper, leaky in SPICE: glitch leakage of a masked Ascon S-box on SKY130
 The description is everything below this comment. The folder is built by tools/make_submission.py and
-checked with tools/check_submission.sh. Before opening the PR: fill the TODO(user) items.
+checked with tools/check_submission.sh. Before opening the PR: replace the CI-run TODO with the latest green run.
 The fork's commit must come from the pristine build: a fresh copy of
 runs/submission/ISSCC27/submitted_notebooks/ascon_glitch_leakage/ into the fork's
 ISSCC27/submitted_notebooks/ascon_glitch_leakage/, never from runs/submission/upstream/, where
@@ -16,7 +16,7 @@ reads, an Apache-2.0 `LICENSE` and a `README.md` (45 files, 4.4 MB). Nothing out
 
 | Name | Affiliation | IEEE member | SSCS member | E-mail |
 |---|---|---|---|---|
-| Emon Sarkar ([@Sarkar22](https://github.com/Sarkar22)) | University of Waterloo, Electrical and Computer Engineering | yes | no | TODO(user) |
+| Emon Sarkar ([@Sarkar22](https://github.com/Sarkar22)) | University of Waterloo, Electrical and Computer Engineering | yes | no | esarkar@uwaterloo.ca |
 
 ### Summary
 
@@ -66,10 +66,6 @@ reads, an Apache-2.0 `LICENSE` and a `README.md` (45 files, 4.4 MB). Nothing out
   `0fe599b2afb6708d281543108caf8310912f54af`) and simulates 60 clock cycles in ngspice.
 - The workflows in `.github/workflows/` use `**/*.ipynb` without `shopt -s globstar`, which does not reach
   `ISSCC27/submitted_notebooks/*/`. With globstar on, all their steps pass on this folder.
-
-### Attendance
-
-The author will attend ISSCC 2027 in person (February 14-18, 2027) and present a poster if selected.
 
 ### License
 

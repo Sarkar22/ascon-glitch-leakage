@@ -92,8 +92,10 @@ git -C "$OUT/upstream" status --porcelain --untracked-files=all | grep -v -E "^\
   && { echo "FAIL: files outside $DEST changed"; RC=1; } || echo "only $DEST/ added"
 find "$OUT/$DEST" -type f | wc -l | xargs echo "files:"
 du -sh "$OUT/$DEST" | cut -f1 | xargs echo "size:"
-if grep -r -n -o -I -E "(^|[^[:alnum:]._-])/(home|media|Users)/[^\" ]*|[[:alnum:]._%+-]+@[[:alnum:].-]+\.(edu|com|ca|org)" \
-    "$OUT/$DEST"; then echo "FAIL: host paths or e-mail addresses above"; RC=1
-else echo "no host paths or e-mail addresses"; fi
+AUTHOR_EMAIL="esarkar@uwaterloo.ca"   # the author's contact e-mail is the only address allowed
+HITS=$(grep -r -n -o -I -E "(^|[^[:alnum:]._-])/(home|media|Users)/[^\" ]*|[[:alnum:]._%+-]+@[[:alnum:].-]+\.(edu|com|ca|org)" \
+    "$OUT/$DEST" | grep -v -F "$AUTHOR_EMAIL" || true)
+if [ -n "$HITS" ]; then echo "$HITS"; echo "FAIL: host paths or e-mail addresses above"; RC=1
+else echo "no host paths or e-mail addresses other than the author's contact"; fi
 echo "== exit $RC"
 exit $RC

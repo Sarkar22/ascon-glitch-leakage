@@ -286,7 +286,7 @@ IEEE SSCS Code-a-Chip, ISSCC 2027. Notebook: [`{nb}`]({nb}). Project repository 
 
 | Name | Affiliation | Role | IEEE member | SSCS member | Contact |
 |---|---|---|---|---|---|
-| Emon Sarkar | University of Waterloo, Electrical and Computer Engineering | author | yes | no | TODO(user): e-mail |
+| Emon Sarkar | University of Waterloo, Electrical and Computer Engineering | author | yes | no | esarkar@uwaterloo.ca |
 
 ## Claim
 
