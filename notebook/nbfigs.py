@@ -441,8 +441,8 @@ def key_recovery_table():
     def cell(r, d):
         return "%.2f (%.2f)" % (r[d]["final_ge"], r[d]["final_sr"])
     rows = ["| Variant, order | attack traces per key | template, default POIs: GE (SR) | template, per-key-bit "
-            "POIs (post hoc): GE (SR) | null GE, mean +- SD | p vs null (default POIs) | correlation GE "
-            "(secondary) |", "|---|---|---|---|---|---|---|"]
+            "POIs (post hoc): GE (SR) | null GE of the default template, mean +- SD | p vs null (default POIs) | "
+            "correlation GE (secondary) |", "|---|---|---|---|---|---|---|"]
     for name, label, tag in (("U_tvla", "U, 1st", "order1_noise0"),
                              ("U_cpa", "U on the K1 CPA traces, 1st", "order1_noise0"),
                              ("N_pooled", "N, 1st", "order1_noise0"), ("D_tvla", "D, 1st", "order1_noise0"),
@@ -473,8 +473,8 @@ def cost_table():
             ("latency_cycles", "latency (cycles)", None), ("min_period_ps", "min. clock period (ps)", 0),
             ("latency_ns", "latency (ns)", 2), ("latency_vs_N", "latency vs N", 2),
             ("fresh_random_bits", "fresh random bits", None),
-            ("e_eval_fJ", "energy per evaluation, SPICE (fJ)", 0), ("e_total_fJ", "incl. CLK pins (fJ)", 0),
-            ("total_vs_N", "energy vs N", 2)]
+            ("e_eval_fJ", "energy per evaluation, SPICE (fJ)", 0), ("energy_vs_N", "SPICE energy vs N", 2),
+            ("e_total_fJ", "incl. CLK pins (fJ)", 0), ("total_vs_N", "total vs N (incl. CLK pins)", 2)]
     cols = [col for col in cols if col[0] in rows[0]]
 
     def cell(v, digits):

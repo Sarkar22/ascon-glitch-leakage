@@ -49,12 +49,18 @@ class TestVerdict(unittest.TestCase):
         v = ct.verdict(self.summary(4.5 / 2), "N")
         self.assertFalse(v["leaks"])
         self.assertIn("no first-order leak detected", v["text"])
-        self.assertIn("a leak of 2.00 x N's effect size", v["text"])   # t 2.25 -> threshold is 2x
+        self.assertIn("TVLA reaches |t| 4.5 on average for a leak of 2.00 x N's effect size",
+                      v["text"])                                       # t 2.25 -> threshold is 2x
+        self.assertNotIn("or more", v["text"])        # at that size detection is a coin toss, not a floor
         self.assertIsNone(ct.verdict({"campaigns": {}}, "N"))
         sm = self.summary(13.23)
-        sm["campaigns"]["D_tvla"] = {"rows_analysed": 19997, "level2": {"weighted": {"final_max_abs_t": 15.159}},
+        sm["campaigns"]["D_tvla"] = {"rows_analysed": 19997,
+                                     "level2": {"unweighted": {"final_max_abs_t": 15.159},
+                                                "weighted": {"final_max_abs_t": 15.159},
+                                                "weighted_rise": {"final_max_abs_t": 16.734}},
                                      "spice": {"final_max_abs_t": 3.08, "first_above": None, "stable_from": None}}
-        self.assertIn("level 2 predicts max|t| 15.2 on the same rows", ct.verdict(sm, "D")["text"])
+        self.assertIn("level 2 predicts max|t| 15.2 (cap-weighted; 16.7 with the worst of three weightings) "
+                      "on the same rows", ct.verdict(sm, "D")["text"])
 
 
 class TestKeyRecoveryText(unittest.TestCase):

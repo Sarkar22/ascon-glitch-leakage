@@ -63,10 +63,12 @@ VARIANTS = ("U", "N", "D", "DA")
 CAMPAIGN = {"U": "U_tvla", "N": "N_tvla", "D": "D_tvla", "DA": "DA_tvla"}
 EXTRA_CAMPAIGNS = {"N": "N_rvr"}                 # all-random rows: a cross-check of the charge
 KEY_RECOVERY_DATASET = {"U": "U_tvla", "N": "N_pooled", "D": "D_tvla", "DA": "DA_tvla"}
-VERDICT_NOTES = {         # %(l2)s: level 2's max|t| (cap-weighted) on the same rows
+VERDICT_NOTES = {         # level 2's max|t| on the same rows: %(l2)s cap-weighted, %(l2_worst)s worst weighting
     "D": "the SPICE node run confirms a net-level leak (docs/KILL_TEST.md, K6), and level 2 predicts max|t| "
-         "%(l2)s on the same rows; it does not show in the supply current at this count",
+         "%(l2)s (cap-weighted; %(l2_worst)s with the worst of three weightings) on the same rows; it does not "
+         "show in the supply current at this count",
 }
+L2_WEIGHTINGS = ("unweighted", "weighted", "weighted_rise")
 DFF = "dfxtp_1"
 VDD = 1.8
 
@@ -212,10 +214,14 @@ def verdict(summary, v):
         text = "leaks: max|t| %.1f at %s traces (above 4.5 from %s on)" % (
             t, format(n, ","), format(sp["stable_from"] or sp["first_above"], ","))
     else:
-        text = "no first-order leak detected: max|t| %.2f < 4.5 at %s traces; at this count TVLA detects " \
-               "a leak of %.2f x N's effect size or more" % (t, format(n, ","), tvla_detectable_fraction(summary, v))
+        text = "no first-order leak detected: max|t| %.2f < 4.5 at %s traces; at this count TVLA reaches " \
+               "|t| 4.5 on average for a leak of %.2f x N's effect size" % (
+                   t, format(n, ","), tvla_detectable_fraction(summary, v))
     if v in VERDICT_NOTES:
-        text += "; " + VERDICT_NOTES[v] % {"l2": "%.1f" % c["level2"]["weighted"]["final_max_abs_t"]}
+        l2 = c["level2"]
+        worst = max(l2[k]["final_max_abs_t"] for k in L2_WEIGHTINGS if k in l2)
+        text += "; " + VERDICT_NOTES[v] % {"l2": "%.1f" % l2["weighted"]["final_max_abs_t"],
+                                           "l2_worst": "%.1f" % worst}
     return {"max_abs_t": t, "traces": n, "leaks": bool(t > kt.THRESHOLD), "text": text}
 
 
@@ -309,8 +315,8 @@ COLUMNS = [
     ("window_ns", "SPICE window (ns)"), ("charge_rows", "Rows averaged"), ("q_window_fC", "Charge per window (fC)"),
     ("q_window_sem_fC", "Charge per window, std. error (fC)"),
     ("q_eval_fC", "Charge per evaluation (fC)"), ("e_eval_fJ", "Energy per evaluation (fJ)"),
-    ("energy_vs_N", "Energy vs N"), ("clk_pin_fJ", "CLK pins, not in SPICE (fJ/cycle)"),
-    ("e_total_fJ", "Energy incl. CLK pins (fJ)"), ("total_vs_N", "Total vs N"),
+    ("energy_vs_N", "Energy vs N (SPICE only)"), ("clk_pin_fJ", "CLK pins, not in SPICE (fJ/cycle)"),
+    ("e_total_fJ", "Energy incl. CLK pins (fJ)"), ("total_vs_N", "Total vs N (incl. CLK pins)"),
     ("q_window_all_random_class_rows_fC", "Check: charge per window over all random-class rows (fC)"),
     ("tvla_max_abs_t", "TVLA max|t|"), ("tvla_traces", "TVLA traces"),
     ("first_order_verdict", "First-order verdict"), ("key_recovery_order1", "Profiled key recovery, 1st order"),
@@ -427,7 +433,8 @@ def write(rows, meta):
              "`results/key_recovery/summary.json`. Pre-layout estimates; SPICE at sky130 tt, 1.8 V, 27 C, "
              "clock period 4 ns. All columns are also in `cost.csv`." % (meta["liberty"] or "absent"),
              "", "**Hardware**", ""] + table(hw) + ["", "**Energy** (SPICE supply charge of the DUT, all-random "
-                                                        "neighbourhoods; see below)", ""] + table(en)
+                                                        "neighbourhoods; the last three columns add the Liberty "
+                                                        "estimate of the CLK-pin charge; see below)", ""] + table(en)
     lines += ["", "**Security** (first order: the kill test's TVLA. Key recovery: `analysis/key_recovery.py`, no "
               "added noise, with the primary distinguisher, the Gaussian template; GE = mean rank of the correct "
               "2-bit key, 1.5 = random; the null is the same pipeline on permuted profiling labels):", ""]

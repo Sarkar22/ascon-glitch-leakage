@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
 """Build notebook/ascon_glitch_leakage.ipynb (cells without outputs) from the text below.
 
-The narrative lives here so that every number it quotes is filled in from the committed
-result files: a placeholder <<key>> in a markdown cell is replaced by nbdata.fmt_headline()[key]
-(read from results/kill_test/summary.json and results/probing/*.json). Re-run this script
+The narrative lives here so that the numbers it quotes from the committed result files are filled
+in from them: a placeholder <<key>> in a markdown cell is replaced by nbdata.fmt_headline()[key]
+(read from results/kill_test/summary.json, results/probing/*.json, results/key_recovery/ and
+results/cost/). A few numbers from the reviews in docs/reviews/ are fixed text. Re-run this script
 whenever the results change, then execute the notebook to refresh its saved outputs:
 
   python3 notebook/make_notebook.py
@@ -65,14 +66,17 @@ up within the <<DA_n>> traces we simulated.
 | Variant (same cells, same stimulus rows) | zero-delay model | glitch-extended probing (exact) | transistor-level SPICE, sky130 tt |
 |---|---|---|---|
 | **N**, naive DOM, no register barrier | secure: max\|t\| <<N_l1>> on the same <<N_n>> rows, below 4.5 up to <<l1_100k_n>> rows | <<N_probe_fail>> of <<N_nets>> nets insecure | **leaks**: max\|t\| **<<N_t>>** at <<N_n>> traces, above 4.5 from <<N_first>> on |
-| **D**, DOM with the barrier in the textbook place | secure (<<D_l1>>) | <<D_probe_fail>> nets insecure | leak confirmed on <<D_leaky_count>> nets; in the supply current <<D_t>> at <<D_n>> traces, although the timing-aware model predicts <<D_l2cap>>: **not seen** |
+| **D**, DOM with the barrier in the textbook place | secure (<<D_l1>>) | <<D_probe_fail>> nets insecure | leak confirmed on <<D_leaky_count>> nets; in the supply current <<D_t>> at <<D_n>> traces, although the timing-aware model predicts <<D_l2cap>> (cap-weighted; <<D_l2>> with the worst weighting): **not seen** |
 | **DA**, DOM with the barrier after the affine layer | secure (<<DA_l1>>) | <<DA_probe_fail>> nets insecure | **no first-order leak detected**: <<DA_t>> at <<DA_n>> traces |
 
 The threshold is \|t\| > 4.5 (fixed-vs-random TVLA). At <<DA_n>> traces, a leak <<DA_detect_frac_words>> as strong as N's would
 reach 4.5 on average, so DA's result rules out leaks of that size and larger, not every leak. A profiled attack on the same
-traces (§5, post hoc) reaches a success rate of <<kr_N_bits_sr>> on N's two key bits at <<kr_N_n>> traces per key and gets
-nothing from DA at first order. The fix costs <<cost_DA_area_vs_N_pct>> % more cell area and <<cost_DA_total_vs_N_pct>> % more energy per
-evaluation than N, and no extra randomness (§7). **Limits:** this is simulation of the
+traces (§5, post hoc) reaches a success rate of <<kr_N_bits_sr>> on N's two key bits at <<kr_N_n>> traces per key, with one
+point of interest per key bit, chosen after the default attack had missed key bit $x_2$ (default: success rate <<kr_N_sr>>).
+It finds no key in DA at first order: at <<kr_DA_n>> traces per key it would find a leak <<kr_DA_alpha_words>> as strong as N's, so
+TVLA is more sensitive. The fix costs <<cost_DA_area_vs_N_pct>> % more cell area and <<cost_DA_energy_vs_N_pct>> % more energy per
+evaluation in the simulated supply current than N (<<cost_DA_total_vs_N_pct>> % with an estimate of the flip-flops' clock-pin
+charge; both for pipelined use), and no extra randomness (§7). **Limits:** this is simulation of the
 pre-layout netlist at one corner (tt, 27 °C, 1.8 V), with an ideal supply and no measurement noise. It is not
 silicon. Section 8 lists every limit. Figure 1 shows the three SPICE t-curves.
 """)
@@ -140,13 +144,16 @@ row. N is secure in the zero-delay model (max\|t\| <<N_l1>>) but leaks in SPICE 
 sits in the evaluation, <<N_peak_ns>> ns after the clock edge. The nets whose own transitions carry it are nets
 that glitch-extended probing flags. Textbook DOM (D) still fails the probing check, because Ascon's affine layer
 sits between its input registers and its AND gates. Its net-level leak is visible in SPICE node voltages, but it
-does not show in the supply current at <<D_n>> traces, where the timing-aware model predicts max\|t\| <<D_l2cap>>.
-DA passes the probing check and shows no first-order leak at <<DA_n>> traces. A profiled template attack on the
-same traces, run after the kill test, recovers N's two key bits at first order (success rate <<kr_N_bits_sr>> at
-<<kr_N_n>> attack traces per key) once one point of interest is chosen per key bit, and gives no first-order key
-recovery on D or DA. The fix costs <<cost_DA_area_vs_N_pct>> % more cell area and <<cost_DA_total_vs_N_pct>> % more energy per
-evaluation than N, and no extra randomness. Every step uses open tools and an open PDK, and every number in this
-text is read from a committed result file or review.
+does not show in the supply current at <<D_n>> traces, where the timing-aware model predicts max\|t\| <<D_l2cap>>
+(cap-weighted; <<D_l2>> with the worst of three weightings). DA passes the probing check and shows no first-order leak at
+<<DA_n>> traces. A profiled template attack on the same traces, run after the kill test, recovers N's two key bits at
+first order (success rate <<kr_N_bits_sr>> at <<kr_N_n>> attack traces per key) once one point of interest is chosen per
+key bit; that choice was made after the default attack had missed one key bit (default success rate <<kr_N_sr>>). It
+finds no first-order key in D or DA, where it would detect a leak <<kr_alpha_range>> times as strong as N's (TVLA: about
+<<DA_detect_frac_of_N>>). The fix costs <<cost_DA_area_vs_N_pct>> % more cell area and <<cost_DA_energy_vs_N_pct>> % more energy per
+evaluation in the simulated supply current than N (<<cost_DA_total_vs_N_pct>> % with an estimate of the flip-flops' clock-pin
+charge; both for pipelined use), and no extra randomness. Every step uses open tools and an open PDK, and every
+number in this text is read from a committed result file or review.
 """)
 
 md(r"""
@@ -171,7 +178,7 @@ md(r"""
 
 | Path | What runs | Time (estimate) |
 |---|---|---|
-| **Cached** (default; also what CI runs) | Reads the notebook's data set (`data/`, CSV plus one JSON, listed with hashes in `data/MANIFEST.csv`) and draws every figure, table and the explorer | under 1 min |
+| **Cached** (default; also what CI runs) | Reads the notebook's data set (`data/`, CSV files and a few JSON summaries, listed with hashes in `data/MANIFEST.csv`) and draws every figure, table and the explorer | under 1 min |
 | **Live** (Colab or any Linux with the setup helper) | Also installs ngspice and the sky130 PDK, regenerates the netlists, re-runs the probing check and the level-1/2 models, re-derives the animation, and simulates a few clock cycles of N in ngspice | TODO(setup): measure; target 10 min |
 | **Full reproduction** (outside the notebook) | All SPICE campaigns of §4, with the commands in `docs/KILL_TEST.md` ("Reproduce"); then the key recovery of §5 (`analysis/key_recovery.py`) and the cost table of §7 (`analysis/cost_table.py`) | <<spice_wall_h>> h of wall clock for the first run (10 ngspice processes on one laptop), plus about 18 h on 6 CPUs to extend DA and D to 20,000 rows; the key recovery about 25 min with 3 processes |
 
@@ -391,14 +398,15 @@ and before the first SPICE campaign:
 **A1** adds DA, because the probing check showed that D, as registered, is not robust to glitches.
 **A2** fixes the CPA hypothesis of K1. **A3** sets the trace budgets. The order of events is reconstructed in
 `docs/reviews/repro-code.md` from the file history and the SPICE job log. The repository's first commit came after
-the campaigns, so git alone does not timestamp the pre-registration. Three adversarial reviews (`docs/reviews/`)
-tried to refute the results. Their corrections are applied in this text.
+the campaigns, so git alone does not timestamp the pre-registration. Adversarial reviews (`docs/reviews/`, one file
+each) tried to refute the results. Their corrections are applied in this text.
 
 By the letter of the registered rule the outcome was **NO-GO**. **K1 failed on its CPA part:** a one-column CPA with two
 key bits and four nonce values cannot separate the key guesses (ranks <<K1_cpa_ranks>>). The unmasked traces do
 carry data (TVLA <<U_t>>); the design of the check could not separate the keys. §5 answers K1's question post hoc with
-a profiled attack, but K1 stays failed as registered. The author chose to continue on the strength of K2, K3, K5 and
-the controls. The table is generated from `summary.json`.
+a profiled attack, but K1 stays failed as registered. The author chose to continue on the strength of K2, K3, the
+controls (C) and the localization of §4.3. K5 was still incomplete at that point; it passed later, at <<DA_n>> traces. The
+table is generated from `summary.json`.
 """)
 
 code(r"""
@@ -535,8 +543,12 @@ md(r"""
 Moving the input affine layer in front of the input registers (DA) gives the ANDs independent inputs. The same
 DOM barrier then does its job. In the probing check, DA has **<<DA_probe_fail>> insecure nets**. In SPICE, **max\|t\| is
 <<DA_t>> at <<DA_n>> traces** (at most <<DA_tmax_cp>> at any checkpoint; Figures 1 and 3), and level 2 agrees
-(<<DA_l2>>). At this count TVLA would reach 4.5 on average for a leak $\delta \ge <<DA_detect_sd>>$ standard deviations. That is
-<<DA_detect_frac_words>> of N's $\delta_N = <<dN_sd>>$, so DA rules out leaks of that size and larger. The second-order
+(<<DA_l2>>, worst of three weightings). At this count TVLA would reach 4.5 on average for a leak $\delta \ge <<DA_detect_sd>>$ standard deviations. That is
+<<DA_detect_frac_words>> of N's $\delta_N = <<dN_sd>>$, so DA rules out leaks of that size and larger. D and DA end at the same
+max\|t\| at the same sample (<<DA_peak_ns>> ns, in the first cycle's clock-fall region), and their t-curves differ by at most
+<<DDA_tdiff_near_peak>> within 30 ps of it. The likely source is circuitry that D and DA share, driven by the same stimulus rows,
+for example the registers of the input bits that the affine layer leaves unchanged; this was not checked at the net
+level. If so, the two maxima are one observation, not two. The second-order
 t is large (<<DA_t2>>), as expected for two-share masking: first-order masking protects the mean, not the
 variance. §7 prices the fix.
 """)
@@ -556,7 +568,7 @@ md(r"""
 * **Level 1 gets the energy right and the security wrong.** Its per-trace charge correlates with SPICE at
   0.87–0.98, better than level 2, yet it misses N's leak entirely (§4.1).
 * **Level 2 flags N and names the right nets** (§4.3). **It does not reproduce the leak's waveform, sign or
-  timing**, and its per-sample \|t\| is not a prediction of SPICE's: its <<N_l2cap>> against SPICE's <<N_t>> is a
+  timing**, and its per-sample \|t\| is not a prediction of SPICE's: its <<N_l2cap>> (cap-weighted) against SPICE's <<N_t>> is a
   coincidence. Figure 7 shows why. SPICE's t is a smooth positive hump; level 2's alternates in sign.
 * **Level 2 and the pre-layout SPICE disagree by about 200 ps.** A large part of that comes from the SPICE cell
   netlists, which have no parasitics and switch faster than their Liberty characterization (clock-to-Q
@@ -576,7 +588,9 @@ md(r"""
 A real measurement adds noise and low-pass filters the current. **Figure 8** adds white Gaussian noise to the SPICE
 traces, at 0.5, 1 and 2 times the largest per-sample standard deviation of the noiseless traces (1x = <<N_noise_unit>> µA
 for N). N stays detectable within <<N_n>> traces at 0.5x (above 4.5 from <<N_stable_noise0.5>> on) and at 1x (from
-<<N_stable_noise1.0>> on), but not at 2x (<<N_t_noise2.0>>). DA stays below 4.5 at every noise level. Bandwidth, on the
+<<N_stable_noise1.0>> on), but not at 2x (<<N_t_noise2.0>>). DA ends below 4.5 at every noise level, and never stays above it:
+at 1x it touches <<DA_noise1.0_tmax_cp>> at an early checkpoint (above 4.5 first at <<DA_noise1.0_first>> traces; D reaches
+<<D_noise1.0_tmax_cp>>) and falls back. These are the small-sample false alarms that `docs/KILL_TEST.md` explains. Bandwidth, on the
 noiseless N traces: <<N_t100>> in 100 ps bins, 10.6 in 1 ns bins, 9.5 after a 1 GHz first-order low-pass and 5.5 after
 250 MHz (`docs/reviews/spice-circuit.md`, check 19). So the leak does not depend on a 10 ps probe.
 """)
@@ -631,8 +645,11 @@ attack traces (`analysis/key_recovery.py`).
 P(rank 0); random is 0.25.
 
 **Distinguishers.**
-* The **Gaussian template** is the primary one. Its points of interest (POIs) are the samples where the 32 input
-  means differ most (ANOVA F); their number is chosen by cross-validation on the profiling rows.
+* The **Gaussian template** is the primary one. It was made primary after a review
+  (`docs/reviews/stage2-key-recovery.md`, B2), for the structural reason given in the third point; on D and DA both
+  distinguishers are at chance at first order, so no verdict there depends on that choice. Its points of interest
+  (POIs) are the samples where the 32 input means differ most (ANOVA F); their number is chosen by cross-validation on
+  the profiling rows.
 * The same template with **per-key-bit POIs**: the top-F sample plus, for each key bit, the sample where that bit's
   effect *inside every combination of the other four bits* is largest. It was added post hoc, after a review found
   that the default POIs miss one of N's key bits (`docs/reviews/stage2-key-recovery.md`, B1).
@@ -640,12 +657,15 @@ P(rank 0); random is 0.25.
   removes exactly the level shift between keys that a key bit's main effect produces.
 
 **Null.** The same pipeline with the profiling labels permuted gives the null distribution (<<kr_perms>> draws per
-configuration without added noise; standard deviation of the final GE <<kr_null_sd_range>>). A result is better than
+configuration without added noise). Without added noise, the standard deviation of the null's final GE is
+<<kr_null_sd_range>> for the default template and <<kr_null_sd_range_bits>> for the per-key-bit template on U, N, D and DA
+(TVLA campaigns), and <<kr_Ucpa_null_sd>> for U on the K1 CPA traces, which have only four keys. A result is better than
 chance when its GE falls below the null draws: $p$ = (1 + draws at or below the result) / (draws + 1), so with 20
 draws $p$ = 0.048 means below every draw.
 
 **Figure 10.** GE of the Gaussian template against the number of attack traces per key, from
-`data/key_recovery__summary.json`. Gray: the null (mean ± 2 SD). The table below the figure lists the final values.
+`data/key_recovery__summary.json`. Gray: the null (mean ± 2 SD). The table below the figure lists the final values. Its
+null column is the default template's; the per-key-bit template has its own null (N: <<kr_N_bits_null>> ± <<kr_N_bits_null_sd>>).
 """)
 
 code(r"""
@@ -753,8 +773,9 @@ md(r"""
   registers; in a round-based core they merge into the previous round's linear layer.
 * **Randomness.** N, D and DA all use <<cost_DA_fresh_random_bits>> fresh random bits per S-box evaluation. The fix
   costs no extra randomness.
-* **What the cost buys** (§4, §5): N leaks at first order and gives up its key; DA shows no first-order leak at
-  <<DA_n>> traces and no first-order key recovery.
+* **What the cost buys** (§4, §5): N leaks at first order and gives up its key (with the post hoc per-key-bit points
+  of interest); DA shows no first-order leak at <<DA_n>> traces and no first-order key recovery, down to a leak
+  <<kr_DA_alpha_words>> as strong as N's (§5). TVLA on the same traces is more sensitive: it excludes a leak <<DA_detect_frac_words>> as strong (§4.5).
 """)
 
 # ================================================================= 8 limitations
@@ -798,9 +819,12 @@ An exact glitch-extended probing check that runs in seconds finds the problem in
 carry it. It also shows that DOM's register barrier must sit *after* Ascon's input affine layer: textbook
 placement (D) keeps a net-level leak, and the corrected placement (DA) shows no first-order leak at <<DA_n>>
 traces. D's net-level leak does not show in the supply current at <<D_n>> traces, although the timing-aware model
-predicts it. A profiled attack on the same traces recovers N's two key bits at first order and gets nothing from D or
-DA at first order. The corrected barrier costs <<cost_DA_area_vs_N_pct>> % more cell area, <<cost_DA_total_vs_N_pct>> % more energy per
-evaluation and <<cost_DA_latency_vs_N_pct>> % more latency in time than N, and no extra randomness. A designer can take
+predicts it. A profiled attack on the same traces recovers N's two key bits at first order (with points of interest
+chosen post hoc) and finds no first-order key in D or DA, where it would detect a leak <<kr_alpha_range>> times as strong as
+N's. TVLA on the same traces is more sensitive (about <<DA_detect_frac_of_N>>), so for D and DA the attack adds no evidence
+beyond it (§5). The corrected barrier costs <<cost_DA_area_vs_N_pct>> % more cell area, <<cost_DA_energy_vs_N_pct>> % more energy per
+evaluation in the simulated supply current (<<cost_DA_total_vs_N_pct>> % with the estimated clock-pin charge; pipelined use)
+and <<cost_DA_latency_vs_N_pct>> % more latency in time than N, and no extra randomness. A designer can take
 three things from this: a *method* (probing check, then timing-aware screening, then SPICE on the same netlist), a
 concrete *design rule* for masked Ascon datapaths, and an honest account of how far each cheap model can be trusted.
 
@@ -854,7 +878,7 @@ md(r"""
 
 md(r"""
 ---
-**Reproducibility and data.** Every file behind the figures is CSV (plus one JSON) in `data/`, with its size,
+**Reproducibility and data.** Every file behind the figures is in `data/` (CSV, plus a few JSON summaries), with its size,
 SHA-256, source and meaning in `data/MANIFEST.csv`; units are in the column names (µA, ns, fF, fC). The animation's
 events are in `media/glitch_events.json`. The netlist generator, models, SPICE runner and analysis are in the
 project repository (`gen/`, `model/`, `sim/`, `analysis/`), and the pre-registration and reviews are in `docs/`.

@@ -147,8 +147,17 @@ class TestCaches(unittest.TestCase):
     def test_headline_values(self):
         h = nbdata.fmt_headline()
         for k in ("N_t", "D_t", "DA_t", "N_n", "DA_n", "DA_detect_frac_words", "N_probe_fail", "kr_N_bits_sr",
-                  "kr_DA_alpha", "cost_DA_area_vs_N_pct"):
+                  "kr_DA_alpha", "kr_DA_alpha_words", "kr_alpha_range", "kr_null_sd_range_bits",
+                  "cost_DA_area_vs_N_pct", "cost_DA_energy_vs_N_pct", "DDA_tdiff_near_peak"):
             self.assertIn(k, h)
+
+    def test_d_and_da_share_their_peak(self):
+        """Section 4.5 says D and DA end at the same max|t| at the same sample; hold it to the data."""
+        h = nbdata.headline()
+        self.assertTrue(h["DDA_same_peak"])
+        self.assertEqual(h["D_peak_ns"], h["DA_peak_ns"])
+        self.assertAlmostEqual(h["D_t"], h["DA_t"], delta=0.005)
+        self.assertLess(h["DDA_tdiff_near_peak"], 0.05)
 
     def test_key_recovery_and_cost_copies_are_current(self):
         """In the repository, data/ must hold the current key-recovery summary and cost table
