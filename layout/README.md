@@ -13,7 +13,7 @@ The post-layout TVLA campaigns are queued by `runs/pex/queue.sh`.
 bash layout/run_flow.sh N        # OpenLane v1 (then DA, U; one at a time)
 bash layout/run_pex.sh N         # Magic extraction -> build/N_pex/{dut.sp,ports.json,graph.json}
 bash layout/run_klayout.sh N     # KLayout DRC (PDK deck) + results/layout/N_{layout,routing}.png
-bash sim/docker_run.sh python3 layout/plot_placement.py N DA U   # results/layout/<V>_placement.png
+bash sim/docker_run.sh python3 layout/plot_placement.py N DA U   # results/layout/<V>_placement.png, placement_<V>.csv
 python3 layout/summarize.py      # results/layout/summary.json and table.md (the table below)
 python3 -m unittest layout/test_layout.py
 ```
@@ -69,10 +69,12 @@ Timing is the tt corner from OpenROAD with the extracted SPEF. The only max-fano
 the CTS leaf buffers (clkbuf_16 driving 12-13 flip-flops against a limit of 10), which is harmless
 for a clkbuf_16. KLayout's XOR of the Magic and KLayout GDS streams shows no difference.
 
-Images for the notebook, in `results/layout/`: `<V>_layout.png` (all drawn layers, PDK colours),
+Images in `results/layout/`: `<V>_layout.png` (all drawn layers, PDK colours),
 `<V>_routing.png` (li1 and metals, vias and pins only), `<V>_placement.png` (each cell coloured by
 the share domain of the net it drives; hatched = output net flagged by glitch-extended probing;
-N's cross-domain ANDs sit between the share-0 and share-1 halves).
+N's cross-domain ANDs sit between the share-0 and share-1 halves). The same placement as data is
+in `placement_<V>.csv`, which the notebook draws; the notebook shows small copies of the layout
+renders (`notebook/make_layout_media.py`).
 
 ## Extraction (`layout/pex/extract.tcl`, `layout/make_pex.py`)
 
@@ -91,9 +93,11 @@ N's cross-domain ANDs sit between the share-0 and share-1 halves).
   netlist).
 - The extracted netlist uses `sky130_fd_pr` devices directly; the runner's
   `.lib sky130.lib.spice tt` defines them (with `.option scale=1.0u`, matching Magic's micron units).
-- What changes against the pre-layout netlist: the logic nets carry 2.2x the estimated capacitance
-  (and the cells' internal wiring and junctions, which the stock cell netlists lack), coupling
-  between nets, and the clock tree (3-5 clkbuf_16) now draws its current from the DUT supply.
+- What changes against the pre-layout netlist: the routed wiring alone (OpenRCX SPEF) totals
+  179 fF on N's logic nets, the same as the 178 fF estimate; with the cells' own pin geometry,
+  which the stock cell netlists lack, Magic extracts 392 fF (2.2x; DA: estimate 223, routed 233, Magic 498 fF;
+  `results/pex/summary_postlayout.json` `capacitance_views`). The layouts add coupling between
+  nets, and the clock tree (3-5 clkbuf_16) now draws its current from the DUT supply.
   Decap MOS capacitors sit between VPWR and VGND; with the testbench's ideal supply they carry
   only a constant current (dropping them changed the traces by < 0.001 uA, `--drop-supply-devices`),
   but they are kept.
@@ -102,7 +106,11 @@ N's cross-domain ANDs sit between the share-0 and share-1 halves).
 
 ## Validation (`layout/validate_pex.py`, `results/pex/sanity_<V>.json`)
 
-First 120 rows of `runs/kt/stim/M_tvla.npy`, compared with the pre-layout campaigns on the same rows:
+First 120 rows of `runs/kt/stim/M_tvla.npy`, compared with the pre-layout campaigns on the same rows.
+These sanity files and `results/pex/bench.json` were made from an earlier text of the same
+extraction (N `672d8809`, DA `f2984d22`); the campaigns ran the current text (N `b1999858`, DA
+`8517658f`). On rows 0-119 the two give the same traces to within 4.5 uA per bin and a
+data-dependent correlation of 0.9999997 or better (`docs/POSTLAYOUT.md`, Results):
 
 | | N | DA |
 |---|---|---|

@@ -6,10 +6,14 @@
 Reads the final DEF (runs/pex/ol/<V>/runs/pex/results/final/def/dut_<V>.def), the cell sizes from
 the PDK LEF ($PDK/libs.ref/sky130_fd_sc_h{d,d}/lef), the net domains of build/<V>/graph.json (s0,
 s1, r, cross = the cross-domain DOM products, x = unmasked) and, if present, the nets flagged by the
-glitch-extended probing model (results/probing/<V>.json). Writes results/layout/<V>_placement.png.
+glitch-extended probing model (results/probing/<V>.json). Writes results/layout/<V>_placement.png and
+the same placement as data, results/layout/placement_<V>.csv (one row per placed cell: instance, cell
+type, lower-left corner and size in um, kind = logic / clock / physical, output-net domain and net,
+flagged = 1 if glitch-extended probing flags that net), from which the notebook draws it.
 Colour = domain of the cell's output net; hatching = that net is flagged by glitch-extended
 probing; dark grey = clock-tree buffers; light grey = tap, decap and fill cells.
 """
+import csv
 import json
 import os
 import re
@@ -92,22 +96,29 @@ def plot(v, sizes, ax):
     dom = output_domains(v)
     flag = flagged(v)
     used = set()
+    rows = []
     for name, cell, x, y in comps:
         w, h = sizes.get(cell, (0.46, 2.72))
         hatch = None
+        d, net = "", ""
         if name in dom:
             d, net = dom[name]
             face = DOMAIN[d][0]
             used.add(d)
+            kind = "logic"
             if net in flag:
                 hatch = "////"
                 used.add("flagged")
         elif "clkbuf" in cell:
             face = CLOCK
             used.add("clock")
+            kind = "clock"
         else:
             face = PHYSICAL
             used.add("physical")
+            kind = "physical"
+        rows.append([name, cell.replace("sky130_fd_sc_hd__", "").replace("sky130_ef_sc_hd__", ""),
+                     "%.3f" % x, "%.3f" % y, "%.3f" % w, "%.3f" % h, kind, d, net, int(net in flag)])
         ax.add_patch(Rectangle((x, y), w, h, facecolor=face, edgecolor=SURFACE, linewidth=0.6,
                                hatch=hatch))
     ax.add_patch(Rectangle((die[0], die[1]), die[2] - die[0], die[3] - die[1], fill=False,
@@ -120,7 +131,7 @@ def plot(v, sizes, ax):
     ax.tick_params(colors=INK2, labelsize=8)
     for s in ax.spines.values():
         s.set_visible(False)
-    return used, die
+    return used, die, rows
 
 
 def main(argv=None):
@@ -133,7 +144,11 @@ def main(argv=None):
     for v in vs:
         fig, ax = plt.subplots(figsize=(6.4, 6.0), facecolor=SURFACE)
         ax.set_facecolor(SURFACE)
-        used, die = plot(v, sizes, ax)
+        used, die, rows = plot(v, sizes, ax)
+        with open(os.path.join(out_dir, "placement_%s.csv" % v), "w", newline="") as f:
+            w = csv.writer(f, lineterminator="\n")
+            w.writerow(["instance", "cell", "x_um", "y_um", "w_um", "h_um", "kind", "domain", "output_net", "flagged"])
+            w.writerows(rows)
         handles = [Patch(facecolor=DOMAIN[d][0], edgecolor=SURFACE, label=DOMAIN[d][1])
                    for d in ("s0", "s1", "r", "cross", "x") if d in used]
         if "flagged" in used:

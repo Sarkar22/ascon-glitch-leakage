@@ -458,6 +458,239 @@ def key_recovery_table():
     return "\n".join(rows)
 
 
+# ---------------------------------------------------------------- layout and post-layout (section 6)
+
+POST, PRE = LEVEL["spice"], COLORS["muted"]      # post-layout SPICE blue; the pre-layout reference in gray
+PEX_TITLE = {"N": "N, naive DOM", "DA": "DA, DOM + barrier after the affine layer"}
+
+
+def _media(name):
+    import os
+    return os.path.join(nbdata.HERE, "media", name)
+
+
+def layout_table():
+    """Markdown table: the layouts and their sign-off (results/layout/summary.json) and the
+    logic nets' capacitance in three views (results/pex/summary_postlayout.json)."""
+    lay = nbdata.layout()
+    pl = nbdata.postlayout()
+    cv = pl["capacitance_views"]
+    vs = ("N", "DA", "U")
+    usual = ("clock_buffer", "tap", "decap", "fill")
+
+    def row(label, f):
+        return "| %s | %s |" % (label, " | ".join(f(lay[v], v) for v in vs))
+
+    def cat(L, k):
+        return L["cells_final_by_category"].get(k, 0)
+
+    def other(L):
+        return sum(n for k, d in L["final_vs_generator"]["added_instances"].items() if k not in usual
+                   for n in d.values())
+    camp = {"N": "N_pex", "DA": "DA_pex"}
+    rows = ["| | N | DA | U |", "|---|---|---|---|",
+            row("die (um)", lambda L, v: "%.1f x %.1f" % tuple(L["die_um"])),
+            row("core area (um^2)", lambda L, v: "{:,}".format(round(L["core_area_um2"]))),
+            row("placement utilisation", lambda L, v: "%.1f %%" % L["placement_utilisation_pct"]),
+            row("logic cells: generator / final, types and pins unchanged",
+                lambda L, v: "%d / %d, %s" % (L["cells_generator"], cat(L, "logic"),
+                                              "yes" if L["final_vs_generator"]["logic_unchanged"] else "**no**")),
+            row("clock-tree buffers added",
+                lambda L, v: "%d x clkbuf_16" % sum(L["clock_tree"]["buffers"].values())),
+            row("other cells added (buffers, resizing, diodes)", lambda L, v: str(other(L))),
+            row("tap / decap / fill cells",
+                lambda L, v: "%d / %d / %d" % (cat(L, "tap"), cat(L, "decap"), cat(L, "fill"))),
+            row("setup / hold worst slack at 4 ns, tt (ns)",
+                lambda L, v: "%.2f / %.2f" % (L["timing_tt_ns"]["setup_worst_slack"],
+                                              L["timing_tt_ns"]["hold_worst_slack"])),
+            row("DRC: router / Magic / KLayout",
+                lambda L, v: "%d / %d / %d" % (L["drc_router"], L["drc_magic"], L["drc_klayout"])),
+            row("LVS (netgen)",
+                lambda L, v: "clean" if L["lvs"].startswith("Circuits match") else "**" + L["lvs"] + "**"),
+            row("antenna violations (pins / nets)",
+                lambda L, v: "%d / %d" % (L["antenna_pin_violations"], L["antenna_net_violations"])),
+            row("extracted transistors", lambda L, v: "{:,}".format(L["pex"]["n_devices"])),
+            row("logic-net capacitance (fF): pre-layout estimate / routed wiring (OpenRCX) / Magic flat",
+                lambda L, v: "%.0f / %.0f / %.0f" % (cv[v]["prelayout_estimate_fF"], cv[v]["openrcx_routed_wiring_fF"],
+                                                     cv[v]["magic_flat_fF"])),
+            row("coupling between share-0 and share-1 nets (fF)",
+                lambda L, v: "%.1f" % L["pex"]["coupling_between_named_nets_by_domain"]["s0-s1"]["fF"]
+                if "s0-s1" in L["pex"]["coupling_between_named_nets_by_domain"] else "-"),
+            row("post-layout SPICE campaign",
+                lambda L, v: ("{:,} rows".format(pl["campaigns"][camp[v]]["rows_simulated"]) if v in camp
+                              else "not simulated"))]
+    return "\n".join(rows)
+
+
+PLACE_COLOR = {"s0": COLORS["series1"], "s1": COLORS["series2"], "r": COLORS["series3"], "cross": "#262625",
+               "x": COLORS["series1"], "clock": "#8f8e89", "physical": "#e4e3df"}
+PLACE_LABEL = [("s0", "share 0"), ("s1", "share 1"), ("r", "fresh random bits r"),
+               ("cross", "cross-domain AND (a0 b1, a1 b0)"), ("clock", "clock-tree buffer"),
+               ("physical", "tap / decap / fill")]
+
+
+def _placement(ax, v, lim):
+    """Placed cells of variant v in um, coloured by the domain of the net each cell drives;
+    hatched: that net is flagged by glitch-extended probing (data/layout__placement_<V>.csv)."""
+    from matplotlib.patches import Rectangle
+    import matplotlib.pyplot as plt
+    plt.rcParams["hatch.color"] = COLORS["surface"]
+    plt.rcParams["hatch.linewidth"] = 1.0
+    die = nbdata.layout()[v]["die_um"]
+    for c in nbdata.placement(v):
+        key = c["domain"] if c["kind"] == "logic" else c["kind"]
+        ax.add_patch(Rectangle((c["x_um"], c["y_um"]), c["w_um"], c["h_um"], facecolor=PLACE_COLOR[key],
+                               edgecolor=COLORS["surface"], linewidth=0.5, hatch="////" if c["flagged"] else None))
+    ax.add_patch(Rectangle((0, 0), die[0], die[1], fill=False, edgecolor=COLORS["ink2"], linewidth=0.8))
+    ax.set_xlim(-1, lim)
+    ax.set_ylim(-1, lim)
+    ax.set_aspect("equal")
+    ax.grid(False)
+    ax.set_xlabel("x (um)")
+
+
+def layout_figure():
+    """Top: the N and DA layouts (KLayout renders of all drawn layers, media/layout_<V>.png, each
+    scaled to its own die). Bottom: their placements drawn from data on one um scale, each logic
+    cell coloured by the share domain of the net it drives."""
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Patch
+    style()
+    lay = nbdata.layout()
+    fig, axs = plt.subplots(2, 2, figsize=(9.6, 9.4), gridspec_kw={"height_ratios": [1, 1]})
+    lim = max(max(lay[v]["die_um"]) for v in ("N", "DA")) + 1
+    for k, v in enumerate(("N", "DA")):
+        L = lay[v]
+        ax = axs[0, k]
+        ax.imshow(plt.imread(_media("layout_%s.png" % v)), interpolation="nearest")
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.grid(False)
+        for sp in ax.spines.values():
+            sp.set_visible(False)
+        ax.set_title("%s layout: %.1f x %.1f um" % (v, L["die_um"][0], L["die_um"][1]), loc="left", fontsize=9.5)
+        _placement(axs[1, k], v, lim)
+        axs[1, k].set_title("%s placement: %d logic cells, %d clock buffers"
+                            % (v, L["cells_final_by_category"]["logic"], sum(L["clock_tree"]["buffers"].values())),
+                            loc="left", fontsize=9.5)
+    axs[1, 0].set_ylabel("y (um)")
+    handles = [Patch(facecolor=PLACE_COLOR[k], edgecolor=COLORS["surface"], label=t) for k, t in PLACE_LABEL]
+    handles.insert(4, Patch(facecolor=COLORS["ink2"], edgecolor=COLORS["surface"], hatch="////",
+                            label="drives a net flagged by glitch-extended probing"))
+    fig.legend(handles=handles, loc="lower center", ncol=4, fontsize=7.5, bbox_to_anchor=(0.5, -0.01))
+    fig.tight_layout(rect=(0, 0.05, 1, 1))
+    return fig
+
+
+def postlayout_table():
+    """Markdown table: the registered post-layout criteria (docs/POSTLAYOUT.md) and their outcome,
+    with the pre-layout value on the same rows."""
+    pl = nbdata.postlayout()
+    c, cr = pl["campaigns"], pl["criteria"]
+
+    def ok(b):
+        return "**pass**" if b else "**fail**"
+    n, da = c["N_pex"], c["DA_pex"]
+    sn, sd = n["spice"], da["spice"]
+    pn, pd = n["pre_layout_same_rows"], da["pre_layout_same_rows"]
+    span = n["peaks"]["first_last_sample_above_threshold_ns"]
+    rows = ["| Id | Registered criterion | Traces | Post-layout (extracted netlist) | Pre-layout, same rows | Result |",
+            "|---|---|---|---|---|---|",
+            "| PL1 | N: max\\|t\\| > 4.5, the leak survives place and route | %s | "
+            "%.2f at %.3f ns, above 4.5 from %s on | "
+            "%.2f at %.3f ns, above 4.5 from %s on | %s |"
+            % ("{:,}".format(n["rows_analysed"]), sn["final_max_abs_t"], sn["final_peak_ns_after_edge"],
+               "{:,}".format(sn["stable_from"]) if sn["stable_from"] else "never", pn["final_max_abs_t"],
+               pn["final_peak_ns_after_edge"], "{:,}".format(pn["stable_from"]) if pn["stable_from"] else "never",
+               ok(cr["PL1"]["pass"])),
+            "| PL2 | DA: max\\|t\\| < 4.5, the fix survives place and route | %s | %.2f, never above 4.5 (at most "
+            "%.2f at any checkpoint) | %.2f | %s |"
+            % ("{:,}".format(da["rows_analysed"]), sd["final_max_abs_t"], max(sd["max_abs_t"]), pd["final_max_abs_t"],
+               ok(cr["PL2"]["pass"])),
+            "| PL3 | Where the t-peaks sit; the smallest leak TVLA could detect in DA (informational) | - | "
+            "N: all %d samples above 4.5 in %.3f-%.3f ns (evaluation part; clock fall %.2f, input edges %.2f). "
+            "DA: no sample above 4.5. TVLA at %s traces reaches 4.5 on average for %.2f x N's post-layout effect | "
+            "N: %.3f-%.3f ns | informational |"
+            % (n["peaks"]["samples_above_threshold"], span[0], span[1],
+               sn["max_abs_t_by_region"]["clock_fall"], sn["max_abs_t_by_region"]["input_edges"],
+               "{:,}".format(da["rows_analysed"]), cr["PL3"]["DA_pex_detectable_fraction_of_N_pex"],
+               *pn["first_last_sample_above_threshold_ns"])]
+    return "\n".join(rows)
+
+
+def postlayout_tcurves():
+    """Signed Welch t against time, post-layout vs pre-layout on the same rows, N and DA."""
+    import matplotlib.pyplot as plt
+    style()
+    pl = nbdata.postlayout()
+    fig, axs = plt.subplots(2, 1, figsize=(9.5, 5.6))
+    for ax, v in zip(axs, ("N", "DA")):
+        e = pl["campaigns"][v + "_pex"]
+        d = nbdata.read_step_csv("pex", "tcurve_%s_pex" % v)
+        x = d["ns_after_edge"]
+        ax.plot(x, d["t_pre_layout_same_rows"], color=PRE, lw=0.9,
+                label="pre-layout, same rows (max|t| %.2f)" % e["pre_layout_same_rows"]["final_max_abs_t"])
+        ax.plot(x, d["t_post_layout"], color=POST, lw=1.4,
+                label="post-layout, C-only extraction (max|t| %.2f)" % e["spice"]["final_max_abs_t"])
+        _threshold(ax, both=True, label=False)
+        ax.set_xlim(x[0], x[-1] + 0.005)
+        ax.set_ylabel("Welch t (signed)")
+        ax.set_title("%s: %s traces" % (PEX_TITLE[v], "{:,}".format(e["rows_analysed"])), loc="left", fontsize=9.5)
+        ax.legend(loc="lower right", fontsize=7.5)
+    axs[-1].set_xlabel("ns after the capturing clock edge at the block's CLK pin (DA: second edge at 4 ns)")
+    fig.tight_layout()
+    return fig
+
+
+def postlayout_maxt():
+    """max|t| against the number of traces, post-layout vs pre-layout on the same rows, with the
+    growth a leak as strong as N's post-layout one would follow (t = d sqrt(n) / 2)."""
+    import matplotlib.pyplot as plt
+    style()
+    pl = nbdata.postlayout()
+    d_n = pl["criteria"]["PL3"]["N_pex_effect_sd"]
+    fig, axs = plt.subplots(1, 2, figsize=(9.5, 3.2), sharey=True)
+    for ax, v in zip(axs, ("N", "DA")):
+        d = nbdata.read_step_csv("pex", "maxt_vs_traces_%s_pex" % v)
+        n = d["traces"]
+        ax.plot(n, d_n * np.sqrt(n) / 2, color=COLORS["muted"], lw=1, ls=(0, (1, 2)),
+                label="a leak as strong as N's post-layout one")
+        ax.plot(n, d["pre_layout_same_rows"], color=PRE, lw=1.0, label="pre-layout, same rows")
+        ax.plot(n, d["post_layout"], color=POST, lw=1.8, label="post-layout")
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        ax.set_ylim(0.1, 30)
+        ax.set_xlim(20, 12000)
+        _threshold(ax, label=False)
+        ax.set_title(PEX_TITLE[v], loc="left", fontsize=9.5)
+        ax.set_xlabel("traces")
+    axs[0].set_ylabel("max |t| over the window")
+    axs[0].legend(loc="upper left", fontsize=7.5)
+    fig.tight_layout()
+    return fig
+
+
+def postlayout_cost_table():
+    """Markdown table: area after place and route and energy per evaluation before and after
+    layout, N and DA, on the same rows (the cost table's energy definition)."""
+    lay = nbdata.layout()
+    pl = nbdata.postlayout()
+    e = {v: pl["campaigns"][v + "_pex"]["energy_per_evaluation"] for v in ("N", "DA")}
+
+    def r(label, a, b, digits=0):
+        return "| %s | %s | %s | %.2f |" % (label, "{:,.{d}f}".format(a, d=digits), "{:,.{d}f}".format(b, d=digits),
+                                            b / a)
+    rows = ["| | N | DA | DA vs N |", "|---|---|---|---|",
+            r("core area after place and route, 40 % core utilisation (um^2)", lay["N"]["core_area_um2"],
+              lay["DA"]["core_area_um2"]),
+            r("die area after place and route (um^2)", lay["N"]["die_area_um2"], lay["DA"]["die_area_um2"]),
+            r("energy per evaluation, **pre-layout** SPICE, same rows (fJ)",
+              e["N"]["pre_layout_same_rows"]["e_eval_fJ"], e["DA"]["pre_layout_same_rows"]["e_eval_fJ"]),
+            r("energy per evaluation, **post-layout** SPICE, incl. clock tree and CLK pins (fJ)",
+              e["N"]["post_layout"]["e_eval_fJ"], e["DA"]["post_layout"]["e_eval_fJ"])]
+    return "\n".join(rows)
+
+
 # ---------------------------------------------------------------- cost (section 7)
 
 def cost_table():
