@@ -75,7 +75,8 @@ simulation, not about silicon.
 
 ## AI use
 
-AI coding assistants were used in this project. All results come from open-source tools (ngspice, the sky130 PDK, OpenLane, Magic, KLayout, netgen, Python), and the author is responsible for all content.
+AI coding assistants were used in this project. All results come from open-source tools (ngspice, the sky130 PDK,
+OpenLane, Magic, KLayout, netgen, Python), and the author is responsible for all content.
 
 ## License
 
