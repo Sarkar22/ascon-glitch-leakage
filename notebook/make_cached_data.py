@@ -4,9 +4,9 @@
 The notebook runs in two modes (notebook/setup_env.py). In cached mode (no ngspice or PDK,
 e.g. the organizers' CI) it plots only what this script writes. The raw SPICE trace matrices
 (runs/kt/<campaign>/traces.npy, up to 64 MB each) are not exported. They are reduced to the
-curves the notebook shows, plus small subsets. Everything is CSV except one JSON (the
-kill-test summary), and MANIFEST.csv lists each file with its size, sha256, source and
-meaning. Target: < 10 MB in total.
+curves the notebook shows, plus small subsets. Everything is CSV except the JSON summaries
+(the kill test's and those of later steps, see below), and MANIFEST.csv lists each file with
+its size, sha256, source and meaning. Target: < 10 MB in total.
 
 Inputs: results/ (committed) and the git-ignored campaign data in runs/kt/ (see
 docs/KILL_TEST.md "Reproduce"). A campaign's traces are cut to the rows that

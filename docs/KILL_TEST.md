@@ -343,7 +343,7 @@ all numbers below are from `results/kill_test/summary.json`. Every SPICE row's o
   masking.
 - *D (the registered DOM) stays below 4.5 at 9,997 traces* (3.35; at most
   3.69 at any checkpoint), although its net-level leak is confirmed and
-  level 2 predicts 12.2
+  level 2 predicts 12.2 (worst of three weightings; 10.8 cap-weighted)
   on the same rows. D's leak therefore remains unresolved in the supply current at the A3 count; it is not shown to
   be absent. A further D run to 20,000 rows followed (addendum below).
 - *Level 2 is pessimistic for D* at 10 ps resolution, which confirms the first run's reading.
@@ -354,7 +354,7 @@ all numbers below are from `results/kill_test/summary.json`. Every SPICE row's o
 same stimulus; `analysis/kill_test.py` was re-run, so `summary.json` and the D files now hold 19,997
 traces. SPICE max\|t\| 3.08 (at most 3.62 at any checkpoint; never above
 4.5; 100 ps bins 3.00; charge per window 1.21; second order
-19.0), while level 2 predicts 16.7 on the same rows. D's net-level leak therefore still does not
+19.0), while level 2 predicts 16.7 (worst of three weightings; 15.2 cap-weighted) on the same rows. D's net-level leak therefore still does not
 show in the supply current at 20,000 noiseless traces; at this count TVLA would detect a first-order effect about a
 quarter as strong as N's. This is consistent with the circuit-level reading in `docs/reviews/spice-circuit.md`: D's
 pre-barrier glitches end at the barrier flip-flops' D pins. It is not a proof that D is secure; the glitch-extended

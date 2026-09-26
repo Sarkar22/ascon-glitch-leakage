@@ -2,14 +2,14 @@
 # The submission notebook
 
 `ascon_glitch_leakage.ipynb` is the Code-a-Chip notebook. It is written as a guided tour, in the style of a paper.
-In its default *cached* mode it reads only the notebook's own data set in `data/` (CSV plus one JSON), so it runs
-in under a minute with numpy and matplotlib. It needs no ngspice and no PDK, which is also how the organizers' CI
-runs it (`pytest --nbmake`).
+In its default *cached* mode it reads only the notebook's own data set in `data/` (CSV files and a few JSON
+summaries), so it runs in under a minute with numpy and matplotlib. It needs no ngspice and no PDK, which is also how
+the organizers' CI runs it (`pytest --nbmake`).
 
 | File | Role |
 |---|---|
 | `ascon_glitch_leakage.ipynb` | The notebook, with saved outputs, so that it reads on GitHub without running it |
-| `make_notebook.py` | Holds the narrative and builds the notebook's cells. Every number quoted in the text is filled in from the data (`<<key>>` placeholders) |
+| `make_notebook.py` | Holds the narrative and builds the notebook's cells. The numbers quoted from the result files are filled in from the data (`<<key>>` placeholders); a few numbers from the reviews in `docs/reviews/` are fixed text (for example 7.20 against 9.20, 2.30 against 2.29, 28 % against 8.7 %) |
 | `nbdata.py` | Reads the data: `data/` first, else the repository's `results/`. `headline()` holds the quoted numbers |
 | `nbfigs.py` | The figures and tables (matplotlib; same colors as `analysis/plots.py`) |
 | `nbanim.py` | The animation of one input change in N and DA (level-2 events). `python3 notebook/nbanim.py` rewrites `media/glitch_events.json` from `build/` |

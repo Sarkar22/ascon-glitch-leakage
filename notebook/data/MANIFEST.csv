@@ -12,7 +12,7 @@ class_stats_N_masksoff.csv,14670,9ec67c3c7aa4df27752c38eaa20eb29696b951430dcbc11
 class_stats_N_rvr.csv,14954,f3b4380f6db33635fbb599a1fdde8ad32764b5af457f046ba06519ffcda49163,runs/kt/N_rvr/traces.npy (rows 2-9999),"supply current per class over 9998 traces (5005 fixed, 4993 random); label 0 = fixed"
 class_stats_N_tvla.csv,14971,f100ff1636a814c62ac5a02b613466b7b6bcacdee823517a470030eb5ee945db,runs/kt/N_tvla/traces.npy (rows 2-9999),"supply current per class over 9998 traces (5010 fixed, 4988 random); label 0 = fixed"
 class_stats_U_tvla.csv,14497,43d681df29e37088cd3f25c0e87d74f52c9d26cd2987ed82c78ee28f080cd7eb,runs/kt/U_tvla/traces.npy (rows 2-1999),"supply current per class over 1998 traces (1063 fixed, 935 random); label 0 = fixed"
-cost__cost.csv,2674,04f29ef85ad907bee39cec36c688eb88359f49147b0e088e709f3cdb022e84e5,results/cost/cost.csv,copy of a later step's result
+cost__cost.csv,2760,00e87178971bebb0e3da28fbb0de9da2f85ac5e22f28a68a754719e927a2fa29,results/cost/cost.csv,copy of a later step's result
 cpa_rank_vs_traces.csv,22485,3cb60a77615d3bd552d5c83e04e3015885b4835f8b478a0cf71b812c9f8e7c74,results/kill_test/cpa_rank_vs_traces.csv,copy of the committed kill-test result
 demo_reference_N_masksoff.csv,186557,428055b9d917de4319ec3d5a7953e78dc50bf18cec7d8d7e8f5043566313d8e6,"runs/demo/N_masksoff (ngspice-42, pdk 0fe599b2af)","reference for the live SPICE demo: same rows (60), chunking (30) and settings; y_registered = the registered S-box output (shares XORed), 5-bit value, y0 = MSB"
 key_recovery__ge_vs_traces.csv,239820,75393e87b11e3320ebd4df35c8ddfd6dc6fddf26a35c733e43663e366423f6a3,results/key_recovery/ge_vs_traces.csv,copy of a later step's result

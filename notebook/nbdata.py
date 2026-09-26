@@ -4,8 +4,8 @@
 Needs only the Python standard library and numpy, so it also runs on a bare host.
 
 Where the data come from, in this order:
-  1. data/ next to this file: the notebook's own data set (CSV plus one JSON, listed in
-     data/MANIFEST.csv; written by make_cached_data.py from results/ and the SPICE runs).
+  1. data/ next to this file: the notebook's own data set (CSV and a few JSON summaries, listed
+     in data/MANIFEST.csv; written by make_cached_data.py from results/ and the SPICE runs).
      This is what the submission folder ships and what CI reads.
   2. results/ of the repository (results/kill_test/, results/probing/), when data/ lacks a file.
 
@@ -19,8 +19,9 @@ Where the data come from, in this order:
   key_recovery()         the profiled key recovery (results/key_recovery/summary.json)
   cost()                 the cost table (results/cost/cost.csv), one dict per variant
 
-Every number the notebook quotes in its text comes from headline(), so the prose and the
-result files cannot drift apart (make_notebook.py fills the text; test_notebook.py checks it).
+The numbers the notebook quotes from the result files come from headline(), so the prose and
+those files cannot drift apart (make_notebook.py fills the text; test_notebook.py checks it).
+A few numbers from the reviews in docs/reviews/ are quoted as fixed text.
 """
 import csv
 import json
@@ -181,6 +182,8 @@ def headline(s=None):
             nz = sp["noise"][f]
             h["%s_t_noise%s" % (key, f)] = nz["final_max_abs_t"]
             h["%s_stable_noise%s" % (key, f)] = nz["stable_from"]
+            h["%s_noise%s_first" % (key, f)] = nz["first_above"]
+            h["%s_noise%s_tmax_cp" % (key, f)] = max(nz["max_abs_t"])
         h[key + "_l1"] = max(c[name]["level1"][k]["final_max_abs_t"] for k in WEIGHTINGS)
         h[key + "_l1cap"] = c[name]["level1"]["weighted"]["final_max_abs_t"]
         h[key + "_l2"] = max(c[name]["level2"][k]["final_max_abs_t"] for k in WEIGHTINGS)
@@ -201,6 +204,7 @@ def headline(s=None):
     for v in ("D", "DA"):
         h[v + "_detect_sd"] = effect_size_sd(THRESHOLD, h[v + "_n"])
         h[v + "_detect_frac_of_N"] = h[v + "_detect_sd"] / h["dN_sd"]
+    h.update(d_da_peak())
     h["K1_cpa_ranks"] = [cr["K1"]["cpa_primary_final_rank_per_key"][k] for k in ("0", "1", "2", "3")]
     h["K1_pass"] = cr["K1"]["pass"]
     h["GO"] = s["criteria"]["GO"]
@@ -226,6 +230,19 @@ def headline(s=None):
     h["pdk_commit"] = s["setup"]["pdk"]["version"]
     h["generated"] = s["generated"]
     return h
+
+
+def d_da_peak(half_width=3):
+    """D and DA peak at the same sample with the same max|t|: are their t-curves one observation?
+    DDA_same_peak: both SPICE t-curves (tcurve_*.csv) have their largest |t| at the same sample;
+    DDA_tdiff_near_peak: the largest |t_D - t_DA| within half_width samples of D's peak."""
+    import numpy as np
+    d, a = read_csv("tcurve_D_tvla"), read_csv("tcurve_DA_tvla")
+    td, ta = d["t_spice"], a["t_spice"]
+    i, j = int(np.argmax(np.abs(td))), int(np.argmax(np.abs(ta)))
+    lo, hi = max(i - half_width, 0), min(i + half_width + 1, len(td), len(ta))
+    return {"DDA_same_peak": bool(i == j and d["ns_after_edge"][i] == a["ns_after_edge"][j]),
+            "DDA_tdiff_near_peak": float(np.max(np.abs(td[lo:hi] - ta[lo:hi])))}
 
 
 def _n(x):
@@ -255,6 +272,7 @@ def fmt_headline(s=None):
         elif isinstance(v, (int, float)):
             out[k] = "%.1f" % v
     out["spice_wall_h"] = "%.1f" % (h["spice_wall_s"] / 3600.0)
+    out["DDA_tdiff_near_peak"] = "%.3f" % h["DDA_tdiff_near_peak"]
     out["D_detect_frac_words"] = fraction_words(h["D_detect_frac_of_N"])
     out["DA_detect_frac_words"] = fraction_words(h["DA_detect_frac_of_N"])
     out["N_leaky_list"] = ", ".join(h["N_flagged_leaky_nets"])
@@ -344,9 +362,21 @@ def key_recovery_values(kr=None, s=None):
             out["kr_Ucpa_noise%s_%s_sr" % (f, d)] = _ge(r[d]["final_sr"])
     dfc = uc["charge_deficit_pct_per_key"]
     out["kr_Ucpa_deficit"] = "%.0f-%.0f" % (min(dfc), max(dfc))
-    nulls = [r["null"]["tmpl"]["final_ge_sd"] for name in ("N_pooled", "D_tvla", "DA_tvla")
-             for tag, r in ds[name]["results"].items() if tag.endswith("noise0")]
-    out["kr_null_sd_range"] = "%.2f-%.2f" % (min(nulls), max(nulls))
+    # the null's spread, without added noise: the TVLA data sets (U, N, D, DA) for the default and
+    # the per-key-bit template, and U on the CPA traces (four keys only) on its own
+    tvla_sets = [name for name in ds if name != "U_cpa"]
+    for d, key in (("tmpl", "kr_null_sd_range"), ("tmpl_bits", "kr_null_sd_range_bits")):
+        sds = [r["null"][d]["final_ge_sd"] for name in tvla_sets
+               for tag, r in ds[name]["results"].items() if tag.endswith("noise0") and d in r["null"]]
+        out[key] = "%.2f-%.2f" % (min(sds), max(sds))
+    out["kr_Ucpa_null_sd"] = _ge(uc["results"]["order1_noise0"]["null"]["tmpl"]["final_ge_sd"])
+    # the injected-leak bound of D and DA together, as a range of N's strength (e.g. 0.35-0.5)
+    als = sorted(ds[name]["injection"]["smallest_detected_alpha"]["tmpl"] for name in ("D_tvla", "DA_tvla")
+                 if ds[name]["injection"]["smallest_detected_alpha"]["tmpl"] is not None)
+    out["kr_alpha_range"] = ("%g-%g" % (als[0], als[-1]) if als[0] != als[-1] else "%g" % als[0]) if als else "-"
+    for v, name in (("D", "D_tvla"), ("DA", "DA_tvla")):
+        al = ds[name]["injection"]["smallest_detected_alpha"]["tmpl"]
+        out["kr_%s_alpha_words" % v] = fraction_words(al) if al is not None else "-"
     return out
 
 
