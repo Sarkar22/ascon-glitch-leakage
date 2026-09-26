@@ -18,6 +18,10 @@ demo_reference_N_masksoff.csv,186557,428055b9d917de4319ec3d5a7953e78dc50bf18cec7
 key_recovery__ge_vs_traces.csv,239820,75393e87b11e3320ebd4df35c8ddfd6dc6fddf26a35c733e43663e366423f6a3,results/key_recovery/ge_vs_traces.csv,copy of a later step's result
 key_recovery__summary.json,388581,cdb3bfbed7176decf0332aba3f1db9dfe8411971a68f662c0b9b89aed1d7c7b2,results/key_recovery/summary.json,copy of a later step's result
 kill_test_summary.json,159907,998620e776f8cdb0c06501274918e932a3678dee60d1dcf668efa6ae4b5c43a1,results/kill_test/summary.json,every number of docs/KILL_TEST.md (written by analysis/kill_test.py)
+layout__placement_DA.csv,28447,65f96039c08c2562e749d59d46ba025935c08efb6cb36f59cd656ea9e2f0ae2a,results/layout/placement_DA.csv,copy of a later step's result
+layout__placement_N.csv,19399,3cdabc03e018811aa6d194a7d25f5385914482f4db1a8ee657ab1eb2cc7d192f,results/layout/placement_N.csv,copy of a later step's result
+layout__placement_U.csv,6310,6faed4bf2bc4cee07835b97a3b9352a977f58f5f9c1f416c69c81cfec26955be,results/layout/placement_U.csv,copy of a later step's result
+layout__summary.json,10521,0c2e9934bf4ef95f09894244720b34f7979004d7033fff4a3b2a30beab4f5de8,results/layout/summary.json,copy of a later step's result
 maxt_vs_traces_DA_tvla.csv,5377,d0fdd11792bbb8240b139793a3180bc71668f30324bea76eed6d3dcd972e933e,results/kill_test/maxt_vs_traces_DA_tvla.csv,copy of the committed kill-test result
 maxt_vs_traces_D_tvla.csv,5460,a49872e6b136a7f7a90bb79ff33223b87a5b75973fe9f09f81002a40c41e324a,results/kill_test/maxt_vs_traces_D_tvla.csv,copy of the committed kill-test result
 maxt_vs_traces_N_masksoff.csv,3010,4eb212dd6ad4bc9c59c206fd45a5b7c5b6799e729751b314a555be1c2ed90cbc,results/kill_test/maxt_vs_traces_N_masksoff.csv,copy of the committed kill-test result
@@ -31,6 +35,18 @@ pernet_t_D_level2_nets.csv,240421,ef389c28d72fb0fc873bc1bad351ab6b9c659f6e2805f7
 pernet_t_D_spice_nodes.csv,240496,ca61c3b8961144298f299e7f99303bfe3558dfd0243f4db97fcf8dd1ecf2dcf7,results/kill_test/pernet_t_D_spice_nodes.csv,copy of the committed kill-test result
 pernet_t_N_level2_nets.csv,90783,2334b2e75ee3b745cf477baae2c5d9216c0af7cdf6367bb3c6a045e4e39a89b1,results/kill_test/pernet_t_N_level2_nets.csv,copy of the committed kill-test result
 pernet_t_N_spice_nodes.csv,90668,fac95e3459b46aa8243319430625a0eb3b4e8c5d137c68e17b3ce04e40c46c14,results/kill_test/pernet_t_N_spice_nodes.csv,copy of the committed kill-test result
+pex__bench.json,2185,2520ec030d58c3e9d76ee4b01c4e770b95644d8f5bdfb9f6a544d9716a2f2d0b,results/pex/bench.json,copy of a later step's result
+pex__maxt_vs_traces_DA_pex.csv,2168,6f5ad4198bce28a4f5ddc6e40e8ad82c32d5d24daaba58c0ff2c7602db77f0d9,results/pex/maxt_vs_traces_DA_pex.csv,copy of a later step's result
+pex__maxt_vs_traces_N_pex.csv,1814,52f937335b03b1d044abb8bd9ce382b23651a586f22ca9f9475ee97700574a78,results/pex/maxt_vs_traces_N_pex.csv,copy of a later step's result
+pex__netcap_DA.csv,4706,9fc5cab6d294279266814dd1136cb3e738fd2c6681ecde9c04239f4f8b3ad980,results/pex/netcap_DA.csv,copy of a later step's result
+pex__netcap_N.csv,3606,a1dd83ccea02005da52fe9e7a03a805907a5a9dd4a208d93454cba1e9be47f37,results/pex/netcap_N.csv,copy of a later step's result
+pex__netcap_U.csv,1111,d6072f497efc3f05129afc8d787a10f9d73e2a75c2bfe9eaece0df35776508a6,results/pex/netcap_U.csv,copy of a later step's result
+pex__node_timing_N.json,1337,f569fe6a5002a9270da54cb8985669fa59c1160dbdc900f9e24902a0c5a378bd,results/pex/node_timing_N.json,copy of a later step's result
+pex__sanity_DA.json,1459,2bf2213238f569cc1ec21d7ed5cb19454d718f1361a961393b74471d9d54b537,results/pex/sanity_DA.json,copy of a later step's result
+pex__sanity_N.json,953,0f83d4e54ad3d05cd9ed35fe5e3a9e967295b67d6c195fae0893dd40783242df,results/pex/sanity_N.json,copy of a later step's result
+pex__summary_postlayout.json,31317,3521a61817d74db530fa1d626a9e462719d52d74eb20a7fa3c8eee13cec9fd56,results/pex/summary_postlayout.json,copy of a later step's result
+pex__tcurve_DA_pex.csv,41463,a78218ecf9e34d745dd4e5d4beb5d76921ba300121b0e28c297ac9e45c31c3bf,results/pex/tcurve_DA_pex.csv,copy of a later step's result
+pex__tcurve_N_pex.csv,20243,75b14d20fccf5701e47af61c092528d8d5d532106ccd979fa2f4ddbc759bb9dc,results/pex/tcurve_N_pex.csv,copy of a later step's result
 probing_nets.csv,8719,e8ed938cfcffc708f391b7e2c625f4fbaf7e56ed5f133cbb91c0c45232e5eb93,results/probing/<V>.json,exact first-order probing per net: 1 = the net's (glitch-extended) observation depends on the unshared input
 rows_M_tvla.csv,29309,07224a67fb014fa2bcf0f3b3604f28c0d70796a8f4f9654747b436ec8039d915,"runs/kt/stim/M_tvla.meta.npz (model/stimulus.py, tvla, seed 202)","first 2000 rows of the stimulus shared by N_tvla, D_tvla and DA_tvla; label 0 = fixed x = 0x0B; mask = share 1, r = fresh bits"
 tcurve_DA_tvla.csv,48173,ca7573fe07792b25fe50666a6f9a6701563230cd726c10477d40cb495c7d6591,results/kill_test/tcurve_DA_tvla.csv,copy of the committed kill-test result

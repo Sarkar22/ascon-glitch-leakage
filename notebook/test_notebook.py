@@ -148,8 +148,44 @@ class TestCaches(unittest.TestCase):
         h = nbdata.fmt_headline()
         for k in ("N_t", "D_t", "DA_t", "N_n", "DA_n", "DA_detect_frac_words", "N_probe_fail", "kr_N_bits_sr",
                   "kr_DA_alpha", "kr_DA_alpha_words", "kr_alpha_range", "kr_null_sd_range_bits",
-                  "cost_DA_area_vs_N_pct", "cost_DA_energy_vs_N_pct", "DDA_tdiff_near_peak"):
+                  "cost_DA_area_vs_N_pct", "cost_DA_energy_vs_N_pct", "DDA_tdiff_near_peak", "pl_N_t", "pl_N_pre_t",
+                  "pl_DA_t", "pl_DA_detect_frac", "pl_N_shift_ns", "lay_N_cap_rcx", "lay_core_DA_vs_N_pct",
+                  "pl_energy_DA_vs_N_pct"):
             self.assertIn(k, h)
+
+    def test_postlayout_verdicts_match_the_text(self):
+        """Section 6 says N still leaks and DA shows none after layout; hold that to the data."""
+        pl = nbdata.postlayout()
+        cr = pl["criteria"]
+        self.assertTrue(cr["PL1"]["pass"] and cr["PL1"]["max_abs_t"] > 4.5)
+        self.assertTrue(cr["PL2"]["pass"] and cr["PL2"]["max_abs_t"] < 4.5)
+        self.assertEqual((cr["PL1"]["rows_simulated"], cr["PL2"]["rows_simulated"]), (5000, 10000))
+        self.assertTrue(pl["reproduces_kill_test"]["all_identical"])
+        for v in ("N_pex", "DA_pex"):
+            self.assertEqual(pl["campaigns"][v]["function_check"]["mismatches_vs_sbox"], 0)
+        self.assertEqual(nbdata.fmt_headline()["lay_all_clean"], "True")
+        text = "\n".join(src(c) for c in load_nb()["cells"] if c["cell_type"] == "markdown")
+        self.assertIn("survives place and route under C-only extraction at tt", text)
+
+    def test_layout_and_pex_copies_are_current(self):
+        """In the repository, data/ must hold the current layout and post-layout results (re-run
+        make_cached_data.py without --optional after analysis/postlayout.py)."""
+        for step in ("layout", "pex"):
+            src_dir = os.path.join(nbdata.root(), "results", step)
+            if not os.path.isdir(src_dir) or not os.path.isdir(nbdata.DATA):
+                self.skipTest("not inside the repository")
+            for name in sorted(os.listdir(src_dir)):
+                if not name.endswith((".csv", ".json")):
+                    continue
+                with open(os.path.join(src_dir, name), "rb") as a, \
+                        open(os.path.join(nbdata.DATA, "%s__%s" % (step, name)), "rb") as b:
+                    self.assertEqual(a.read(), b.read(), name)
+
+    def test_layout_media_present(self):
+        for v in ("N", "DA"):
+            p = os.path.join(HERE, "media", "layout_%s.png" % v)
+            self.assertTrue(os.path.exists(p), p)
+            self.assertLess(os.path.getsize(p), 150e3)
 
     def test_d_and_da_share_their_peak(self):
         """Section 4.5 says D and DA end at the same max|t| at the same sample; hold it to the data."""
@@ -194,7 +230,8 @@ class TestFigures(unittest.TestCase):
         for f in (nbfigs.workflow, nbfigs.headline, nbfigs.maxt_vs_traces, lambda: nbfigs.localization("N"),
                   lambda: nbfigs.localization("D"), nbfigs.model_vs_spice, nbfigs.noise,
                   nbexplorer.static_panel, lambda: nbanim.draw(nbanim.load_events(), 0.8),
-                  nbfigs.key_recovery, nbfigs.key_recovery_injection, nbfigs.cost_figure):
+                  nbfigs.key_recovery, nbfigs.key_recovery_injection, nbfigs.cost_figure, nbfigs.layout_figure,
+                  nbfigs.postlayout_tcurves, nbfigs.postlayout_maxt):
             fig = f()
             self.assertTrue(fig.axes)
             plt.close(fig)
@@ -202,7 +239,8 @@ class TestFigures(unittest.TestCase):
     def test_tables(self):
         import nbfigs
         tables = [nbfigs.probing_table(), nbfigs.variants_table(), nbfigs.model_table(), nbfigs.criteria_table(),
-                  nbfigs.key_recovery_table()]
+                  nbfigs.key_recovery_table(), nbfigs.layout_table(), nbfigs.postlayout_table(),
+                  nbfigs.postlayout_cost_table()]
         if nbfigs.cost_table():
             tables.append(nbfigs.cost_table())
         for t in tables:

@@ -18,6 +18,11 @@ Where the data come from, in this order:
   fmt_headline(s)        the same numbers as strings, for the notebook builder
   key_recovery()         the profiled key recovery (results/key_recovery/summary.json)
   cost()                 the cost table (results/cost/cost.csv), one dict per variant
+  layout()               the layouts and their sign-off (results/layout/summary.json)
+  postlayout()           the post-layout TVLA (results/pex/summary_postlayout.json)
+  node_timing()          pre- vs post-layout node timing of N (results/pex/node_timing_N.json)
+  placement(v)           the placed cells of a layout (results/layout/placement_<V>.csv)
+  read_step_csv(step, n) a CSV of a later step (data/<step>__<n>.csv or results/<step>/<n>.csv)
 
 The numbers the notebook quotes from the result files come from headline(), so the prose and
 those files cannot drift apart (make_notebook.py fills the text; test_notebook.py checks it).
@@ -153,6 +158,49 @@ def cost():
         return {r["variant"]: r for r in csv.DictReader(f)}
 
 
+def _step_json(step, name):
+    with open(find("%s__%s" % (step, name), ("results", step, name))) as f:
+        return json.load(f)
+
+
+def layout():
+    """Layout and sign-off of N, DA and U: data/layout__summary.json, else results/layout/."""
+    return _step_json("layout", "summary.json")
+
+
+def postlayout():
+    """The post-layout TVLA (docs/POSTLAYOUT.md): data/pex__summary_postlayout.json, else results/pex/."""
+    return _step_json("pex", "summary_postlayout.json")
+
+
+def node_timing():
+    """N's node timing before and after layout: data/pex__node_timing_N.json, else results/pex/."""
+    return _step_json("pex", "node_timing_N.json")
+
+
+def placement(v):
+    """The placed cells of variant v (data/layout__placement_<V>.csv, else results/layout/), as a
+    list of dicts: instance, cell, x_um, y_um, w_um, h_um (float), kind (logic / clock / physical),
+    domain (s0, s1, r, cross, x), output_net, flagged (bool)."""
+    head, body = _rows(find("layout__placement_%s.csv" % v, ("results", "layout", "placement_%s.csv" % v)))
+    out = []
+    for r in body:
+        d = dict(zip(head, r))
+        for k in ("x_um", "y_um", "w_um", "h_um"):
+            d[k] = float(d[k])
+        d["flagged"] = d["flagged"] == "1"
+        out.append(d)
+    return out
+
+
+def read_step_csv(step, name):
+    """A CSV of a later step (e.g. step 'pex', name 'tcurve_N_pex') as {column: float array}."""
+    import numpy as np
+    head, body = _rows(find("%s__%s.csv" % (step, name), ("results", step, name + ".csv")))
+    return {h: np.array([float(r[i]) if r[i] not in ("", "None") else np.nan for r in body])
+            for i, h in enumerate(head)}
+
+
 def effect_size_sd(t, n):
     """Standardized mean difference (in per-sample standard deviations) that gives Welch t
     with n traces split about evenly between the two classes: t = d * sqrt(n) / 2."""
@@ -282,6 +330,7 @@ def fmt_headline(s=None):
     out["K1_cpa_ranks"] = " / ".join(str(r) for r in h["K1_cpa_ranks"])
     out.update(key_recovery_values(s=s))
     out.update(cost_values())
+    out.update(postlayout_values())
     return out
 
 
@@ -398,6 +447,95 @@ def cost_values(c=None):
     out["cost_dff_extra"] = str(int(c["DA"]["dff"]) - int(c["N"]["dff"]))
     u = c["U"]
     out["cost_U_bias_pct"] = "%.1f" % (100 * (1 - float(u["q_window_all_random_class_rows_fC"]) / float(u["q_window_fC"])))
+    return out
+
+
+def postlayout_values(pl=None, lay=None, nt=None):
+    """The layout and post-layout numbers the text quotes, as strings (prefixes lay_ and pl_)."""
+    pl = pl or postlayout()
+    lay = lay or layout()
+    nt = nt or node_timing()
+    c, cr = pl["campaigns"], pl["criteria"]
+    out = {}
+    for v in ("N", "DA"):
+        e = c[v + "_pex"]
+        sp, pre = e["spice"], e["pre_layout_same_rows"]
+        pk = e["peaks"]
+        out.update({
+            "pl_%s_rows" % v: _n(e["rows_simulated"]), "pl_%s_n" % v: _n(e["rows_analysed"]),
+            "pl_%s_t" % v: "%.2f" % sp["final_max_abs_t"], "pl_%s_pre_t" % v: "%.2f" % pre["final_max_abs_t"],
+            "pl_%s_first" % v: _count(sp["first_above"]), "pl_%s_pre_first" % v: _count(pre["first_above"]),
+            "pl_%s_stable" % v: _count(sp["stable_from"]),
+            "pl_%s_tmax_cp" % v: "%.2f" % max(sp["max_abs_t"]),
+            "pl_%s_peak_ns" % v: "%.3f" % sp["final_peak_ns_after_edge"],
+            "pl_%s_pre_peak_ns" % v: "%.3f" % pre["final_peak_ns_after_edge"],
+            "pl_%s_t100" % v: "%.2f" % sp["final_max_abs_t_100ps_bins"],
+            "pl_%s_pre_t100" % v: "%.2f" % pre["final_max_abs_t_100ps_bins"],
+            "pl_%s_tq" % v: "%.2f" % sp["charge_per_window"]["final_abs_t"],
+            "pl_%s_pre_tq" % v: "%.2f" % pre["charge_per_window"]["final_abs_t"],
+            "pl_%s_t2" % v: "%.1f" % sp["second_order_final_max_abs_t"],
+            "pl_%s_pre_t2" % v: "%.1f" % pre["second_order_final_max_abs_t"],
+            "pl_%s_mismatch" % v: str(e["function_check"]["mismatches_vs_sbox"]),
+            "pl_%s_out_diff" % v: str(e["function_check"]["rows_differing_from_pre_layout_outputs"]),
+            "pl_%s_charge_ratio" % v: "%.2f" % e["pre_vs_post"]["charge_ratio_post_over_pre"],
+            "pl_%s_shift_ns" % v: "%.2f" % e["pre_vs_post"]["t_curve"]["best_shift_ns"],
+            "pl_%s_shift_corr" % v: "%.2f" % e["pre_vs_post"]["t_curve"]["corr_at_best_shift"],
+            "pl_%s_noshift_corr" % v: "%.2f" % e["pre_vs_post"]["t_curve"]["corr_no_shift"],
+            "pl_%s_above" % v: str(pk["samples_above_threshold"]),
+            "pl_%s_e_fJ" % v: _n(round(e["energy_per_evaluation"]["post_layout"]["e_eval_fJ"])),
+            "pl_%s_pre_e_fJ" % v: _n(round(e["energy_per_evaluation"]["pre_layout_same_rows"]["e_eval_fJ"])),
+            "pl_%s_part" % v: (pk["peak"]["part"] or "-").replace("_", " "),
+        })
+        span = pk["first_last_sample_above_threshold_ns"]
+        out["pl_%s_span" % v] = ("%.3f-%.3f" % tuple(span)) if span else "-"
+        for f in ("0.5", "1.0", "2.0"):
+            out["pl_%s_t_noise%s" % (v, f)] = "%.2f" % sp["noise"][f]["final_max_abs_t"]
+            out["pl_%s_stable_noise%s" % (v, f)] = _count(sp["noise"][f]["stable_from"])
+    reg = c["N_pex"]["spice"]["max_abs_t_by_region"]
+    out["pl_N_rest"] = "%.2f" % max(reg["clock_fall"], reg["input_edges"])
+    out["pl_N_clockfall"] = "%.2f" % reg["clock_fall"]
+    out["pl_N_inputedges"] = "%.2f" % reg["input_edges"]
+    out["pl_DA_peak_cycle"] = str(c["DA_pex"]["peaks"]["peak"].get("cycle", 1))
+    out["pl_DA_detect_frac"] = "%.2f" % cr["PL3"]["DA_pex_detectable_fraction_of_N_pex"]
+    out["pl_DA_detect_sd"] = "%.3f" % cr["PL3"]["DA_pex_detectable_sd"]
+    out["pl_N_effect_sd"] = "%.3f" % cr["PL3"]["N_pex_effect_sd"]
+    out["pl_PL1"] = "pass" if cr["PL1"]["pass"] else "fail"
+    out["pl_PL2"] = "pass" if cr["PL2"]["pass"] else "fail"
+    en = pl["energy_DA_vs_N"]
+    out["pl_energy_DA_vs_N_pct"] = "%d" % round(100 * (en["post_layout"] - 1))
+    out["pl_pre_energy_DA_vs_N_pct"] = "%d" % round(100 * (en["pre_layout_same_rows"] - 1))
+    sv = pl["solver_check_klu_vs_sparse"]
+    mant, ex = ("%.1e" % max(x["max_rel_charge_diff"] for x in sv.values())).split("e")
+    out["pl_klu_rel"] = "%se%d" % (mant, int(ex))
+    out["pl_klu_corr"] = "%.7f" % min(x["corr_data_dependent"] for x in sv.values())
+    out["pl_wall_h"] = "%.1f" % (sum(c[k]["spice_wall_clock"]["wall_s"] for k in c) / 3600.0)
+    for v in ("N", "DA", "U"):
+        L = lay[v]
+        cv = pl["capacitance_views"][v]
+        out.update({"lay_%s_die" % v: "%.1f x %.1f" % tuple(L["die_um"]),
+                    "lay_%s_core" % v: _n(round(L["core_area_um2"])),
+                    "lay_%s_die_area" % v: _n(round(L["die_area_um2"])),
+                    "lay_%s_util" % v: "%.1f" % L["placement_utilisation_pct"],
+                    "lay_%s_cts" % v: str(sum(L["clock_tree"]["buffers"].values())),
+                    "lay_%s_cells" % v: str(L["cells_final_by_category"]["logic"]),
+                    "lay_%s_cap_est" % v: "%.0f" % cv["prelayout_estimate_fF"],
+                    "lay_%s_cap_rcx" % v: "%.0f" % cv["openrcx_routed_wiring_fF"],
+                    "lay_%s_cap_magic" % v: "%.0f" % cv["magic_flat_fF"],
+                    "lay_%s_cap_ratio" % v: "%.1f" % cv["magic_over_estimate"],
+                    "lay_%s_xtors" % v: _n(L["pex"]["n_devices"])})
+        cp = L["pex"]["coupling_between_named_nets_by_domain"].get("s0-s1")
+        if cp:
+            out["lay_%s_s0s1_fF" % v] = "%.1f" % cp["fF"]
+    out["lay_core_DA_vs_N_pct"] = "%d" % round(100 * (lay["DA"]["core_area_um2"] / lay["N"]["core_area_um2"] - 1))
+    out["lay_die_DA_vs_N_pct"] = "%d" % round(100 * (lay["DA"]["die_area_um2"] / lay["N"]["die_area_um2"] - 1))
+    out["lay_all_clean"] = str(all(lay[v]["drc_router"] == lay[v]["drc_magic"] == lay[v]["drc_klayout"] == 0
+                                   and lay[v]["lvs"].startswith("Circuits match")
+                                   and lay[v]["antenna_pin_violations"] == lay[v]["antenna_net_violations"] == 0
+                                   and lay[v]["final_vs_generator"]["logic_unchanged"] for v in ("N", "DA", "U")))
+    for k, tag in (("clk_to_q_ns", "ckq"), ("last_logic_crossing_ns", "last")):
+        out["pl_%s_pre" % tag] = "%.2f" % nt["pre_layout"][k]["median"]
+        out["pl_%s_post" % tag] = "%.2f" % nt["post_layout"][k]["median"]
+        out["pl_%s_post_max" % tag] = "%.2f" % nt["post_layout"][k]["max"]
     return out
 
 

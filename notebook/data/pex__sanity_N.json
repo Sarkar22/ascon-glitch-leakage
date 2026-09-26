@@ -1,0 +1,52 @@
+{
+ "rows": 120,
+ "pex_run": "runs/pex/bench_N_pex_klu",
+ "pre_run": "runs/kt/N_tvla",
+ "function": {
+  "mismatches": 0,
+  "rows": 120
+ },
+ "charge": {
+  "pex_mean_fC": 2282.96,
+  "pre_mean_fC": 981.32,
+  "ratio_mean": 2.3515,
+  "ratio_min": 2.0565,
+  "ratio_max": 2.923,
+  "corr_data_dependent": 0.9875
+ },
+ "timing": {
+  "cycle1": {
+   "peak_ns_after_edge": {
+    "pex": 0.315,
+    "pre": 0.055
+   },
+   "charge_completion_ns_after_edge": {
+    "pex": {
+     "50%": 0.59,
+     "90%": 1.3,
+     "99%": 1.69
+    },
+    "pre": {
+     "50%": 0.38,
+     "90%": 0.77,
+     "99%": 1.08
+    }
+   },
+   "best_shift_ns_pex_later": 0.16,
+   "mean_waveform_corr_at_shift": 0.7586,
+   "mean_waveform_corr_no_shift": 0.5979,
+   "peak_current_uA": {
+    "pex": 2677.6,
+    "pre": 2169.8
+   },
+   "data_dependent_corr_at_shift": 0.3544
+  }
+ },
+ "sim": {
+  "s_per_cycle_per_process": 8.7799,
+  "peak_rss_MB_max": 207.2,
+  "jobs": 6,
+  "threads": 1
+ },
+ "variant": "N"
+}

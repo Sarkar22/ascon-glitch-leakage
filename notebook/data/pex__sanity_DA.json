@@ -1,0 +1,78 @@
+{
+ "rows": 120,
+ "pex_run": "runs/pex/bench_DA_pex_klu",
+ "pre_run": "runs/kt/DA_tvla",
+ "function": {
+  "mismatches": 0,
+  "rows": 120
+ },
+ "charge": {
+  "pex_mean_fC": 7231.02,
+  "pre_mean_fC": 2691.84,
+  "ratio_mean": 2.692,
+  "ratio_min": 2.5465,
+  "ratio_max": 2.9968,
+  "corr_data_dependent": 0.9893
+ },
+ "timing": {
+  "cycle1": {
+   "peak_ns_after_edge": {
+    "pex": 0.335,
+    "pre": 0.055
+   },
+   "charge_completion_ns_after_edge": {
+    "pex": {
+     "50%": 0.42,
+     "90%": 0.81,
+     "99%": 1.1
+    },
+    "pre": {
+     "50%": 0.19,
+     "90%": 0.4,
+     "99%": 0.62
+    }
+   },
+   "best_shift_ns_pex_later": 0.2,
+   "mean_waveform_corr_at_shift": 0.8419,
+   "mean_waveform_corr_no_shift": 0.4137,
+   "peak_current_uA": {
+    "pex": 5804.8,
+    "pre": 4765.7
+   },
+   "data_dependent_corr_at_shift": 0.2711
+  },
+  "cycle2": {
+   "peak_ns_after_edge": {
+    "pex": 0.335,
+    "pre": 0.055
+   },
+   "charge_completion_ns_after_edge": {
+    "pex": {
+     "50%": 0.42,
+     "90%": 0.81,
+     "99%": 1.1
+    },
+    "pre": {
+     "50%": 0.19,
+     "90%": 0.4,
+     "99%": 0.62
+    }
+   },
+   "best_shift_ns_pex_later": 0.2,
+   "mean_waveform_corr_at_shift": 0.8419,
+   "mean_waveform_corr_no_shift": 0.4138,
+   "peak_current_uA": {
+    "pex": 5805.2,
+    "pre": 4766.3
+   },
+   "data_dependent_corr_at_shift": 0.2754
+  }
+ },
+ "sim": {
+  "s_per_cycle_per_process": 16.446,
+  "peak_rss_MB_max": 358.1,
+  "jobs": 6,
+  "threads": 1
+ },
+ "variant": "DA"
+}
