@@ -1,0 +1,98 @@
+{
+ "note": "container capped at 6 CPUs; jobs x threads per run as given",
+ "runs": {
+  "DA_pre_sparse": {
+   "run": "runs/kt/DA_tvla",
+   "jobs": 10,
+   "threads": 2,
+   "chunk_rows": 500,
+   "latency": 2,
+   "s_per_row_per_process_incl_overhead": 20.0,
+   "s_per_sim_cycle": 19.72,
+   "peak_rss_MB": 308.6,
+   "throughput_rows_per_s": 0.499,
+   "options": "",
+   "netlist": "pre-layout (kill-test extension: 10 jobs x 2 threads)",
+   "solver": "sparse"
+  },
+  "N_pex_sparse": {
+   "run": "runs/pex/bench_N_pex",
+   "jobs": 6,
+   "threads": 1,
+   "chunk_rows": 20,
+   "latency": 1,
+   "s_per_row_per_process_incl_overhead": 13.71,
+   "s_per_sim_cycle": 10.39,
+   "peak_rss_MB": 204.0,
+   "throughput_rows_per_s": 0.42,
+   "options": "",
+   "netlist": "post-layout",
+   "solver": "sparse"
+  },
+  "N_pex_klu": {
+   "run": "runs/pex/bench_N_pex_klu",
+   "jobs": 6,
+   "threads": 1,
+   "chunk_rows": 20,
+   "latency": 1,
+   "s_per_row_per_process_incl_overhead": 8.78,
+   "s_per_sim_cycle": 6.59,
+   "peak_rss_MB": 207.2,
+   "throughput_rows_per_s": 0.672,
+   "options": "klu",
+   "netlist": "post-layout",
+   "solver": "klu"
+  },
+  "DA_pex_sparse": {
+   "run": "runs/pex/bench_DA_pex",
+   "jobs": 6,
+   "threads": 1,
+   "chunk_rows": 20,
+   "latency": 2,
+   "s_per_row_per_process_incl_overhead": 34.75,
+   "s_per_sim_cycle": 25.65,
+   "peak_rss_MB": 351.8,
+   "throughput_rows_per_s": 0.167,
+   "options": "",
+   "netlist": "post-layout",
+   "solver": "sparse"
+  },
+  "DA_pex_klu": {
+   "run": "runs/pex/bench_DA_pex_klu",
+   "jobs": 6,
+   "threads": 1,
+   "chunk_rows": 20,
+   "latency": 2,
+   "s_per_row_per_process_incl_overhead": 16.45,
+   "s_per_sim_cycle": 12.04,
+   "peak_rss_MB": 358.1,
+   "throughput_rows_per_s": 0.36,
+   "options": "klu",
+   "netlist": "post-layout",
+   "solver": "klu"
+  }
+ },
+ "projection": {
+  "N_pex_5000": {
+   "rows": 5000,
+   "chunks": 40,
+   "waves_of_6": 7,
+   "wall_h": 1.7,
+   "from": "N_pex_klu"
+  },
+  "DA_pex_10000": {
+   "rows": 10000,
+   "chunks": 80,
+   "waves_of_6": 14,
+   "wall_h": 6.2,
+   "from": "DA_pex_klu"
+  },
+  "DA_pex_5000": {
+   "rows": 5000,
+   "chunks": 40,
+   "waves_of_6": 7,
+   "wall_h": 3.1,
+   "from": "DA_pex_klu"
+  }
+ }
+}

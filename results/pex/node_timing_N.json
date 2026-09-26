@@ -1,0 +1,81 @@
+{
+ "variant": "N",
+ "pre_run": "runs/pex/nodes_N_pre",
+ "pex_run": "runs/pex/nodes_N_pex",
+ "pre_layout": {
+  "cycles": 38,
+  "clk_to_q_ns": {
+   "n": 469,
+   "median": 0.1958,
+   "mean": 0.2064,
+   "min": 0.174,
+   "max": 0.2913
+  },
+  "last_logic_crossing_ns": {
+   "n": 38,
+   "median": 1.0566,
+   "mean": 1.0388,
+   "min": 0.8559,
+   "max": 1.1962
+  },
+  "setup_margin_ns": {
+   "n": 38,
+   "median": 2.9434,
+   "mean": 2.9612,
+   "min": 2.8038,
+   "max": 3.1441
+  },
+  "logic_crossings_per_cycle": {
+   "n": 38,
+   "median": 51.0,
+   "mean": 53.0789,
+   "min": 25.0,
+   "max": 87.0
+  },
+  "glitch_crossings_per_cycle": {
+   "n": 38,
+   "median": 21.0,
+   "mean": 23.1579,
+   "min": 8.0,
+   "max": 48.0
+  }
+ },
+ "post_layout": {
+  "cycles": 38,
+  "clk_to_q_ns": {
+   "n": 469,
+   "median": 0.5584,
+   "mean": 0.5803,
+   "min": 0.5324,
+   "max": 0.7421
+  },
+  "last_logic_crossing_ns": {
+   "n": 38,
+   "median": 1.83,
+   "mean": 1.8085,
+   "min": 1.4651,
+   "max": 2.0129
+  },
+  "setup_margin_ns": {
+   "n": 38,
+   "median": 2.17,
+   "mean": 2.1935,
+   "min": 1.9871,
+   "max": 2.5349
+  },
+  "logic_crossings_per_cycle": {
+   "n": 38,
+   "median": 55.0,
+   "mean": 54.3421,
+   "min": 25.0,
+   "max": 85.0
+  },
+  "glitch_crossings_per_cycle": {
+   "n": 38,
+   "median": 22.0,
+   "mean": 24.4211,
+   "min": 8.0,
+   "max": 50.0
+  }
+ }
+}
