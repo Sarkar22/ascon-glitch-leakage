@@ -36,7 +36,7 @@ unrendered widget.
 
 ## Open items in the text
 
-`TODO(user)` marks what only the author can fill in: the e-mail, the advisor row and the acknowledgments. The
+`TODO(user)` marks what only the author can fill in: the e-mail and the acknowledgments. The
 "Placeholder" block in §6 (layout and post-layout) is for later work, and `TODO(setup)` marks the live-mode timing.
 §5 (key recovery) and §7 (cost) are filled from `data/key_recovery__summary.json` and `data/cost__cost.csv`; after
 `analysis/key_recovery.py` or `analysis/cost_table.py` change them, re-run the commands above.

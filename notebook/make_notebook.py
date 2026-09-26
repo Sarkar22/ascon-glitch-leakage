@@ -51,7 +51,6 @@ Tools: <<ngspice>>, sky130A (open_pdks `<<pdk_commit>>`), Icarus Verilog, Python
 | Name | Affiliation | Role | IEEE member | SSCS member | Contact |
 |---|---|---|---|---|---|
 | Emon Sarkar | University of Waterloo, Electrical and Computer Engineering | author | yes | no | TODO(user): e-mail |
-| TODO(user): advisor, if any | TODO(user) | advisor | TODO(user) | TODO(user) | TODO(user) |
 """)
 
 md(r"""
