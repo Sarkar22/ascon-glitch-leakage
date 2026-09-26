@@ -18,12 +18,14 @@ Modes
 
 Installation (by default only on Google Colab; elsewhere with setup(install_tools=True),
 ASCON_INSTALL=1 or `python3 setup_env.py --install`). Wall times measured in a clean Ubuntu 22.04
-container with Python 3.12 (notebook/tests/colab_container.sh):
-  apt-get update; apt-get install ngspice iverilog     24 s (ngspice-36, iverilog 11.0)
-  pip install ciel==3.0.0                              8 s
+container with 2 CPUs and Python 3.12, everything fetched from GitHub (notebook/tests/colab_live.sh;
+they depend mostly on the network):
+  apt-get update; apt-get install ngspice iverilog     14 s (ngspice-36, iverilog 11.0)
+  pip install ciel==3.0.0                              4 s
   ciel enable --pdk-family sky130 -l sky130_fd_sc_hd -l sky130_fd_pr <PDK_HASH>
-                                                       36 s, 457 MB under ~/.ciel
-  git clone --depth 1 <REPO_URL>        only when the notebook runs without the repository
+                                                       19 s, 457 MB under ~/.ciel
+  git clone --depth 1 --branch <REPO_REF> <REPO_URL>
+                                        only when the notebook runs without the repository
 apt needs root (Colab runs as root); without it the apt step is skipped with a note.
 ngspice-36 from apt gives the same supply-current traces as the ngspice-42 used for the
 campaigns (same deck: largest difference 5e-5 uA, charge per window 2e-9 relative, same
@@ -48,8 +50,14 @@ PDK_HASH = "0fe599b2afb6708d281543108caf8310912f54af"
 PDK_LIBRARIES = ("sky130_fd_sc_hd", "sky130_fd_pr")
 CIEL_VERSION = "3.0.0"
 APT_PACKAGES = ("ngspice", "iverilog")
-REPO_URL = os.environ.get("ASCON_REPO_URL", "https://github.com/Sarkar22/ascon-glitch-leakage")
-REPO_REF = os.environ.get("ASCON_REPO_REF", "main")
+# The public repository and the ref (branch or tag) that Colab fetches. DEFAULT_REPO_REF is the one
+# place to pin a release: set it to a tag (e.g. "v1.0") after the tag is pushed, then re-run
+# make_notebook.py, which writes it into the notebook's setup cell and its "run now" link.
+# $ASCON_REPO_URL and $ASCON_REPO_REF override both at run time (the setup cell sets the ref).
+DEFAULT_REPO_URL = "https://github.com/Sarkar22/ascon-glitch-leakage"
+DEFAULT_REPO_REF = "main"
+REPO_URL = os.environ.get("ASCON_REPO_URL", DEFAULT_REPO_URL)
+REPO_REF = os.environ.get("ASCON_REPO_REF", DEFAULT_REPO_REF)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(HERE, "data")
@@ -326,6 +334,8 @@ def setup(mode=None, install_tools=None, clone=None, verbose=True):
     if chosen == "live":
         os.environ["PDK"] = pdk
         os.environ["ASCON_REPO"] = repo           # later calls (spice_demo) find it again
+        if os.path.exists(os.path.join(repo, "results", "kill_test", "summary.json")):
+            os.environ["ASCON_GLITCH_ROOT"] = repo    # nbdata/nbanim: build/ and model/ of the clone
         for sub in ("model", "sim", "analysis"):
             p = os.path.join(repo, sub)
             if p not in sys.path:
@@ -405,7 +415,7 @@ def spice_demo(jobs=None, verbose=True):
     in `jobs` parallel ngspice processes (python3 sim/spice_campaign.py, as in the campaigns),
     checks the registered outputs against the S-box, compares current and charge with
     data/demo_reference_N_masksoff.csv and runs TVLA on the rows. Needs live mode; takes
-    ~2-6 min on 2 CPUs. Returns a dict with the arrays (times, traces, reference, label) and
+    about 1.5 min with ngspice-36 on 2 CPUs, and simulates again on every call. Returns a dict with the arrays (times, traces, reference, label) and
     the comparison; prints a short report."""
     import json
     import numpy as np
@@ -429,6 +439,8 @@ def spice_demo(jobs=None, verbose=True):
     stim_path = os.path.join(work, d["stimulus"] + ".npy")
     np.save(stim_path, stim)
     out = os.path.join(work, "spice_" + d["campaign"])
+    if os.path.isdir(out):             # simulate again: spice_campaign.py would reuse finished chunks
+        shutil.rmtree(out)
     _log(verbose, "SPICE demo: %d rows of %s (%s), %d ngspice processes"
          % (d["rows"], d["variant"], d["mode"], jobs))
     secs, _ = run([sys.executable, "sim/spice_campaign.py", "run", "--dut", dut, "--stim",

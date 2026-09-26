@@ -1,0 +1,210 @@
+{
+ "what": "RC bracket of the C-only post-layout netlist of N on the same stimulus rows. A sanity check of the extraction, not a TVLA: 120 rows cannot show or rule out a first-order leak.",
+ "netlists": {
+  "c_only": {
+   "dut": "build/N_pex",
+   "dut_sp_sha256": "b19998584205cf529aedf891b27197485ec6339126b7180569dc33a29f3bb172"
+  },
+  "rc": {
+   "dut": "runs/pex/rc/N_rc",
+   "dut_sp_sha256": "7132ffb1874b0ae0eef6b0c7ec67f68bd206649504175d60d93da6b55bbaad80",
+   "resistors": {
+    "count": 4427,
+    "total_ohm": 575262.1,
+    "median_ohm": 103.11,
+    "max_ohm": 511.3,
+    "nets_with_resistors": 603,
+    "supply_nets_with_resistors": []
+   },
+   "capacitance_rebuild": {
+    "magic_rc_capacitors_dropped": 1867,
+    "magic_rc_capacitance_fF": 744.94,
+    "c_only_capacitors": 7105,
+    "c_only_capacitance_fF": 1031.89,
+    "capacitors_written": 15302,
+    "not_split_below_fF": 0.01,
+    "network_nodes": 4993,
+    "nets": 605,
+    "rail_split_fF": 398.61,
+    "rail_not_split_fF": 1.52,
+    "coupling_one_node_fF": 236.76,
+    "rail_to_rail_fF": 395.0
+   },
+   "devices_identical_to_c_only": true,
+   "device_parameters_taken_from_c_only": [
+    "X2",
+    "X20"
+   ],
+   "caps_fF": {
+    "to_VGND": 213.841,
+    "to_VPWR": 186.289,
+    "VPWR_VGND": 395.0,
+    "signal_signal": 236.757,
+    "count": 15302
+   }
+  }
+ },
+ "runs": {
+  "c_only": "runs/pex/rc/sim_N_c",
+  "rc": "runs/pex/rc/sim_N_rc",
+  "rows": 120,
+  "stimulus": "runs/kt/stim/M_tvla.npy rows 0-119",
+  "solver": "klu",
+  "corner": "tt",
+  "temp_C": 27.0,
+  "vdd": 1.8,
+  "dt_ns": 0.01,
+  "chunk": 30,
+  "jobs": 4,
+  "s_per_cycle_per_process": {
+   "c_only": 7.8996,
+   "rc": 10.0441
+  },
+  "peak_rss_MB": {
+   "c_only": 204.8,
+   "rc": 221.1
+  }
+ },
+ "method": {
+  "extraction": "Magic 8.3.413 extresist on every net except VPWR and VGND (layout/pex/extract_rc.tcl, tolerance 10): resistor networks through the routing, vias, contacts and the cells' poly and li1; the supply rails stay one ideal node each, as in the C-only netlist and the testbench",
+  "capacitance": "Magic's extresist netlist keeps only 744.94 of the C-only extraction's 1031.89 fF (coupling to resistor-extracted nodes is dropped), so the RC netlist takes its transistors and resistors and the C-only capacitors (layout/make_pex_rc.py): capacitance to a supply rail (398.61 fF) split evenly over the net's network nodes, coupling between signal nets (236.76 fF) at one node of each net; the capacitance per pair of nets is the C-only one",
+  "reproducibility": "Magic's extresist output is not byte-identical between runs (4,425 to 4,429 resistors, total within 0.005 % in five runs); the simulated netlist is identified by its sha256 above",
+  "simulation": "the unchanged runner, both netlists on the same rows, chunks and solver; node runs with analysis/spice_nodes.py (default solver) on both"
+ },
+ "function": {
+  "c_only_mismatches_vs_sbox": 0,
+  "rc_mismatches_vs_sbox": 0,
+  "rc_vs_c_only_output_bits_differing": 0,
+  "rows": 120
+ },
+ "charge": {
+  "c_only_mean_fC": 2282.97,
+  "rc_mean_fC": 2277.65,
+  "rel_diff_rc_minus_c": {
+   "mean": -0.002364,
+   "min": -0.011304,
+   "max": 0.007299,
+   "max_abs": 0.011304
+  },
+  "corr_data_dependent": 0.999818
+ },
+ "waveform": {
+  "peak_current_uA": {
+   "c_only": 2720.9,
+   "rc": 2614.4
+  },
+  "max_abs_diff_uA": 651.91,
+  "mean_abs_diff_uA": 80.304,
+  "mean_trace_corr": 0.977561,
+  "best_shift_ns_rc_later": 0.02,
+  "mean_trace_corr_at_shift": 0.9949,
+  "data_dependent_corr": 0.936157,
+  "data_dependent_corr_at_shift": 0.98234,
+  "class_mean_diff": {
+   "rows_fixed_random": [
+    66,
+    52
+   ],
+   "corr": 0.949057,
+   "corr_at_shift": 0.983767,
+   "max_abs_c_only_uA": 88.48,
+   "max_abs_rc_minus_c_uA": 49.23,
+   "max_abs_rc_minus_c_at_shift_uA": 26.45,
+   "peak_ns_after_edge": {
+    "c_only": 1.385,
+    "rc": 1.435
+   }
+  },
+  "rows_used": 118,
+  "note": "first latency+1 rows dropped, as in TVLA"
+ },
+ "c_only_vs_campaign": {
+  "campaign": "runs/pex/N_pex_tvla",
+  "rows": 120,
+  "max_abs_diff_uA": 0.913,
+  "charge_max_rel_diff": 1.99e-05,
+  "data_dependent_corr": 0.99999999,
+  "outputs_equal": true
+ },
+ "current_timing": {
+  "cycle1": {
+   "peak_ns_after_edge": {
+    "rc": 0.335,
+    "c_only": 0.315
+   },
+   "charge_completion_ns_after_edge": {
+    "rc": {
+     "50%": 0.61,
+     "90%": 1.33,
+     "99%": 1.71
+    },
+    "c_only": {
+     "50%": 0.59,
+     "90%": 1.3,
+     "99%": 1.69
+    }
+   },
+   "best_shift_ns_rc_later": 0.02,
+   "mean_waveform_corr_at_shift": 0.9954,
+   "mean_waveform_corr_no_shift": 0.9773,
+   "peak_current_uA": {
+    "rc": 2571.7,
+    "c_only": 2677.6
+   },
+   "data_dependent_corr_at_shift": 0.9843
+  }
+ },
+ "net_timing": {
+  "cycles": 38,
+  "last_logic_crossing_ns": {
+   "c_only": {
+    "n": 38,
+    "median": 1.83,
+    "mean": 1.8085,
+    "min": 1.4651,
+    "max": 2.0129
+   },
+   "rc": {
+    "n": 38,
+    "median": 1.8943,
+    "mean": 1.8682,
+    "min": 1.5108,
+    "max": 2.0834
+   },
+   "rc_minus_c": {
+    "n": 38,
+    "median": 0.0614,
+    "mean": 0.0597,
+    "min": 0.0219,
+    "max": 0.0741
+   }
+  },
+  "clk_to_q_rc_minus_c_ns": {
+   "n": 469,
+   "median": 0.0245,
+   "mean": 0.0247,
+   "min": 0.0234,
+   "max": 0.0269
+  },
+  "per_net_last_crossing_rc_minus_c_ns": {
+   "n": 1521,
+   "median": 0.0387,
+   "mean": 0.0388,
+   "min": -0.6439,
+   "max": 0.3677,
+   "p95_abs": 0.0601
+  },
+  "logic_crossings": {
+   "c_only": 2065,
+   "rc": 2057,
+   "net_cycles_with_different_count": 10,
+   "net_cycles": 1524,
+   "net_cycles_switching_in_one_run_only": 3
+  },
+  "runs": {
+   "c_only": "runs/pex/rc/nodes_N_c",
+   "rc": "runs/pex/rc/nodes_N_rc"
+  }
+ },
+ "variant": "N"
+}
