@@ -1,0 +1,162 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# Checks of this repository, on fresh GitHub-hosted Ubuntu machines:
+#   unit      the stdlib unittest suites (without the PDK; the tests that need it are skipped here
+#             and run in the spice job)
+#   notebook  the organizers' two workflows (sscs-ose-code-a-chip .github/workflows/lint.yaml and
+#             run.yaml: nbqa flake8, the colab-badge greps, pytest --nbmake with only their
+#             packages installed, so the notebook runs in cached mode) on notebook/, and again on the
+#             pull-request folder that tools/make_submission.py builds, at its path in their repo
+#   spice     the live path: ngspice-42 and Icarus Verilog from apt, the sky130 PDK at the pinned
+#             open_pdks commit (ciel, cached), the unit tests that need them, then
+#             notebook/colab_check.py (netlists, iverilog, probing, stimuli, level-1/2 models and a
+#             60-row SPICE demo, each compared with the shipped results) and the notebook in live mode
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  unit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install numpy and matplotlib
+        run: python -m pip install numpy matplotlib
+      - name: Unit tests
+        run: |
+          for d in model/tests analysis notebook layout sim tools; do
+            echo "== $d"
+            python -m unittest discover -s "$d" -p 'test_*.py'
+          done
+
+  notebook:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install graphviz (as the organizers' run.yaml)
+        run: |
+          sudo apt-get -qq update
+          sudo apt-get -yq install graphviz
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.10'
+      - name: Install the organizers' packages only
+        run: python -m pip install flake8 nbQA pytest nbmake pandas graphviz matplotlib
+      - name: flake8 (lint.yaml)
+        run: nbqa flake8 --ignore=E402,E226 notebook/*.ipynb
+      - name: has colab-badge (lint.yaml)
+        run: grep colab-badge notebook/*.ipynb
+      - name: colab-badge is sscs-ose (lint.yaml)
+        run: grep colab-badge notebook/*.ipynb | (! grep -v 'sscs-ose')
+      - name: pytest --nbmake, cached mode (run.yaml)
+        run: pytest --nbmake notebook/*.ipynb
+      - name: Build the pull-request folder
+        # outside the checkout, so that no helper can fall back to the repository's results/
+        run: python tools/make_submission.py --out-root "$RUNNER_TEMP/submission"
+      - name: The organizers' checks on the pull-request folder
+        working-directory: ${{ runner.temp }}/submission
+        run: |
+          # Their workflows write **/*.ipynb without globstar, which matches one directory level
+          # only; with globstar the same commands reach ISSCC27/submitted_notebooks/<project>/.
+          shopt -s globstar
+          ls -la ISSCC27/submitted_notebooks/*/
+          # shellcheck disable=SC2035  # the organizers' commands, verbatim
+          {
+            nbqa flake8 --ignore=E402,E226 **/*.ipynb
+            grep colab-badge **/*.ipynb
+            grep colab-badge **/*.ipynb | (! grep -v 'sscs-ose')
+            pytest --nbmake **/*.ipynb
+          }
+      - uses: actions/upload-artifact@v7
+        with:
+          name: submission-folder
+          path: ${{ runner.temp }}/submission/
+          if-no-files-found: error
+
+  spice:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install ngspice and Icarus Verilog (apt)
+        run: |
+          sudo apt-get -qq update
+          sudo apt-get -yq install --no-install-recommends ngspice iverilog
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install Python packages
+        run: python -m pip install numpy matplotlib pytest nbmake
+      - name: Read the pinned PDK version
+        id: pdk
+        run: |
+          echo "hash=$(python -c 'import sys; sys.path.insert(0, "notebook"); import setup_env; print(setup_env.PDK_HASH)')" >> "$GITHUB_OUTPUT"
+      - name: Cache the sky130 PDK (sky130A only, about 460 MB)
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.ciel
+            !~/.ciel/ciel/sky130/versions/*/sky130B
+          key: ciel-sky130A-${{ steps.pdk.outputs.hash }}-sc_hd-pr
+      - name: Set up live mode with the notebook's own recipe (ciel, sky130 PDK)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python notebook/setup_env.py --install --mode live
+      - name: Unit tests that need ngspice and the PDK
+        run: |
+          python -m unittest discover -s model/tests -p 'test_*.py'
+          python -m unittest discover -s sim -p 'test_*.py'
+      - name: Live path against the shipped results (colab_check.py)
+        run: python notebook/colab_check.py --jobs 2 --out colab_check.json
+      - name: Report
+        if: always()
+        run: |
+          python - <<'EOF'
+          import json, os
+          r = json.load(open("colab_check.json"))
+          lines = ["| step | s | ok | result |", "|---|---|---|---|"]
+          lines += ["| %s | %.1f | %s | %s |" % (s["step"], s["seconds"], s.get("ok", True),
+                                                  s.get("summary", "").replace("|", "\\|"))
+                    for s in r["steps"]]
+          lines.append("\nenv: %s" % json.dumps(r["env"]))
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
+              f.write("\n".join(lines) + "\n")
+          spice = [s for s in r["steps"] if s["step"].startswith("SPICE")]
+          assert spice, "the SPICE demo did not run"
+          s = spice[0]
+          assert s["outputs_equal_sbox"] and s["outputs_equal_reference"], "functional mismatch"
+          assert s["ok"] and r["ok"], "the live path differs from the shipped results"
+          print("SPICE demo: %d rows, %s, outputs = S-box(x) in every row, current within %.1e uA "
+                "of the shipped ngspice-42 reference" % (s["rows"], s["ngspice"], s["max_abs_diff_uA"]))
+          EOF
+      - name: The notebook in live mode
+        env:
+          ASCON_MODE: live
+        run: |
+          rm -rf runs/colab
+          pytest --nbmake --nbmake-timeout=1200 notebook/ascon_glitch_leakage.ipynb
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: colab-check
+          path: colab_check.json
+          if-no-files-found: warn

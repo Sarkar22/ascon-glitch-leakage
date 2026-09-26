@@ -59,7 +59,8 @@ def _tcurve(v):
 # ---------------------------------------------------------------- workflow
 
 def workflow():
-    """Block diagram: one generator, one netlist, four checks, one statistic."""
+    """Block diagram: one generator, one netlist, four checks (SPICE also on the extracted layouts),
+    one statistic."""
     import matplotlib.pyplot as plt
     from matplotlib.patches import FancyBboxPatch
     style()
@@ -85,11 +86,16 @@ def workflow():
     rows = [("Exact probing check", "value and glitch-extended models,\nall 32,768 (x, mask, r)", c["muted"]),
             ("Level 1: zero-delay", "settled toggles per cycle", LEVEL["level1"]),
             ("Level 2: timing-aware", "Liberty delays, every glitch", LEVEL["level2"]),
-            ("Level 3: ngspice-42", "sky130 tt transistors,\nDUT supply current", LEVEL["spice"])]
+            ("Level 3: ngspice-42", "sky130 tt transistors, DUT supply\ncurrent; before and after layout",
+             LEVEL["spice"])]
     ys = [31, 21.5, 12, 2.5]
     for (t, s, e), y in zip(rows, ys):
         box(42.5, y, 21, 7.5, t, s, e)
         arrow(38.2, 20, 41.8, y + 3.75)
+    box(20.5, 1.5, 17, 9.5, "Layout: N and DA", "OpenLane, DRC/LVS clean;\nMagic extraction (C only)",
+        c["axis"])
+    arrow(29, 14.4, 29, 11.6)
+    arrow(38.2, 6.25, 41.8, 6.25)
     box(68.5, 12, 16, 16, "TVLA", "fixed x = 0x0B vs random\nWelch t per 10 ps\n|t| > 4.5 means leak", c["axis"])
     for y in ys[1:]:
         arrow(64.3, y + 3.75, 67.8, 20)
@@ -603,9 +609,11 @@ def postlayout_table():
                "{:,}".format(sn["stable_from"]) if sn["stable_from"] else "never", pn["final_max_abs_t"],
                pn["final_peak_ns_after_edge"], "{:,}".format(pn["stable_from"]) if pn["stable_from"] else "never",
                ok(cr["PL1"]["pass"])),
-            "| PL2 | DA: max\\|t\\| < 4.5, the fix survives place and route | %s | %.2f, never above 4.5 (at most "
+            "| PL2 | DA: max\\|t\\| < 4.5, the fix survives place and route (measured: no detection at %s "
+            "traces) | %s | %.2f, never above 4.5 (at most "
             "%.2f at any checkpoint) | %.2f | %s |"
-            % ("{:,}".format(da["rows_analysed"]), sd["final_max_abs_t"], max(sd["max_abs_t"]), pd["final_max_abs_t"],
+            % ("{:,}".format(da["rows_analysed"]), "{:,}".format(da["rows_analysed"]), sd["final_max_abs_t"],
+               max(sd["max_abs_t"]), pd["final_max_abs_t"],
                ok(cr["PL2"]["pass"])),
             "| PL3 | Where the t-peaks sit; the smallest leak TVLA could detect in DA (informational) | - | "
             "N: all %d samples above 4.5 in %.3f-%.3f ns (evaluation part; clock fall %.2f, input edges %.2f). "
@@ -615,6 +623,55 @@ def postlayout_table():
                sn["max_abs_t_by_region"]["clock_fall"], sn["max_abs_t_by_region"]["input_edges"],
                "{:,}".format(da["rows_analysed"]), cr["PL3"]["DA_pex_detectable_fraction_of_N_pex"],
                *pn["first_last_sample_above_threshold_ns"])]
+    return "\n".join(rows)
+
+
+CONTROL_LABEL = {
+    "correct": "LVS: OpenLane's final netlist (the one its LVS step read)",
+    "share_swap": "LVS: one cross-domain AND input moved from its share-0 net to the share-1 net (N: %s, %s -> %s)",
+    "gate_type": "LVS: the first and2_1 made an or2_1 (same pins)",
+    "missing_ff": "LVS: the first flip-flop deleted",
+}
+
+
+def controls_table():
+    """Markdown table: the negative controls of the layout sign-off (results/layout/
+    negative_controls.json). The LVS and DRC checks that pass on the layouts must fail on a
+    broken netlist or GDS; a result other than the expected one is printed in bold."""
+    nc = nbdata.negative_controls()
+    h = nbdata.controls_values(nc=nc)
+    lvs, drc = nc["lvs"], nc["drc"]
+
+    def lvs_cell(v, case):
+        c = lvs[v]["cases"][case]
+        s = c["verdict"] if c["as_expected"] else "**%s (expected %s)**" % (c["verdict"], c["expected"])
+        dv, nt = c["devices_layout_vs_netlist"], c["nets_layout_vs_netlist"]
+        if case == "correct":
+            s += " (%d / %d devices, %d / %d nets)" % (dv[0], dv[1], nt[0], nt[1])
+        elif case == "share_swap" and h["ctl_%s_swap_same_counts" % v] == "True":
+            s += ", device and net counts unchanged"
+        return s
+    rows = ["| Check and input | Expected | N | DA |", "|---|---|---|---|"]
+    for case, label in CONTROL_LABEL.items():
+        if case == "share_swap":
+            label = label % (h["ctl_swap_pin"], h["ctl_swap_from"], h["ctl_swap_to"])
+        cells = (label, lvs["N"]["cases"][case]["expected"], lvs_cell("N", case), lvs_cell("DA", case))
+        rows.append("| %s | %s | %s | %s |" % cells)
+    inj = drc["injected"]
+
+    def drc_cell(t):
+        if t["exactly_the_injected"]:
+            return "%d markers, all on the two defects" % t["markers"]
+        return "**%d markers, %d elsewhere**" % (t["markers"], t["markers_elsewhere"])
+    # the controls were not repeated on DA; its own sign-off DRC (section 6 table) is the reference
+    lay_da = nbdata.layout()["DA"]
+    da = "not repeated (sign-off: %d, §6)" % max(lay_da["drc_router"], lay_da["drc_magic"], lay_da["drc_klayout"])
+    rows.append("| DRC, Magic / KLayout: the final GDS | 0 / 0 | %d / %d | %s |"
+                % (drc["clean"]["magic_markers"], drc["clean"]["klayout_markers"], da))
+    rows.append("| DRC, Magic / KLayout: a copy with a %s um met1 gap (m1.2: %s um) and a via1 with %s um of met1 "
+                "enclosure (via.4a: %s um) | both defects, nothing else | Magic %s; KLayout %s | %s |"
+                % (h["ctl_m1_gap_um"], h["ctl_m1_rule_um"], h["ctl_via_enc_um"], h["ctl_via_rule_um"],
+                   drc_cell(inj["magic"]), drc_cell(inj["klayout"]), da))
     return "\n".join(rows)
 
 
@@ -681,8 +738,8 @@ def postlayout_cost_table():
         return "| %s | %s | %s | %.2f |" % (label, "{:,.{d}f}".format(a, d=digits), "{:,.{d}f}".format(b, d=digits),
                                             b / a)
     rows = ["| | N | DA | DA vs N |", "|---|---|---|---|",
-            r("core area after place and route, 40 % core utilisation (um^2)", lay["N"]["core_area_um2"],
-              lay["DA"]["core_area_um2"]),
+            r("core area after place and route, %.0f %% core-utilisation target, FP_CORE_UTIL (um^2)"
+              % lay["N"]["fp_core_util_pct"], lay["N"]["core_area_um2"], lay["DA"]["core_area_um2"]),
             r("die area after place and route (um^2)", lay["N"]["die_area_um2"], lay["DA"]["die_area_um2"]),
             r("energy per evaluation, **pre-layout** SPICE, same rows (fJ)",
               e["N"]["pre_layout_same_rows"]["e_eval_fJ"], e["DA"]["pre_layout_same_rows"]["e_eval_fJ"]),
@@ -700,9 +757,10 @@ def cost_table():
         c = nbdata.cost()
     except FileNotFoundError:
         return None
-    rows = list(c.values())
+    rows = [dict(r, area_ge="%.0f" % (float(r["area_um2"]) / nbdata.NAND2_1_UM2)) for r in c.values()]
     cols = [("variant", "Variant", None), ("cells", "cells", None), ("dff", "flip-flops", None),
-            ("area_um2", "cell area (um^2)", 1), ("area_vs_N", "area vs N", 2),
+            ("area_um2", "cell area (um^2)", 1), ("area_ge", "cell area (GE, nand2_1)", None),
+            ("area_vs_N", "area vs N", 2),
             ("latency_cycles", "latency (cycles)", None), ("min_period_ps", "min. clock period (ps)", 0),
             ("latency_ns", "latency (ns)", 2), ("latency_vs_N", "latency vs N", 2),
             ("fresh_random_bits", "fresh random bits", None),

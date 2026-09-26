@@ -1,0 +1,326 @@
+{
+ "description": "Negative controls of the layout sign-off (layout/neg_controls.py, layout/run_controls.sh): the same LVS and DRC checks that pass on the real layout must fail on a wrong netlist and a damaged GDS.",
+ "tools": "OpenLane v1 image ff5509f: Magic 8.3.413, netgen 1.5.255, KLayout 0.28.2; sky130A (ciel 0fe599b2)",
+ "lvs": {
+  "N": {
+   "layout_netlist": "Magic LVS extraction of results/layout/gds/dut_N.gds (layout/controls/lvs_extract.tcl)",
+   "layout_netlist_same_as_openlane_signoff": true,
+   "cases": {
+    "correct": {
+     "verdict": "match",
+     "final_result": "Circuits match uniquely",
+     "devices_layout_vs_netlist": [
+      96,
+      96
+     ],
+     "nets_layout_vs_netlist": [
+      109,
+      109
+     ],
+     "expected": "match",
+     "as_expected": true,
+     "change": {
+      "source": "OpenLane's final powered netlist, runs/pex/ol/N/runs/pex/results/final/verilog/gl/dut_N.v",
+      "same_as_openlane_lvs_input": true,
+      "instances_in_netlist": 323
+     }
+    },
+    "share_swap": {
+     "verdict": "mismatch",
+     "final_result": "Netlists do not match",
+     "devices_layout_vs_netlist": [
+      96,
+      96
+     ],
+     "nets_layout_vs_netlist": [
+      109,
+      109
+     ],
+     "expected": "mismatch",
+     "as_expected": true,
+     "change": {
+      "instance": "g_m01_0",
+      "cell": "sky130_fd_sc_hd__and2b_1",
+      "pin": "A_N",
+      "from_net": "as0_0",
+      "to_net": "as1_0",
+      "from_domain": "s0",
+      "to_domain": "s1",
+      "inputs_before": {
+       "A_N": "as0_0",
+       "B": "xs1_1_q"
+      },
+      "instances_in_netlist": 323
+     }
+    },
+    "gate_type": {
+     "verdict": "mismatch",
+     "final_result": "Top level cell failed pin matching",
+     "devices_layout_vs_netlist": [
+      146,
+      146
+     ],
+     "nets_layout_vs_netlist": [
+      129,
+      129
+     ],
+     "expected": "mismatch",
+     "as_expected": true,
+     "change": {
+      "instance": "g_m10_0",
+      "from_cell": "sky130_fd_sc_hd__and2_1",
+      "to_cell": "sky130_fd_sc_hd__or2_1",
+      "instances_in_netlist": 323
+     }
+    },
+    "missing_ff": {
+     "verdict": "mismatch",
+     "final_result": "Netlists do not match",
+     "devices_layout_vs_netlist": [
+      671,
+      647
+     ],
+     "nets_layout_vs_netlist": [
+      384,
+      372
+     ],
+     "expected": "mismatch",
+     "as_expected": true,
+     "change": {
+      "instance": "ff_r_0_q",
+      "cell": "sky130_fd_sc_hd__dfxtp_1",
+      "D": "r_0",
+      "Q": "r_0_q",
+      "instances_in_netlist": 322
+     }
+    }
+   }
+  },
+  "DA": {
+   "layout_netlist": "Magic LVS extraction of results/layout/gds/dut_DA.gds (layout/controls/lvs_extract.tcl)",
+   "layout_netlist_same_as_openlane_signoff": true,
+   "cases": {
+    "correct": {
+     "verdict": "match",
+     "final_result": "Circuits match uniquely",
+     "devices_layout_vs_netlist": [
+      128,
+      128
+     ],
+     "nets_layout_vs_netlist": [
+      141,
+      141
+     ],
+     "expected": "match",
+     "as_expected": true,
+     "change": {
+      "source": "OpenLane's final powered netlist, runs/pex/ol/DA/runs/pex/results/final/verilog/gl/dut_DA.v",
+      "same_as_openlane_lvs_input": true,
+      "instances_in_netlist": 469
+     }
+    },
+    "share_swap": {
+     "verdict": "mismatch",
+     "final_result": "Netlists do not match",
+     "devices_layout_vs_netlist": [
+      128,
+      128
+     ],
+     "nets_layout_vs_netlist": [
+      141,
+      141
+     ],
+     "expected": "mismatch",
+     "as_expected": true,
+     "change": {
+      "instance": "g_m01_0",
+      "cell": "sky130_fd_sc_hd__and2b_1",
+      "pin": "A_N",
+      "from_net": "as0_0_q",
+      "to_net": "as1_0_q",
+      "from_domain": "s0",
+      "to_domain": "s1",
+      "inputs_before": {
+       "A_N": "as0_0_q",
+       "B": "as1_1_q"
+      },
+      "instances_in_netlist": 469
+     }
+    },
+    "gate_type": {
+     "verdict": "mismatch",
+     "final_result": "Netlists do not match",
+     "devices_layout_vs_netlist": [
+      178,
+      178
+     ],
+     "nets_layout_vs_netlist": [
+      161,
+      161
+     ],
+     "expected": "mismatch",
+     "as_expected": true,
+     "change": {
+      "instance": "g_m10_0",
+      "from_cell": "sky130_fd_sc_hd__and2_1",
+      "to_cell": "sky130_fd_sc_hd__or2_1",
+      "instances_in_netlist": 469
+     }
+    },
+    "missing_ff": {
+     "verdict": "mismatch",
+     "final_result": "Netlists do not match",
+     "devices_layout_vs_netlist": [
+      1393,
+      1369
+     ],
+     "nets_layout_vs_netlist": [
+      746,
+      735
+     ],
+     "expected": "mismatch",
+     "as_expected": true,
+     "change": {
+      "instance": "ff_as0_0_q",
+      "cell": "sky130_fd_sc_hd__dfxtp_1",
+      "D": "as0_0",
+      "Q": "as0_0_q",
+      "instances_in_netlist": 468
+     }
+    }
+   }
+  }
+ },
+ "drc": {
+  "clean": {
+   "gds": "results/layout/gds/dut_N.gds",
+   "magic_markers": 0,
+   "magic_count": 0,
+   "klayout_markers": 0
+  },
+  "injected": {
+   "magic_note": "Magic's via1 contact type includes the 0.055 um via.4a enclosure, so its message counts the missing surround from that edge",
+   "gds": "copy of results/layout/gds/dut_N.gds with two added structures (layout/controls/inject_drc.py)",
+   "structures": [
+    {
+     "name": "met1_spacing",
+     "rule": "m1.2 met1 spacing >= 0.14 um",
+     "drawn": "0.07 um gap between two 0.50 x 0.40 um met1 rectangles",
+     "shapes": [
+      {
+       "layer": "68/20",
+       "box_um": [
+        24.3,
+        12.1,
+        24.8,
+        12.5
+       ]
+      },
+      {
+       "layer": "68/20",
+       "box_um": [
+        24.87,
+        12.1,
+        25.37,
+        12.5
+       ]
+      }
+     ],
+     "bbox_um": [
+      24.3,
+      12.1,
+      25.37,
+      12.5
+     ]
+    },
+    {
+     "name": "via1_enclosure",
+     "rule": "via.4a met1 enclosure of via1 >= 0.055 um",
+     "drawn": "met1 enclosure 0.03 um (left, right), 0.15 um (bottom, top); met2 0.15 um",
+     "shapes": [
+      {
+       "layer": "68/44",
+       "box_um": [
+        41.18,
+        12.225,
+        41.33,
+        12.375
+       ]
+      },
+      {
+       "layer": "68/20",
+       "box_um": [
+        41.15,
+        12.075,
+        41.36,
+        12.525
+       ]
+      },
+      {
+       "layer": "69/20",
+       "box_um": [
+        41.03,
+        12.075,
+        41.48,
+        12.525
+       ]
+      }
+     ],
+     "bbox_um": [
+      41.03,
+      12.075,
+      41.48,
+      12.525
+     ]
+    }
+   ],
+   "cell_rows_bbox_um": [
+    5.33,
+    10.64,
+    55.85,
+    60.08
+   ],
+   "magic": {
+    "markers": 10,
+    "markers_by_structure": {
+     "met1_spacing": {
+      "n": 2,
+      "rules": [
+       "Metal1 spacing < 0.14um (met1.2)"
+      ]
+     },
+     "via1_enclosure": {
+      "n": 8,
+      "rules": [
+       "Metal1 overlap of Via1 < 0.03um in one direction (via.5a - via.4a)"
+      ]
+     }
+    },
+    "markers_elsewhere": 0,
+    "stray_examples": [],
+    "exactly_the_injected": true
+   },
+   "klayout": {
+    "markers": 3,
+    "markers_by_structure": {
+     "met1_spacing": {
+      "n": 1,
+      "rules": [
+       "m1.2"
+      ]
+     },
+     "via1_enclosure": {
+      "n": 2,
+      "rules": [
+       "via.4a"
+      ]
+     }
+    },
+    "markers_elsewhere": 0,
+    "stray_examples": [],
+    "exactly_the_injected": true
+   }
+  }
+ },
+ "all_as_expected": true
+}

@@ -18,6 +18,7 @@ demo_reference_N_masksoff.csv,186557,428055b9d917de4319ec3d5a7953e78dc50bf18cec7
 key_recovery__ge_vs_traces.csv,239820,75393e87b11e3320ebd4df35c8ddfd6dc6fddf26a35c733e43663e366423f6a3,results/key_recovery/ge_vs_traces.csv,copy of a later step's result
 key_recovery__summary.json,388581,cdb3bfbed7176decf0332aba3f1db9dfe8411971a68f662c0b9b89aed1d7c7b2,results/key_recovery/summary.json,copy of a later step's result
 kill_test_summary.json,159907,998620e776f8cdb0c06501274918e932a3678dee60d1dcf668efa6ae4b5c43a1,results/kill_test/summary.json,every number of docs/KILL_TEST.md (written by analysis/kill_test.py)
+layout__negative_controls.json,7266,a826f06d7c371d3a11fc7fbbc3e9005d479385dc1ca7738498d0868042cbad1a,results/layout/negative_controls.json,copy of a later step's result
 layout__placement_DA.csv,28447,65f96039c08c2562e749d59d46ba025935c08efb6cb36f59cd656ea9e2f0ae2a,results/layout/placement_DA.csv,copy of a later step's result
 layout__placement_N.csv,19399,3cdabc03e018811aa6d194a7d25f5385914482f4db1a8ee657ab1eb2cc7d192f,results/layout/placement_N.csv,copy of a later step's result
 layout__placement_U.csv,6310,6faed4bf2bc4cee07835b97a3b9352a977f58f5f9c1f416c69c81cfec26955be,results/layout/placement_U.csv,copy of a later step's result
@@ -42,6 +43,7 @@ pex__netcap_DA.csv,4706,9fc5cab6d294279266814dd1136cb3e738fd2c6681ecde9c04239f4f
 pex__netcap_N.csv,3606,a1dd83ccea02005da52fe9e7a03a805907a5a9dd4a208d93454cba1e9be47f37,results/pex/netcap_N.csv,copy of a later step's result
 pex__netcap_U.csv,1111,d6072f497efc3f05129afc8d787a10f9d73e2a75c2bfe9eaece0df35776508a6,results/pex/netcap_U.csv,copy of a later step's result
 pex__node_timing_N.json,1337,f569fe6a5002a9270da54cb8985669fa59c1160dbdc900f9e24902a0c5a378bd,results/pex/node_timing_N.json,copy of a later step's result
+pex__rc_check.json,5619,780e5e0e444207f814934a68d090d7feb83484119981f4b3407e12bfbe76e264,results/pex/rc_check.json,copy of a later step's result
 pex__sanity_DA.json,1459,2bf2213238f569cc1ec21d7ed5cb19454d718f1361a961393b74471d9d54b537,results/pex/sanity_DA.json,copy of a later step's result
 pex__sanity_N.json,953,0f83d4e54ad3d05cd9ed35fe5e3a9e967295b67d6c195fae0893dd40783242df,results/pex/sanity_N.json,copy of a later step's result
 pex__summary_postlayout.json,31317,3521a61817d74db530fa1d626a9e462719d52d74eb20a7fa3c8eee13cec9fd56,results/pex/summary_postlayout.json,copy of a later step's result

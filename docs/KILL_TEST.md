@@ -178,7 +178,7 @@ correlate at 0.97-0.99 with one another (`cpa.*.guess_hypothesis_corr_level1_mod
 error decides the ranking. Amendment A2 named this risk. The level-2 model, run on the same stimulus before the
 SPICE CPA traces existed, already ranked keys 0 and 1 wrongly. My recommendation is to go ahead with option A on
 the strength of K2, K3, C and the localization. K1 stays reported as failed, and the CPA sanity check needs a
-redesign (e.g. more key bits or several columns) before the notebook relies on it. The decision is the user's; the
+redesign (e.g. more key bits or several columns) before the notebook relies on it. The decision is the author's; the
 fallback to option B written above is tied to K3, which passed.
 
 **What the runs show.**
@@ -347,7 +347,7 @@ all numbers below are from `results/kill_test/summary.json`. Every SPICE row's o
   on the same rows. D's leak therefore remains unresolved in the supply current at the A3 count; it is not shown to
   be absent. A further D run to 20,000 rows followed (addendum below).
 - *Level 2 is pessimistic for D* at 10 ps resolution, which confirms the first run's reading.
-- The GO/NO-GO statement above is unchanged: K1 fails on its CPA part, K2, K3, K5 and C pass, and the user decided
+- The GO/NO-GO statement above is unchanged: K1 fails on its CPA part, K2, K3, K5 and C pass, and the author decided
   to proceed with option A.
 
 **Addendum (2026-09-25, exploratory, beyond A3): D at 20,000 rows.** The D run was continued to 20,000 rows on the

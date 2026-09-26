@@ -50,7 +50,15 @@ says nothing about higher counts.
 _The registered text above is unchanged; this subsection was appended after both campaigns had finished._
 
 All numbers below come from `results/pex/summary_postlayout.json`, which `analysis/postlayout.py` writes. The
-exceptions are the layout figures, which come from `results/layout/summary.json`. Other result files:
+exceptions are the layout figures, which come from `results/layout/summary.json`, and a few numbers that no file
+under `results/` holds; each names its source where it appears (review note N6):
+- the campaigns' start and end times and the slow chunks' times, from the git-ignored `runs/pex/queue.log` and
+  `runs/pex/N_pex_tvla/manifest.json`;
+- the clock tree's insertion delay, from `layout/README.md`;
+- the interim peak position, from `docs/reviews/stage3-layout-pex.md`;
+- the solvers' class-mean difference, from `docs/reviews/stage4-postlayout.md`.
+
+Other result files:
 - per-sample t-curves: `results/pex/tcurve_<V>_pex.csv`;
 - max|t| against the number of traces: `results/pex/maxt_vs_traces_<V>_pex.csv`;
 - figures: `results/pex/fig/tvla_pre_vs_post.png` and `maxt_vs_traces_pre_vs_post.png`
@@ -68,7 +76,8 @@ change where either campaign stopped.
 - The stimulus is rows 0-4,999 and 0-9,999 of `runs/kt/stim/M_tvla.npy`. Its hash equals the pre-layout
   campaigns' hash.
 - SPICE: ngspice-42, sky130 `tt`, 27 °C, 1.8 V, 4 ns clock, KLU, 10 ps bins. Each campaign ran as 6 processes in one
-  container capped at 6 CPUs, in 125-row chunks (`runs/pex/queue.log`: N_pex 19:24-23:25, DA_pex 23:25-04:19).
+  container capped at 6 CPUs, in 125-row chunks. Start and end times, from the git-ignored `runs/pex/queue.log` (not a
+  results file): N_pex 19:24-23:25, DA_pex 23:25-04:19.
 - The first L+1 rows were dropped, leaving 4,998 traces for N_pex (2,511 fixed, 2,487 random) and 9,997 for DA_pex
   (5,009 fixed, 4,988 random).
 - Function: every registered output matches the S-box (0 mismatches in 5,000 and 10,000 rows). Every output is also
@@ -86,7 +95,7 @@ change where either campaign stopped.
 | Id | Criterion | Measured | Traces | Result | Source (`summary_postlayout.json`) |
 |---|---|---|---|---|---|
 | PL1 | N_pex: max\|t\| > 4.5 (the leak survives place and route) | max\|t\| **8.19** at 1.655 ns after the edge; above 4.5 from 1,902 traces on and at every later checkpoint. Pre-layout on the same rows: 8.07 | 4,998 (5,000 rows, as registered) | **pass** | `criteria.PL1`, `campaigns.N_pex.spice` |
-| PL2 | DA_pex: max\|t\| < 4.5 (the fix survives place and route) | max\|t\| **3.36**; never above 4.5 (at most 3.62 at any checkpoint). Pre-layout on the same rows: 3.35 | 9,997 (10,000 rows, as registered) | **pass** | `criteria.PL2`, `campaigns.DA_pex.spice` |
+| PL2 | DA_pex: max\|t\| < 4.5 (the fix survives place and route) | max\|t\| **3.36**; never above 4.5 (at most 3.62 at any checkpoint), i.e. no detection at 9,997 traces (bound in "What this shows"). Pre-layout on the same rows: 3.35 | 9,997 (10,000 rows, as registered) | **pass** | `criteria.PL2`, `campaigns.DA_pex.spice` |
 | PL3 | Where the t-peaks sit, by part of the cycle (post-layout parts: edge and evaluation -0.2 to 2.1 ns, clock fall 2.1 to 2.9, input edges 2.9 to 3.8, per cycle), and DA_pex's detectable effect as a fraction of N_pex's measured effect (informational) | **N_pex:** all 39 samples above 4.5 lie between 1.415 and 1.795 ns, in the edge-and-evaluation part (8.19). The clock fall reaches 1.13 and the input edges 1.13. **DA_pex:** no sample above 4.5. By part: cycle 1 2.42 / 3.33 / 3.36, cycle 2 2.46 / 0.89 / 1.04 (evaluation / clock fall / input edges). The largest \|t\|, 3.36, falls at 2.945 ns in cycle 1's input-edges part, 45 ps after the boundary. Neither peak lies in the 2.0-2.2 ns overlap. **Detectable effect:** at 9,997 traces TVLA reaches 4.5 on average for a standardized effect of 0.090, which is **0.39** of N_pex's measured 0.232 | - | informational | `criteria.PL3`, `campaigns.<V>_pex.peaks` |
 
 **Pre-layout against post-layout on the same rows.** The same test is applied to the same rows. Pre-layout uses the
@@ -117,10 +126,14 @@ the two CSV files. The DA peak times count from the first edge; the second edge 
   but moves 0.69 ns later: the correlation of the two signed curves is 0.88 at that shift and 0.16 without it
   (`pre_vs_post.t_curve`).
 - *The shift is consistent with the node timing measured before the campaigns* (`results/pex/node_timing_N.json`).
-  The clock tree adds about 0.33 ns of insertion delay. The flip-flops' median clock-to-Q grows from 0.20 to 0.56 ns,
+  The clock tree adds about 0.33 ns of insertion delay (from the flow's clock-tree timing, quoted in `layout/README.md`;
+  no file under `results/` holds this number). The flip-flops' median clock-to-Q grows from 0.20 to 0.56 ns,
   and the median last logic transition from 1.06 to 1.83 ns.
 - *The whole post-layout leak lies inside the registered evaluation part.* Every sample above 4.5 falls between 1.415
-  and 1.795 ns. The clock-fall and input-edge parts stay at 1.13.
+  and 1.795 ns. The clock-fall and input-edge parts stay at 1.13. The registration disclosed the interim max|t| values
+  but not the peak position of the second look, 3.00 at **1.645 ns** (`docs/reviews/stage3-layout-pex.md`, N3). That
+  position was known when the part boundaries were written (review note N4). The node timing alone (last logic
+  transition up to 2.01 ns, `node_timing_N.json`) justifies the 2.1 ns boundary, and PL3 is informational.
 - *The leak is still in the timing of the evaluation, not in the total charge.* The \|t\| of the charge per window is
   2.34, below 4.5, as it was before layout (2.48). In 100 ps bins the leak stays at 7.97.
 - *Added noise gives the same picture before and after layout.* At 0.5x noise, max\|t\| stays above 4.5 from 2,500
@@ -128,9 +141,12 @@ the two CSV files. The DA peak times count from the first edge; the second edge 
   pre-layout). The only crossings are small-sample false alarms at 20-105 traces, as explained in the kill test. The kill
   test needed 6,273 traces for N at 1x, so this count cannot say more.
 - *DA shows no first-order leak after layout within 9,997 traces* (3.36, at most 3.62 at any checkpoint). The same
-  rows before layout give 3.35. This rules out only leaks at least 0.39 times as strong as N_pex's measured effect.
-  DA_pex has half the traces of the pre-layout DA campaign, so its bound is weaker than the kill test's "about a
-  quarter" (0.24 at 19,997 traces).
+  rows before layout give 3.35. At this count TVLA reaches 4.5 on average for a leak 0.39 times as strong as N_pex's
+  measured effect, so a leak of exactly that size would be missed about half the time (review note N3). The bound is
+  weaker than the kill test's "about a quarter" (0.24 at 19,997 traces) for two reasons:
+  - DA_pex has half the traces of the pre-layout DA campaign. Against N's effect on all 9,998 pre-layout traces
+    (0.265, from `results/kill_test/summary.json`), that alone gives 0.090 / 0.265 = 0.34.
+  - The reference is smaller: N_pex's effect on its 4,998 traces is 0.232.
 - *DA's largest \|t\| is not a peak in the TVLA sense.* It lies at the end of a flat stretch of the t-curve
   (about 2.6 to 2.95 ns). There the mean current has decayed from 761 to 7 uA, just before the next row's input
   edges. The pre-layout D/DA maximum of the kill test (2.175 ns, clock fall) sits on a similar stretch. No
@@ -151,8 +167,12 @@ ngspice's default Sparse solver. The two solvers were run on the same post-layou
 | largest relative difference of the charge per window | 1.31e-4 | 1.47e-4 |
 | correlation of the data-dependent parts | 0.9999999 | 0.9999997 |
 
-The solvers differ by the same amount whatever the data. So the choice of solver cannot create or hide a class
-difference of the size TVLA measures here: a mean fixed-minus-random difference of up to 25.5 uA in N.
+The per-row differences are sporadic: a few rows reach the largest values in the table (review note N2). What
+matters for TVLA is whether the difference depends on the class. On these 120 rows, the fixed-minus-random mean of the
+KLU-minus-Sparse difference is at most 0.13 uA (N) and 0.28 uA (DA) at any sample (`docs/reviews/stage4-postlayout.md`,
+check 13, computed from the git-ignored `runs/pex/bench_*` traces). That is two orders of magnitude below the mean
+fixed-minus-random difference that TVLA measures in N, up to 25.5 uA. So the choice of solver cannot create or hide a
+class difference of that size.
 
 **The netlist text behind the sanity and benchmark files (review note N2).** Three result files were made from an
 earlier text of the same Magic extraction: `results/pex/sanity_N.json`, `sanity_DA.json` and `bench.json`. The
@@ -201,7 +221,9 @@ against N's 2,455 µm² (1.61x), and its die is 6,347 µm² against 4,412 µm² 
 utilisation; the placement utilisation is 43.4 % for DA and 44.2 % for N.
 
 **SPICE cost.** N_pex took 14,431 s of wall clock and DA_pex 17,637 s, 6 processes each (`spice_wall_clock`). N_pex's
-time includes a period when the host was suspended: one chunk took 9,422 s, against a median of 843 s. DA_pex's
+time includes a period when the host was suspended: one wave of six chunks (24 to 29), which ran together, took 9,410
+to 9,422 s each, against a median of 843 s (review note N1; the per-chunk times are in the git-ignored
+`runs/pex/N_pex_tvla/manifest.json`, the maximum is `chunk_wall_s_max`). DA_pex's
 chunks took 1,286 s (median).
 
 **Limits of these numbers.**
@@ -217,8 +239,8 @@ chunks took 1,286 s (median).
 
 The claim these results support is: *under transistor-level simulation of the extracted (C-only) layouts on sky130
 tt, N's first-order leak survives place and route (max|t| 8.19 at 4,998 traces, above 4.5 from 1,902 on), and DA
-shows no first-order leak within 9,997 traces, which rules out only leaks at least 0.39 times as strong as N_pex's
-measured effect.* It is not a statement about silicon.
+shows no first-order leak within 9,997 traces, where TVLA reaches 4.5 on average for a leak 0.39 times as strong as
+N_pex's measured effect.* It is not a statement about silicon.
 
 **Reproduce** (from the repository root; here the two campaigns took 8.9 h of wall clock on 6 CPUs, including the
 suspend):
@@ -228,10 +250,45 @@ python3 analysis/postlayout.py
 bash sim/docker_run.sh python3 analysis/plot_postlayout.py
 python3 -m unittest analysis/test_postlayout.py
 ```
-`runs/pex/queue.sh` is git-ignored. It is equivalent to these two commands:
+`analysis/postlayout.py` skips the solver, netlist-text and capacitance checks when `runs/pex/bench_*` or the
+OpenLane SPEF are absent, and its `reproduces_kill_test` check needs the full pre-layout campaigns in
+`runs/kt/{N,DA}_tvla` (review note N9). `runs/pex/queue.sh` is git-ignored. It is equivalent to these two commands:
 ```
 bash sim/docker_run.sh python3 sim/spice_campaign.py run --dut build/N_pex --stim runs/kt/stim/M_tvla.npy \
     --out runs/pex/N_pex_tvla --rows 5000 --chunk 125 --jobs 6 --threads 1 --options klu --save-outputs
 bash sim/docker_run.sh python3 sim/spice_campaign.py run --dut build/DA_pex --stim runs/kt/stim/M_tvla.npy \
     --out runs/pex/DA_pex_tvla --rows 10000 --chunk 125 --jobs 6 --threads 1 --options klu --save-outputs
 ```
+
+### Post-hoc checks outside the registration (appended 2026-09-26)
+
+_Appended after the Results above. These checks are not part of the registration and no criterion (PL1 to PL3)
+depends on them; the registered text and the Results above are unchanged. Every number comes from the two files
+named below, except the 0.69 ns shift (`summary_postlayout.json`, above); details in `layout/README.md` ("Negative
+controls and an RC bracket")._
+
+**Negative controls of the sign-off** (`results/layout/negative_controls.json`, `bash layout/run_controls.sh N DA`).
+The netgen LVS that matches both layouts reports a mismatch, for N and for DA, on each of three edited netlists:
+- one cross-domain AND input moved from its share-0 net to the share-1 net (N `g_m01_0.A_N`: `as0_0` -> `as1_0`),
+  which leaves every device and net count unchanged (N 96 devices and 109 nets, DA 128 and 141);
+- the first `and2_1` made an `or2_1`;
+- the first flip-flop deleted.
+
+Magic (OpenLane's sign-off DRC commands) and KLayout (the PDK's `sky130A_mr.drc`) report 0 on N's final GDS. On a copy
+with two injected defects, a 0.07 um met1 gap (m1.2: 0.14 um) and a via1 with 0.03 um of met1 enclosure (via.4a:
+0.055 um), they report only those defects: Magic 10 markers, KLayout 3, none elsewhere.
+
+**RC bracket of N** (`results/pex/rc_check.json`, `layout/rc_check.py`). The campaigns above use C-only extraction.
+Magic `extresist` on every net except VPWR and VGND adds 4,427 resistors (median 103 ohm, at most 511 ohm); the C-only
+capacitance is put back and the rails stay ideal. Both netlists ran rows 0-119 of the same stimulus with KLU. This is
+a sanity check, not a TVLA: 120 rows cannot show or rule out a leak. RC against C-only:
+- function: 0 mismatches against the S-box in either run, and the outputs are identical bit for bit;
+- charge per window: -0.24 % on average (at most 1.1 % in any row), data-dependent part correlated at 0.9998;
+- supply current: RC is 20 ps later; after that shift the data-dependent part correlates at 0.98 and the
+  fixed-minus-random mean current at 0.98 (0.95 unshifted);
+- node runs, 38 cycles: flip-flop clock-to-Q +25 ps on average; the last logic transition +61 ps (median), from 1.83
+  to 1.89 ns (at most 2.08 ns).
+
+The C-only run equals the N_pex campaign's first 120 rows within 0.9 uA per bin. So the C-only model's timing is within
+about 60 ps of the RC one, against the 0.69 ns shift of the t-curve that place and route caused. This does not re-test
+PL1 or PL2, and power-grid resistance is still left out.

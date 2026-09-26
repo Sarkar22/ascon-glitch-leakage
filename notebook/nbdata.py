@@ -21,6 +21,8 @@ Where the data come from, in this order:
   layout()               the layouts and their sign-off (results/layout/summary.json)
   postlayout()           the post-layout TVLA (results/pex/summary_postlayout.json)
   node_timing()          pre- vs post-layout node timing of N (results/pex/node_timing_N.json)
+  negative_controls()    LVS/DRC negative controls (results/layout/negative_controls.json)
+  rc_check()             the RC bracket of N on 120 rows (results/pex/rc_check.json)
   placement(v)           the placed cells of a layout (results/layout/placement_<V>.csv)
   read_step_csv(step, n) a CSV of a later step (data/<step>__<n>.csv or results/<step>/<n>.csv)
 
@@ -37,6 +39,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
 MARKER = os.path.join("results", "kill_test", "summary.json")
 THRESHOLD = 4.5
+# One gate equivalent: the area of sky130_fd_sc_hd__nand2_1 in the PDK's tt_025C_1v80 Liberty file (um^2)
+NAND2_1_UM2 = 3.7536
 WEIGHTINGS = ("unweighted", "weighted", "weighted_rise")
 VARIANT_NAMES = {
     "U": "unmasked",
@@ -176,6 +180,18 @@ def postlayout():
 def node_timing():
     """N's node timing before and after layout: data/pex__node_timing_N.json, else results/pex/."""
     return _step_json("pex", "node_timing_N.json")
+
+
+def negative_controls():
+    """The negative controls of the layout sign-off (post hoc; LVS on N and DA, DRC on N):
+    data/layout__negative_controls.json, else results/layout/."""
+    return _step_json("layout", "negative_controls.json")
+
+
+def rc_check():
+    """The RC bracket of N's C-only extraction on 120 rows (post hoc; a sanity check, not a TVLA):
+    data/pex__rc_check.json, else results/pex/."""
+    return _step_json("pex", "rc_check.json")
 
 
 def placement(v):
@@ -331,6 +347,13 @@ def fmt_headline(s=None):
     out.update(key_recovery_values(s=s))
     out.update(cost_values())
     out.update(postlayout_values())
+    out.update(controls_values())
+    # DA_pex's detectable effect against N's effect on all 9,998 pre-layout traces: what half the
+    # traces alone would give (the rest of the gap to pl_DA_detect_frac is N_pex's smaller effect)
+    out["pl_DA_detect_frac_full_N"] = "%.2f" % (postlayout()["criteria"]["PL3"]["DA_pex_detectable_sd"]
+                                                / h["dN_sd"])
+    dates = sorted({h["generated"], postlayout()["generated"]})
+    out["results_dated"] = " to ".join(dates)
     return out
 
 
@@ -445,6 +468,9 @@ def cost_values(c=None):
         for k in ("area_vs_N", "energy_vs_N", "total_vs_N", "latency_vs_N"):
             out["cost_%s_%s_pct" % (v, k)] = "%d" % round(100 * (float(c[v][k]) - 1))
     out["cost_dff_extra"] = str(int(c["DA"]["dff"]) - int(c["N"]["dff"]))
+    for v, r in c.items():                      # cell area in gate equivalents (nand2_1)
+        out["cost_%s_ge" % v] = "%d" % round(float(r["area_um2"]) / NAND2_1_UM2)
+    out["ge_nand2_um2"] = "%.4f" % NAND2_1_UM2
     u = c["U"]
     out["cost_U_bias_pct"] = "%.1f" % (100 * (1 - float(u["q_window_all_random_class_rows_fC"]) / float(u["q_window_fC"])))
     return out
@@ -522,12 +548,15 @@ def postlayout_values(pl=None, lay=None, nt=None):
                     "lay_%s_cap_rcx" % v: "%.0f" % cv["openrcx_routed_wiring_fF"],
                     "lay_%s_cap_magic" % v: "%.0f" % cv["magic_flat_fF"],
                     "lay_%s_cap_ratio" % v: "%.1f" % cv["magic_over_estimate"],
-                    "lay_%s_xtors" % v: _n(L["pex"]["n_devices"])})
+                    "lay_%s_xtors" % v: _n(L["pex"]["n_devices"]),
+                    "lay_%s_clk_pins" % v: str(L["final_vs_generator"]["clk_pins_on_clock_tree_nets"])})
         cp = L["pex"]["coupling_between_named_nets_by_domain"].get("s0-s1")
         if cp:
             out["lay_%s_s0s1_fF" % v] = "%.1f" % cp["fF"]
     out["lay_core_DA_vs_N_pct"] = "%d" % round(100 * (lay["DA"]["core_area_um2"] / lay["N"]["core_area_um2"] - 1))
     out["lay_die_DA_vs_N_pct"] = "%d" % round(100 * (lay["DA"]["die_area_um2"] / lay["N"]["die_area_um2"] - 1))
+    util = {lay[v]["fp_core_util_pct"] for v in ("N", "DA")}   # the flow's FP_CORE_UTIL target
+    out["lay_fp_util"] = "%.0f" % util.pop() if len(util) == 1 else "/".join("%.0f" % u for u in sorted(util))
     out["lay_all_clean"] = str(all(lay[v]["drc_router"] == lay[v]["drc_magic"] == lay[v]["drc_klayout"] == 0
                                    and lay[v]["lvs"].startswith("Circuits match")
                                    and lay[v]["antenna_pin_violations"] == lay[v]["antenna_net_violations"] == 0
@@ -536,6 +565,82 @@ def postlayout_values(pl=None, lay=None, nt=None):
         out["pl_%s_pre" % tag] = "%.2f" % nt["pre_layout"][k]["median"]
         out["pl_%s_post" % tag] = "%.2f" % nt["post_layout"][k]["median"]
         out["pl_%s_post_max" % tag] = "%.2f" % nt["post_layout"][k]["max"]
+    return out
+
+
+def _gap_um(a, b):
+    """Horizontal gap between two boxes [x0, y0, x1, y1] (um), a left of b."""
+    return round(b[0] - a[2], 3)
+
+
+def _enclosure_um(inner, outer):
+    """Smallest distance from an inner box's edge to the enclosing box's edge (um)."""
+    return round(min(inner[0] - outer[0], inner[1] - outer[1], outer[2] - inner[2], outer[3] - inner[3]), 3)
+
+
+def _rule_um(rule):
+    """The minimum a rule string states ('m1.2 met1 spacing >= 0.14 um' -> '0.14')."""
+    tail = rule.split(">=")[-1].split()
+    return tail[0] if tail else "?"
+
+
+def controls_values(nc=None, rc=None):
+    """The post-hoc checks' numbers the text quotes, as strings: the layout sign-off's negative
+    controls (prefix ctl_) and the RC bracket of N (prefix rc_)."""
+    nc = nc or negative_controls()
+    rc = rc or rc_check()
+    out = {"ctl_all": str(bool(nc["all_as_expected"]))}
+    lvs = nc["lvs"]
+    for v in ("N", "DA"):
+        cs = lvs[v]["cases"]
+        out["ctl_%s_devices" % v] = str(cs["correct"]["devices_layout_vs_netlist"][1])
+        out["ctl_%s_nets" % v] = str(cs["correct"]["nets_layout_vs_netlist"][1])
+        out["ctl_%s_failed" % v] = str(sum(c["verdict"] == "mismatch" for k, c in cs.items() if k != "correct"))
+        same = [cs["share_swap"][k] == cs["correct"][k] for k in ("devices_layout_vs_netlist", "nets_layout_vs_netlist")]
+        out["ctl_%s_swap_same_counts" % v] = str(all(same))
+    sw = lvs["N"]["cases"]["share_swap"]["change"]
+    out.update(ctl_swap_pin="%s.%s" % (sw["instance"], sw["pin"]), ctl_swap_from=sw["from_net"],
+               ctl_swap_to=sw["to_net"])
+    drc = nc["drc"]
+    inj = {s["name"]: s for s in drc["injected"]["structures"]}
+    m1 = inj["met1_spacing"]["shapes"]
+    via = inj["via1_enclosure"]["shapes"]
+    out.update(ctl_m1_gap_um="%g" % _gap_um(m1[0]["box_um"], m1[1]["box_um"]),
+               ctl_m1_rule_um=_rule_um(inj["met1_spacing"]["rule"]),
+               ctl_via_enc_um="%g" % _enclosure_um(via[0]["box_um"], via[1]["box_um"]),
+               ctl_via_rule_um=_rule_um(inj["via1_enclosure"]["rule"]))
+    for tool in ("magic", "klayout"):
+        t = drc["injected"][tool]
+        out["ctl_drc_clean_%s" % tool] = str(drc["clean"]["%s_markers" % tool])
+        out["ctl_drc_%s" % tool] = str(t["markers"])
+        out["ctl_drc_%s_elsewhere" % tool] = str(t["markers_elsewhere"])
+    # the RC bracket
+    r = rc["netlists"]["rc"]["resistors"]
+    ch, wf, fn = rc["charge"], rc["waveform"], rc["function"]
+    nt = rc["net_timing"]
+    last, ckq = nt["last_logic_crossing_ns"], nt["clk_to_q_rc_minus_c_ns"]
+    out.update(rc_rows=_n(rc["runs"]["rows"]), rc_resistors=_n(r["count"]), rc_r_median="%.0f" % r["median_ohm"],
+               rc_r_max="%.0f" % r["max_ohm"], rc_r_nets=_n(r["nets_with_resistors"]),
+               rc_rails_ideal=str(not r["supply_nets_with_resistors"]),
+               rc_c_vs_campaign_uA="%.1f" % rc["c_only_vs_campaign"]["max_abs_diff_uA"],
+               rc_mismatch=str(fn["c_only_mismatches_vs_sbox"] + fn["rc_mismatches_vs_sbox"]),
+               rc_out_diff=str(fn["rc_vs_c_only_output_bits_differing"]),
+               rc_charge_mean_pct="%.2f" % (100 * ch["rel_diff_rc_minus_c"]["mean"]),
+               rc_charge_maxabs_pct="%.1f" % (100 * ch["rel_diff_rc_minus_c"]["max_abs"]),
+               rc_charge_corr="%.4f" % ch["corr_data_dependent"],
+               rc_shift_ps="%.0f" % (1000 * wf["best_shift_ns_rc_later"]),
+               rc_dd_corr="%.2f" % wf["data_dependent_corr"],
+               rc_dd_corr_shift="%.2f" % wf["data_dependent_corr_at_shift"],
+               rc_fmr_corr="%.2f" % wf["class_mean_diff"]["corr"],
+               rc_fmr_corr_shift="%.2f" % wf["class_mean_diff"]["corr_at_shift"],
+               rc_cycles=str(nt["cycles"]),
+               rc_ckq_ps="%.0f" % (1000 * ckq["mean"]),
+               rc_ckq_range="%.0f-%.0f" % (1000 * ckq["min"], 1000 * ckq["max"]),
+               rc_last_ps="%.0f" % (1000 * last["rc_minus_c"]["median"]),
+               rc_last_range="%.0f-%.0f" % (1000 * last["rc_minus_c"]["min"], 1000 * last["rc_minus_c"]["max"]),
+               rc_last_c="%.2f" % last["c_only"]["median"], rc_last_rc="%.2f" % last["rc"]["median"],
+               rc_last_c_max="%.2f" % last["c_only"]["max"], rc_last_rc_max="%.2f" % last["rc"]["max"],
+               rc_cross_c=_n(nt["logic_crossings"]["c_only"]), rc_cross_rc=_n(nt["logic_crossings"]["rc"]))
     return out
 
 

@@ -10,9 +10,14 @@ whenever the results change, then execute the notebook to refresh its saved outp
   python3 notebook/make_notebook.py
   jupyter nbconvert --to notebook --execute --inplace notebook/ascon_glitch_leakage.ipynb
 
-Markers for work that is not done yet: "TODO(user)" (the author must fill it in) and
-"TODO(setup)" (the measured live-mode run time). Section 6 (layout and post-layout) is filled
-from results/layout/summary.json and results/pex/summary_postlayout.json (data/layout__*, pex__*).
+Marker for work that is not done yet: "TODO(user)" (the author must fill it in: the e-mail).
+The live-mode times in LIVE are measured with notebook/tests/colab_live.sh.
+Section 6 (layout and post-layout) is filled
+from results/layout/summary.json and results/pex/summary_postlayout.json (data/layout__*, pex__*); its
+post-hoc checks (6.3) from results/layout/negative_controls.json and results/pex/rc_check.json.
+Project files that the markdown names as code spans and that the pull-request folder does not ship
+(for example `docs/KILL_TEST.md` or `colab_check.py`) become links to the public repository at
+REPO_REF (link_repo_paths).
 """
 import json
 import os
@@ -22,10 +27,28 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import nbdata                                         # noqa: E402
+import setup_env                                      # noqa: E402
 
 OUT = os.path.join(HERE, "ascon_glitch_leakage.ipynb")
 COLAB = ("https://colab.research.google.com/github/sscs-ose/sscs-ose-code-a-chip.github.io/blob/main/"
          "ISSCC27/submitted_notebooks/ascon_glitch_leakage/ascon_glitch_leakage.ipynb")
+# The author's public repository and the ref the setup cell fetches on Colab before the organizers merge
+# the entry. Pin a release by setting setup_env.DEFAULT_REPO_REF to a pushed tag and re-running this script.
+REPO_URL = setup_env.DEFAULT_REPO_URL
+REPO_REF = setup_env.DEFAULT_REPO_REF
+RUN_NOW = "%s/blob/%s/notebook/ascon_glitch_leakage.ipynb" % (
+    REPO_URL.replace("https://github.com/", "https://colab.research.google.com/github/"), REPO_REF)
+# The live path, from ONE run (2026-09-26) of LOCAL_NOTEBOOK=1 CPUS=2 bash notebook/tests/colab_live.sh (clean
+# ubuntu:22.04 container, 2 CPUs, 8 GB; Python 3.12 and numpy 2.0.2 as on Colab; everything else fetched
+# from GitHub). Seconds: clone = the setup cell's fetch ("bootstrap" step), setup = setup_env.setup() with
+# its installs (apt, pip = ciel, pdk = ciel enable) from colab_live.json; notebook = "notebook wall time" in
+# colab_live.log; demo and anim = the SPICE-demo and animation cells in cell_times.json. ngspice and
+# demo_diff_uA: the apt ngspice version and the SPICE demo's largest current difference from the shipped
+# ngspice-42 reference (colab_live.json, spice_demo).
+LIVE = {"clone": 1.8, "apt": 14.4, "pip": 3.1, "pdk": 20.1, "setup": 37.9, "notebook": 139, "demo": 93.0,
+        "anim": 39.5, "cpus": 2, "ngspice": "36", "demo_diff_uA": 5.0e-05}
+# OpenLane v1 checkout used for every layout (layout/README.md)
+OPENLANE_COMMIT = "ff5509f"
 
 CELLS = []
 
@@ -43,12 +66,20 @@ md(r"""
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](""" + COLAB + r""")
 
+Run the submitted version now, before the organizers merge it: [open it in Colab from the author's
+repository](""" + RUN_NOW + r""").
+
 # Safe on Paper, Leaky in SPICE
 ### Pre-silicon glitch-leakage assessment of a masked Ascon S-box on SkyWater sky130, at three fidelity levels
 
 **IEEE SSCS Code-a-Chip, ISSCC 2027** &nbsp;|&nbsp; License: Apache-2.0 (see `LICENSE`) &nbsp;|&nbsp;
 Tools: <<ngspice>>, sky130A (open_pdks `<<pdk_commit>>`), Icarus Verilog, OpenLane v1 (Yosys, OpenROAD, Magic,
 KLayout, Netgen), Python, NumPy, Matplotlib
+
+**Versions.** <<ngspice>> for every SPICE campaign; live mode installs Ubuntu 22.04's ngspice-<<live_ngspice>> from
+apt, which matched the ngspice-42 reference within <<live_demo_diff_uA>> µA (§3.4, "How to run"). sky130A at open_pdks
+`<<pdk_commit>>`, installed with ciel <<ciel_version>>. OpenLane v1 at commit `<<openlane_commit>>`. Icarus Verilog 11
+or 12. Python 3.10 to 3.12 with NumPy and Matplotlib.
 
 | Name | Affiliation | Role | IEEE member | SSCS member | Contact |
 |---|---|---|---|---|---|
@@ -58,77 +89,91 @@ KLayout, Netgen), Python, NumPy, Matplotlib
 md(r"""
 ## The claim, on one screen
 
-**A first-order masked Ascon S-box that the zero-delay model certifies as secure leaks at first order in
-transistor-level simulation on sky130.** The leak comes from the *timing* of the unregistered logic: glitches
-and data-dependent arrival times. An exact glitch-extended probing check, which runs in seconds, names the nets
-that carry it. With DOM's register barrier moved *behind Ascon's input affine layer*, no first-order leak shows
-up within the <<DA_n>> traces we simulated.
+**A first-order masked Ascon S-box in which a zero-delay model finds no leak does leak at first order in
+transistor-level SPICE on sky130, before and after place and route** (OpenLane; DRC and LVS clean, and both checks
+fail on injected faults; capacitance-only extraction). The leak is in the *timing* of the unregistered
+logic (glitches, in the broad sense of §2.4), and an exact glitch-extended probing check flags the nets that carry it
+in seconds. With DOM's register barrier moved *behind* Ascon's input affine layer (DA), no net is flagged and no
+first-order leak shows up within <<DA_n>> traces before layout or <<pl_DA_n>> after it. That is a bound, not a proof:
+at these counts TVLA reaches 4.5 on average for a leak <<DA_detect_frac_of_N>> times as strong as N's before layout, and
+<<pl_DA_detect_frac>> times after it (at half the traces). A profiled attack on the same traces, designed after the
+kill test, recovers N's two key bits once its points of interest are chosen per key bit (§5). The fix costs
+<<cost_DA_area_vs_N_pct>> % more cell area, <<cost_DA_energy_vs_N_pct>> % more energy per evaluation before layout
+(<<pl_energy_DA_vs_N_pct>> % after layout, clock tree included), <<cost_DA_latency_cycles>> cycles of latency instead of
+<<cost_N_latency_cycles>> (+<<cost_DA_latency_vs_N_pct>> % in time) and no extra randomness (§7). This is
+noiseless simulation with an ideal supply at one corner (tt, 27 °C, 1.8 V), not silicon (§8).
 
-| Variant (same cells, same stimulus rows) | zero-delay model | glitch-extended probing (exact) | transistor-level SPICE, sky130 tt | after place and route (extracted layout, SPICE) |
-|---|---|---|---|---|
-| **N**, naive DOM, no register barrier | secure: max\|t\| <<N_l1>> on the same <<N_n>> rows, below 4.5 up to <<l1_100k_n>> rows | <<N_probe_fail>> of <<N_nets>> nets insecure | **leaks**: max\|t\| **<<N_t>>** at <<N_n>> traces, above 4.5 from <<N_first>> on | **still leaks**: <<pl_N_t>> at <<pl_N_n>> traces (<<pl_N_pre_t>> before layout on the same rows) |
-| **D**, DOM with the barrier in the textbook place | secure (<<D_l1>>) | <<D_probe_fail>> nets insecure | leak confirmed on <<D_leaky_count>> nets; in the supply current <<D_t>> at <<D_n>> traces, although the timing-aware model predicts <<D_l2cap>> (cap-weighted; <<D_l2>> with the worst weighting): **not seen** | not laid out |
-| **DA**, DOM with the barrier after the affine layer | secure (<<DA_l1>>) | <<DA_probe_fail>> nets insecure | **no first-order leak detected**: <<DA_t>> at <<DA_n>> traces | **none detected**: <<pl_DA_t>> at <<pl_DA_n>> traces |
+| Variant | glitch-extended probing: insecure nets | zero-delay model | timing-aware model | SPICE | SPICE after place and route |
+|---|---|---|---|---|---|
+| **N**: masked, no register barrier | <<N_probe_fail>> of <<N_nets>> | <<N_l1>> (secure) | <<N_l2>> | **<<N_t>>** at <<N_n>>: **leaks** | **<<pl_N_t>>** at <<pl_N_n>>: **leaks** (before layout, same rows: <<pl_N_pre_t>>) |
+| **D**: DOM, barrier in the textbook place | <<D_probe_fail>> of <<D_nets>> | <<D_l1>> (secure) | <<D_l2>> | <<D_t>> at <<D_n>>: not seen (net-level leak, §4.4) | not laid out |
+| **DA**: DOM, barrier after the affine layer | <<DA_probe_fail>> of <<DA_nets>> | <<DA_l1>> (secure) | <<DA_l2>> | <<DA_t>> at <<DA_n>>: none detected | <<pl_DA_t>> at <<pl_DA_n>>: none detected (before layout, same rows: <<pl_DA_pre_t>>) |
+| *Control:* U, unmasked | - | <<U_l1>> | <<U_l2>> | <<U_t>> at <<U_n>>: leaks | - |
+| *Control:* N, masks forced to zero | - | <<Nmo_l1>> | <<Nmo_l2>> | <<Nmo_t>> at <<Nmo_n>>: leaks | - |
+| *Control:* N, random vs random | - | <<Nrvr_l1>> | <<Nrvr_l2>> | <<Nrvr_t>> at <<Nrvr_n>>: none | - |
 
-The threshold is \|t\| > 4.5 (fixed-vs-random TVLA). At <<DA_n>> traces, a leak <<DA_detect_frac_words>> as strong as N's would
-reach 4.5 on average, so DA's result rules out leaks of that size and larger, not every leak. A profiled attack on the same
-traces (§5, post hoc) reaches a success rate of <<kr_N_bits_sr>> on N's two key bits at <<kr_N_n>> traces per key, with one
-point of interest per key bit, chosen after the default attack had missed key bit $x_2$ (default: success rate <<kr_N_sr>>).
-It finds no key in DA at first order: at <<kr_DA_n>> traces per key it would find a leak <<kr_DA_alpha_words>> as strong as N's, so
-TVLA is more sensitive. **After place and route** (OpenLane; DRC, LVS and antenna clean) and capacitance-only
-extraction, a registered test on the same stimulus rows gives the same verdicts (§6). N still leaks, as strongly as
-before layout and <<pl_N_shift_ns>> ns later in the cycle. DA shows no first-order leak at <<pl_DA_n>> traces, where TVLA
-would reach 4.5 on average for a leak <<pl_DA_detect_frac>> times as strong as N's post-layout one. The fix costs
-<<cost_DA_area_vs_N_pct>> % more cell area and <<cost_DA_energy_vs_N_pct>> % more energy per evaluation in the simulated
-supply current than N (<<cost_DA_total_vs_N_pct>> % with an estimate of the flip-flops' clock-pin charge; both for pipelined
-use), and no extra randomness (§7). After layout, where the clock tree also draws from the simulated supply, DA's
-core is <<lay_core_DA_vs_N_pct>> % larger and its energy per evaluation <<pl_energy_DA_vs_N_pct>> % higher. **Limits:** this is
-simulation of the pre-layout netlists and of the extracted (capacitance-only) layouts at one corner (tt, 27 °C,
-1.8 V), with an ideal supply and no measurement noise. It is not silicon. Section 8 lists every limit. Figure 1
-shows the three SPICE t-curves.
+Numbers are max\|t\| of first-order fixed-vs-random TVLA at the given trace count (> 4.5 = leak); the two models run on
+the SPICE rows (worst of three toggle weightings). The controls show that the test finds a leak where there must be one
+and none where there is none. D and DA end at the same max\|t\| (<<DA_t>>) at the same sample (<<DA_peak_ns>> ns, in
+the first cycle's clock-fall region). The likely source is circuitry the two variants share, so the two values are
+probably one observation, not two (§4.5).
+
+**Reading guide.** (1) This screen and Figures 1 and 2. (2) The evidence: §4.1 (N leaks; why the zero-delay model
+cannot see it), §4.4 and §4.5 (D and DA), §6 (layout and the registered post-layout test), §7 (cost); criteria were
+registered before the data existed (§3.6, §6.2). (3) Check it: run the notebook (cached under a minute, live about
+<<live_total_min>> minutes in a <<live_cpus>>-CPU Ubuntu 22.04 container; "How to run"), `data/MANIFEST.csv`, and the registrations
+and reviews in the [project repository](<<repo_tree>>/docs).
 """)
 
 code(r"""
 # SPDX-License-Identifier: Apache-2.0
-# Setup: locate the project files, choose the run mode, load the helpers.
-# On Colab the submission folder is fetched first. setup_env.setup() finds
-# (on Colab: installs) ngspice and the sky130 PDK and picks the mode: 'live'
-# when every tool is there, else 'cached' (plots the data/ folder only).
+# Setup. On Colab this notebook's folder is fetched first: the sscs-ose
+# copy once it is merged, else the author's public repository at REPO_REF
+# (a branch or tag). setup_env.setup() then finds (on Colab: installs)
+# ngspice and the sky130 PDK and picks the mode: 'live' when every tool
+# is there, else 'cached' (plots the data/ folder only).
 import os
 import subprocess
 import sys
 
 UPSTREAM = 'https://github.com/sscs-ose/sscs-ose-code-a-chip.github.io'
 FOLDER = 'ISSCC27/submitted_notebooks/ascon_glitch_leakage'
+REPO = '""" + REPO_URL + r"""'
+REPO_REF = os.environ.setdefault('ASCON_REPO_REF', '""" + REPO_REF + r"""')
 if 'google.colab' in sys.modules and not os.path.exists('nbdata.py'):
-    subprocess.run(['git', 'clone', '--depth', '1', '--filter=blob:none',
-                    '--sparse', UPSTREAM, 'code-a-chip'], check=True)
-    subprocess.run(['git', '-C', 'code-a-chip', 'sparse-checkout', 'set',
-                    FOLDER], check=True)
-    os.chdir(os.path.join('code-a-chip', FOLDER))
+    GIT = ['git', 'clone', '-q', '--depth', '1']
+    HOME = os.path.join('code-a-chip', FOLDER)
+    if not os.path.isdir('code-a-chip'):
+        subprocess.run(GIT + ['--filter=blob:none', '--sparse', UPSTREAM,
+                              'code-a-chip'])
+        subprocess.run(['git', '-C', 'code-a-chip', 'sparse-checkout',
+                        'set', FOLDER])
+    if not os.path.exists(os.path.join(HOME, 'nbdata.py')):
+        HOME = os.path.join('ascon-glitch-leakage', 'notebook')
+        if not os.path.isdir(HOME):
+            subprocess.run(GIT + ['--branch', REPO_REF, REPO,
+                                  'ascon-glitch-leakage'], check=True)
+    os.chdir(HOME)
 sys.path.insert(0, os.getcwd())
-
-try:
-    import setup_env          # environment helper in this folder
-except ImportError:
-    setup_env = None
-ENV = setup_env.setup() if setup_env else None      # prints what it found
-MODE = getattr(ENV, 'mode', 'cached')
-
+import setup_env              # the environment helper in this folder
 import nbanim
 import nbdata
 import nbexplorer
 import nbfigs
 
+ENV = setup_env.setup()       # prints what it found
+MODE = ENV.mode
 H = nbdata.fmt_headline()
 print('run mode:', MODE, '| data from', nbdata.source() + '/',
-      '| results dated', H['generated'])
+      '| results dated', H['results_dated'])
 """)
 
 md(r"""
 **Figure 1.** Welch \|t\| of the DUT's supply current against time, for the three masked variants, from the
 per-sample t-curves in `data/tcurve_*.csv` (copies of `results/kill_test/`). The zero-delay model has no time axis: it gives
 one value per row (green line). N's window is one 4 ns clock cycle; D and DA take two cycles (second edge at 4 ns).
+D's and DA's curves end at the same max\|t\| at the same sample (<<DA_peak_ns>> ns), probably from circuitry the two
+variants share: one observation, not two (§4.5).
 """)
 
 code(r"""
@@ -136,11 +181,22 @@ nbfigs.show(nbfigs.headline())
 """)
 
 md(r"""
+**Figure 2.** The workflow. One generator writes one netlist per variant. Four views of it (the exact probing check,
+the zero-delay and timing-aware models, and transistor-level SPICE, which also runs on the extracted layouts of N and
+DA) feed one statistic, first-order TVLA.
+""")
+
+code(r"""
+nbfigs.show(nbfigs.workflow())
+""")
+
+md(r"""
 ## Abstract
 
-Masking is the standard countermeasure against power side-channel attacks. Ascon, standardized by NIST in
-SP 800-232 for constrained devices, is the cipher it will protect most often at the edge. Whether a masked
-netlist is secure is usually checked in a zero-delay model, which cannot see glitches. We build one masked Ascon
+Masking is the standard countermeasure against power side-channel attacks. Ascon is the lightweight cipher
+that NIST standardized for constrained devices (SP 800-232). A standard digital flow checks a masked netlist only
+in zero-delay (RTL or functional gate-level) simulation, which cannot see glitches; the glitch-extended probing model [6] and
+checkers built on it [7, 8] exist but are not part of that flow. We build one masked Ascon
 S-box column from explicit `sky130_fd_sc_hd` cells in four variants: unmasked (U), naive domain-oriented masking
 without a register barrier (N), DOM with its register barrier in the textbook place (D), and DOM with the barrier
 after Ascon's input affine layer (DA). We assess the *same* netlists at three fidelity levels: a zero-delay
@@ -155,7 +211,7 @@ does not show in the supply current at <<D_n>> traces, where the timing-aware mo
 (cap-weighted; <<D_l2>> with the worst of three weightings). DA passes the probing check and shows no first-order leak at
 <<DA_n>> traces. N and DA were then placed and routed with OpenLane (DRC, LVS and antenna clean; the generator's cells
 unchanged) and extracted with Magic (capacitance only). A post-layout test, registered with fixed trace counts while
-the campaigns were running, gives the same verdicts on the same stimulus rows: N still leaks (<<pl_N_t>> at <<pl_N_n>> traces; <<pl_N_pre_t>> before
+the campaigns were running, gives the same verdicts on the same stimulus rows (for DA at half the traces): N still leaks (<<pl_N_t>> at <<pl_N_n>> traces; <<pl_N_pre_t>> before
 layout), <<pl_N_shift_ns>> ns later, and DA shows no first-order leak at <<pl_DA_n>> traces (<<pl_DA_t>>). A profiled template attack on the same traces, run after the kill test, recovers N's two key bits at
 first order (success rate <<kr_N_bits_sr>> at <<kr_N_n>> attack traces per key) once one point of interest is chosen per
 key bit; that choice was made after the default attack had missed one key bit (default success rate <<kr_N_sr>>). It
@@ -164,7 +220,10 @@ finds no first-order key in D or DA, where it would detect a leak <<kr_alpha_ran
 evaluation in the simulated supply current than N (<<cost_DA_total_vs_N_pct>> % with an estimate of the flip-flops' clock-pin
 charge; both for pipelined use), and no extra randomness; after layout, <<lay_core_DA_vs_N_pct>> % more core area and
 <<pl_energy_DA_vs_N_pct>> % more energy per evaluation with the clock tree in the simulated supply. Every step uses open
-tools and an open PDK, and every number in this text is read from a committed result file or review.
+tools and an open PDK. Every result number in this text is read from a committed file of the project repository (the
+result files, the registrations, the reviews and, for the clock tree's insertion delay, `layout/README.md`). The run
+times in "How to run" and the ngspice-<<live_ngspice>> comparison in the version line are wall-clock and live-path
+measurements, not results.
 """)
 
 md(r"""
@@ -176,8 +235,8 @@ md(r"""
 | 2 | Background | Ascon S-box, Boolean masking, DOM, glitches, probing models, TVLA |
 | 3 | Method | Four variants, one netlist, three models, the protocol and its pre-registration |
 | 4 | Results | N leaks; one clock cycle animated; which nets; D; DA; how far the cheap models go; noise; an explorer |
-| 5 | Key recovery | What a profiled attacker gets from N, D and DA, and what "no key recovery" rules out |
-| 6 | Layout and post-layout | N and DA through OpenLane, extraction and SPICE: does the leak survive place and route, and does the fix? |
+| 5 | Key recovery | What a profiled attacker gets from N, D and DA, and what "no first-order key recovery" rules out |
+| 6 | Layout and post-layout | N and DA through OpenLane, extraction and SPICE: does the leak survive place and route, and does the fix? Do the sign-off checks catch faults, and what does resistance change? |
 | 7 | Cost of the fix | Area, energy, latency and randomness of U, N, D and DA (pre-layout), and N and DA after layout |
 | 8 | Limitations | What these numbers do and do not show |
 | 9 | Conclusion | Summary and next steps |
@@ -187,14 +246,16 @@ md(r"""
 md(r"""
 ## How to run
 
-| Path | What runs | Time (estimate) |
+| Path | What runs | Time |
 |---|---|---|
 | **Cached** (default; also what CI runs) | Reads the notebook's data set (`data/`, CSV files and a few JSON summaries, listed with hashes in `data/MANIFEST.csv`) and draws every figure, table and the explorer | under 1 min |
-| **Live** (Colab or any Linux with the setup helper) | Also installs ngspice and the sky130 PDK, regenerates the netlists, re-runs the probing check and the level-1/2 models, re-derives the animation, and simulates a few clock cycles of N in ngspice | TODO(setup): measure; target 10 min |
+| **Live** (Colab, or any Linux with the setup helper) | Also fetches the code, installs ngspice and iverilog (apt) and the pinned sky130 PDK (ciel), regenerates the netlists, re-derives the animation from the level-2 model, and simulates 60 clock cycles of N with its masks forced to zero in ngspice, checked against the shipped ngspice-42 reference (§3.4). `colab_check.py` also re-runs the probing check and the level-1/2 models | about <<live_total_min>> min: fetch <<live_clone_s>> s; installs <<live_setup_s>> s (apt <<live_apt_s>> s, pip install ciel <<live_pip_s>> s, PDK <<live_pdk_s>> s); then the notebook <<live_nb_s>> s, of which the SPICE demo takes <<live_demo_s>> s and the animation <<live_anim_s>> s. Measured in one run in an Ubuntu 22.04 container with <<live_cpus>> CPUs (`tests/colab_live.sh`) |
 | **Full reproduction** (outside the notebook) | All SPICE campaigns of §4, with the commands in `docs/KILL_TEST.md` ("Reproduce"); then the key recovery of §5 (`analysis/key_recovery.py`), the layouts and post-layout campaigns of §6 (`layout/README.md`, `docs/POSTLAYOUT.md`) and the cost table of §7 (`analysis/cost_table.py`) | <<spice_wall_h>> h of wall clock for the first run (10 ngspice processes on one laptop), plus about 18 h on 6 CPUs to extend DA and D to 20,000 rows; the key recovery about 25 min with 3 processes; the two post-layout campaigns <<pl_wall_h>> h of wall clock on 6 CPUs, including a pause while the laptop was suspended |
 
-Run the cells top to bottom. The first code cell chooses the mode and prints what it found. Every figure is drawn
-from `data/`, which `make_cached_data.py` exports from `results/` and the SPICE runs. A review re-ran the kill
+Run the cells top to bottom. The first code cell chooses the mode and prints what it found. On Colab it first
+fetches this folder: from sscs-ose once the entry is merged, until then from the author's public repository at the
+ref in `REPO_REF` (<<repo_tree>>). Every figure is drawn from `data/`, which `make_cached_data.py` exports from
+`results/` and the SPICE runs. A review re-ran the kill
 test's reproduction and got its `results/` bit for bit (`docs/reviews/repro-code.md`); the layout and post-layout
 steps of §6 were not re-run that way.
 """)
@@ -227,7 +288,10 @@ power analysis [14].
 four views: an exact probing check, a zero-delay model, a timing-aware model and transistor-level SPICE. We then
 ask three things. Does the leak that theory predicts appear in the foundry transistor models? Which cheap model
 predicts it? And what does the fix need, and cost, in a real Ascon datapath? The test protocol was fixed before
-the first SPICE trace (§3.6), and the negative results are reported as they came out.
+the first SPICE trace (§3.6), and the negative results are reported as they came out. The design rule that comes
+out of it, DOM's register barrier after Ascon's input affine layer, follows from DOM's condition that the two inputs of
+each masked AND be independent [5] (§2.3); the contribution here is to show its consequence in transistor-level
+simulation, before and after layout, on an open PDK.
 """)
 
 # ================================================================= 2 background
@@ -303,7 +367,8 @@ $$
 
 For a true standardized difference $\delta = (\mu_F-\mu_R)/s$ and $n$ traces split evenly, $t \approx \delta\sqrt{n}/2$.
 Two consequences are used throughout. First, a real leak grows like $\sqrt{n}$. Second, a run that stays below 4.5 with
-$n$ traces rules out only effects with $\delta \gtrsim 9/\sqrt{n}$. For N, $\delta_N = <<dN_sd>>$ standard
+$n$ traces bounds only effects of about $\delta = 9/\sqrt{n}$ and larger. That is the effect for which $t$ reaches 4.5
+on average, so an effect of exactly that size is still missed about half the time. For N, $\delta_N = <<dN_sd>>$ standard
 deviations.
 """)
 
@@ -342,11 +407,7 @@ Icarus Verilog checks every variant against the S-box with the PDK's own cell mo
   4 ns clock and trapezoidal integration (maximum step 10 ps). The trace is the DUT's own supply current $i(V_{PWR})$
   in 10 ps bins. It is the ground truth of this study; §8 says what it leaves out.
 
-**Figure 2.** The workflow.
-""")
-
-code(r"""
-nbfigs.show(nbfigs.workflow())
+Figure 2, on the first screen, shows the workflow.
 """)
 
 md(r"""
@@ -355,7 +416,12 @@ md(r"""
 `model/probing.py` enumerates all $32^3 = 32{,}768$ combinations of unshared input, mask and fresh bits, with
 the flip-flops transparent. For every net it compares the exact distributions, with no sampling and no threshold:
 the net's value (value model), and the joint value of all stable signals in its combinational cone
-(glitch-extended model). It runs in seconds and needs no SPICE. The table is read from `data/probing_nets.csv`.
+(glitch-extended model). It runs in seconds and needs no SPICE. Its unit tests (`model/tests/test_probing.py`) hold
+it to verdicts derived by hand: U fails the value model and no masked variant does, D fails at exactly the
+cross-domain terms (`m01`, `p01`, `m10`, `p10`) of $t_1$, $t_3$ and $t_4$, and DA fails nowhere; an independent
+re-implementation that parses the SPICE netlists finds the same failing nets in N, D and DA
+(`docs/reviews/sca-method.md`, check 1). It was not cross-checked against SILVER [7] or PROLEAD [8]. The table is
+read from `data/probing_nets.csv`.
 """)
 
 code(r"""
@@ -363,7 +429,7 @@ nbfigs.show_md(nbfigs.probing_table())
 """)
 
 md(r"""
-No variant fails the value model, so all three are secure in the zero-delay sense (§4.1 shows why that is
+No masked variant fails the value model, so N, D and DA are all secure in the zero-delay sense (§4.1 shows why that is
 exact). In the glitch-extended model N fails on <<N_probe_fail>> nets and D on <<D_probe_fail>>. D's failing nets are
 the cross-domain products of $t_1$, $t_3$ and $t_4$ (`m01`, `p01`, `m10`, `p10`), the three ANDs whose inputs share a
 variable through the input affine layer. DA fails on none.
@@ -481,9 +547,9 @@ transition is drawn at its Liberty delay; glitch pulses are shaded.
   products can still glitch (here $p_{01}$, from the skew between $r_1$ and $m_{01}$), but those glitches end at
   the barrier flip-flops' D pins. In the next cycle the integration starts from registered values.
 
-The next cell rebuilds the animation (live mode) or reads the cached events, and draws the last frame (Figure 4).
-The row shown was chosen because its glitch runs the whole path. Other rows differ, and the statistics are in
-§4.3. SPICE adds a second effect that one row cannot show: the cross-domain ANDs that leak first rarely glitch in
+The next cell rebuilds the animation (live mode) or reads the cached events, and draws the last frame (Figure 4);
+on Colab, where the image link above may not load, it also plays the animation. The row shown was chosen because
+its glitch runs the whole path. Other rows differ, and the statistics are in §4.3. SPICE adds a second effect that one row cannot show: the cross-domain ANDs that leak first rarely glitch in
 SPICE. Their leak comes mostly from *when* their single transition happens (`docs/reviews/spice-circuit.md`, F2).
 """)
 
@@ -492,6 +558,9 @@ EV = nbanim.events(MODE)
 GIF = os.path.join('media', 'glitch_N_vs_DA.gif')
 if MODE == 'live' or not os.path.exists(GIF):
     nbanim.save_gif(EV, GIF)
+if 'google.colab' in sys.modules:   # the image link above may not load
+    from IPython.display import Image, display
+    display(Image(filename=GIF))
 nbfigs.show(nbanim.draw(EV, t_now=5.8))
 """)
 
@@ -555,8 +624,9 @@ md(r"""
 Moving the input affine layer in front of the input registers (DA) gives the ANDs independent inputs. The same
 DOM barrier then does its job. In the probing check, DA has **<<DA_probe_fail>> insecure nets**. In SPICE, **max\|t\| is
 <<DA_t>> at <<DA_n>> traces** (at most <<DA_tmax_cp>> at any checkpoint; Figures 1 and 3), and level 2 agrees
-(<<DA_l2>>, worst of three weightings). At this count TVLA would reach 4.5 on average for a leak $\delta \ge <<DA_detect_sd>>$ standard deviations. That is
-<<DA_detect_frac_words>> of N's $\delta_N = <<dN_sd>>$, so DA rules out leaks of that size and larger. D and DA end at the same
+(<<DA_l2>>, worst of three weightings). At this count TVLA would reach 4.5 on average for a leak of $\delta = <<DA_detect_sd>>$ standard deviations,
+<<DA_detect_frac_words>> of N's $\delta_N = <<dN_sd>>$. A leak of that size would be missed about half the time, and a
+smaller one is not excluded. D and DA end at the same
 max\|t\| at the same sample (<<DA_peak_ns>> ns, in the first cycle's clock-fall region), and their t-curves differ by at most
 <<DDA_tdiff_near_peak>> within 30 ps of it. The likely source is circuitry that D and DA share, driven by the same stimulus rows,
 for example the registers of the input bits that the affine layer leaves unchanged; this was not checked at the net
@@ -698,7 +768,7 @@ added noise of 1x the template's GE rises to <<kr_N_noise1_ge>> (default) and <<
 the same trace count. The correlation distinguisher stays at GE <<kr_N_corr_ge>> on noiseless N: it is blind to the main
 effect that carries $x_1$.
 
-**D and DA: no key recovery, and what that rules out.** D gives GE <<kr_D_ge>> at <<kr_D_n>> attack traces per key (null
+**D and DA: no first-order key recovery, and what that rules out.** D gives GE <<kr_D_ge>> at <<kr_D_n>> attack traces per key (null
 <<kr_D_null>> ± <<kr_D_null_sd>>, $p$ = <<kr_D_p>>) and DA <<kr_DA_ge>> at <<kr_DA_n>> (null <<kr_DA_null>> ± <<kr_DA_null_sd>>,
 $p$ = <<kr_DA_p>>). On its own, "no key recovery" says little. So N's first-order leak, scaled by a factor $\alpha$,
 was added to the real D and DA traces at one sample, and the unchanged attack was run again (Figure 11; $\alpha = 1$
@@ -754,8 +824,10 @@ parasitics (§8). To see whether its verdicts hold after physical design, N, DA 
 * The flow adds only the clock tree, tap, decap and fill cells.
 
 `layout/summarize.py` checks the result. Every logic instance of the generator's netlist is in the final layout with
-the same cell type and the same net on every pin. The table is read from `data/layout__summary.json`; its
-capacitance row comes from `data/pex__summary_postlayout.json`.
+the same cell type and the same net on every pin, except the flip-flops' clock pins, which now hang on the clock
+tree's leaf nets (<<lay_N_clk_pins>> in N, <<lay_DA_clk_pins>> in DA). The table is read from `data/layout__summary.json`; its
+capacitance row comes from `data/pex__summary_postlayout.json`. §6.3 shows that the same LVS and DRC checks fail on
+deliberately broken inputs.
 """)
 
 code(r"""
@@ -778,8 +850,8 @@ md(r"""
 ### 6.1 The post-layout SPICE model
 
 Magic extracts every transistor with its drawn W, L and diffusion geometry, every capacitance to substrate and every
-coupling capacitance between nets. It extracts no resistance: the blocks are under 90 µm across, and a 100 µm
-minimum-width route with 20 fF of load adds under 2 ps (`layout/README.md`). The extracted netlist replaces the
+coupling capacitance between nets. The campaigns' extraction has no resistance; a post-hoc RC bracket of N (§6.3)
+delays its evaluation by about <<rc_last_ps>> ps and changes little else. The extracted netlist replaces the
 generator's `dut.sp` in the unchanged SPICE runner. Three things change against §4's model:
 * **Capacitance.** The routed wiring alone (OpenRCX) totals <<lay_N_cap_rcx>> fF on N's logic nets, the same as the
   pre-layout estimate (<<lay_N_cap_est>> fF). With the cells' own pin geometry, which the stock cell netlists lack,
@@ -787,7 +859,8 @@ generator's `dut.sp` in the unchanged SPICE runner. Three things change against 
   domains: <<lay_N_s0s1_fF>> fF between N's share-0 and share-1 nets, <<lay_DA_s0s1_fF>> fF in DA.
 * **Timing.** A node run of 38 cycles of N measures the median flip-flop clock-to-Q at <<pl_ckq_post>> ns after the
   ideal clock edge, against <<pl_ckq_pre>> ns before layout. This includes the clock tree's insertion delay of about
-  0.33 ns. The median last logic transition moves from <<pl_last_pre>> to <<pl_last_post>> ns (at most
+  0.33 ns (from the flow's clock-tree timing, quoted in `layout/README.md`). The median last logic transition moves
+  from <<pl_last_pre>> to <<pl_last_post>> ns (at most
   <<pl_last_post_max>>), still 2 ns before the next edge.
 * **The clock tree.** Its buffers (N <<lay_N_cts>>, DA <<lay_DA_cts>> × `clkbuf_16`) and the flip-flops' clock pins
   now draw from the measured supply. This current does not depend on the data.
@@ -832,14 +905,18 @@ md(r"""
   at <<pl_N_shift_corr>> at that shift and at <<pl_N_noshift_corr>> without it. The shift fits the slower clock-to-Q and
   evaluation of §6.1.
 * **It stays in the evaluation.** All <<pl_N_above>> samples above 4.5 lie in <<pl_N_span>> ns, inside the registered
-  evaluation part. The clock-fall and input-edge parts stay at or below <<pl_N_rest>>.
+  evaluation part. The clock-fall and input-edge parts stay at or below <<pl_N_rest>>. When the parts were registered,
+  an interim look had already shown N's peak at 1.645 ns (`docs/reviews/stage3-layout-pex.md`, N3); the node timing
+  alone (last transition up to <<pl_last_post_max>> ns, §6.1) justifies the 2.1 ns boundary, and PL3 is informational.
 * **It is still a leak of timing, not of total charge.** On the charge per cycle \|t\| is <<pl_N_tq>> (<<pl_N_pre_tq>>
   before layout). In 100 ps bins the leak stays at <<pl_N_t100>>.
 * **DA shows no first-order leak after layout** at <<pl_DA_n>> traces: <<pl_DA_t>>, at most <<pl_DA_tmax_cp>> at any
   checkpoint (<<pl_DA_pre_t>> before layout on the same rows).
-* **What DA's result rules out.** At this count TVLA reaches 4.5 on average for a leak <<pl_DA_detect_frac>> times as
-  strong as N's post-layout one. That is a weaker bound than §4.5's <<DA_detect_frac_of_N>> at <<DA_n>> traces,
-  because the registered post-layout campaign is half as long.
+* **How small a leak DA's result could miss.** At this count TVLA reaches 4.5 on average for a leak
+  <<pl_DA_detect_frac>> times as strong as N's post-layout one, so a leak of that size would be missed about half the
+  time. The bound is weaker than §4.5's <<DA_detect_frac_of_N>> at <<DA_n>> traces for two reasons. The registered
+  post-layout campaign has half the traces, which alone gives <<pl_DA_detect_frac_full_N>>. And N's effect measured on
+  its first <<pl_N_n>> rows ($\delta$ = <<pl_N_effect_sd>>) is smaller than on all <<N_n>> ($\delta_N$ = <<dN_sd>>).
 * **DA's second order grows after layout,** from <<pl_DA_pre_t2>> to <<pl_DA_t2>>. This is expected for two-share
   masking and is informational only.
 * **Added noise.** With noise added in the same way as in §4.7, N stays above 4.5 from <<pl_N_stable_noise0.5>> traces
@@ -856,8 +933,52 @@ nbfigs.show(nbfigs.postlayout_maxt())
 """)
 
 md(r"""
+### 6.3 Post-hoc checks: do the sign-off checks bite, and what does resistance change?
+
+These checks were run after the post-layout campaigns. They are not part of the registration in `docs/POSTLAYOUT.md`,
+and no criterion depends on them (details in `layout/README.md`).
+
+**Negative controls of the sign-off.** A DRC count of 0 and an LVS match mean something only if the same checks fail
+on a broken input. Magic re-extracts each layout's netlist from its final GDS with OpenLane's sign-off commands, and
+netgen compares it with OpenLane's final netlist and with three edits of that netlist. For DRC, a copy of N's GDS gets
+two small defects inside the cell rows, and Magic (OpenLane's sign-off commands) and KLayout (the PDK's deck) check
+both files. The share swap matters most: it changes one pin and no device or net count, and LVS still fails. So the
+LVS match pins down the share-domain wiring that the leakage argument rests on. The table is read from
+`data/layout__negative_controls.json`.
+""")
+
+code(r"""
+nbfigs.show_md(nbfigs.controls_table())
+""")
+
+md(r"""
+**Resistance, bracketed on <<rc_rows>> rows of N (a sanity check, not a TVLA).** Magic `extresist` adds <<rc_resistors>>
+resistors (median <<rc_r_median>> Ω, at most <<rc_r_max>> Ω) on <<rc_r_nets>> signal nets, through the routing, vias,
+contacts and the cells' own poly and li1. The supply rails stay ideal, as in the testbench, and the capacitance is the
+C-only extraction's. Both netlists ran on the first <<rc_rows>> rows of the stimulus with the same runner and solver;
+the C-only run matches the N_pex campaign's first rows within <<rc_c_vs_campaign_uA>> µA per bin
+(`data/pex__rc_check.json`). RC against C-only:
+* **Function:** <<rc_mismatch>> mismatches against the S-box in either run, and the two runs' outputs are identical
+  bit for bit.
+* **Charge per window:** <<rc_charge_mean_pct>> % on average (at most <<rc_charge_maxabs_pct>> % in any row); the
+  data-dependent parts correlate at <<rc_charge_corr>>.
+* **Supply current:** RC is <<rc_shift_ps>> ps later. After that shift the data-dependent parts correlate at
+  <<rc_dd_corr_shift>> (<<rc_dd_corr>> without it), and the fixed-minus-random mean current, the numerator of the
+  t-test on these rows, at <<rc_fmr_corr_shift>> (<<rc_fmr_corr>>).
+* **Timing** (node runs, <<rc_cycles>> cycles): flip-flop clock-to-Q +<<rc_ckq_ps>> ps on average (<<rc_ckq_range>>
+  ps). The last logic transition comes <<rc_last_ps>> ps later (median; <<rc_last_range>> ps), at <<rc_last_rc>>
+  instead of <<rc_last_c>> ns (at most <<rc_last_rc_max>> ns). Logic-net transitions, glitches included:
+  <<rc_cross_rc>> against <<rc_cross_c>>.
+
+So resistance moves N's evaluation by tens of picoseconds, against the <<pl_N_shift_ns>> ns by which place and route
+moved its leak, and leaves the charge and the data-dependent current nearly unchanged. <<rc_rows>> rows cannot re-test
+the verdicts; that would take an RC campaign, and the power grid's resistance is still left out.
+""")
+
+md(r"""
 **What the post-layout model leaves out** (`layout/README.md`, `docs/POSTLAYOUT.md`):
-* resistance: the extraction is capacitance only, with no wire, via or power-grid resistance;
+* resistance: the campaigns' extraction is capacitance only. The RC bracket of §6.3 adds wire, via and in-cell
+  resistance on <<rc_rows>> rows of N, but not the power grid's;
 * corners: tt at 27 °C only;
 * placement: one layout per variant, from a single placement seed;
 * sources: an ideal 1.8 V supply at the block's power pins, and ideal clock and input sources at its pins. There is no
@@ -903,8 +1024,11 @@ nbfigs.show_md(nbfigs.postlayout_cost_table())
 md(r"""
 * **Area.** D and DA have the same <<cost_DA_cells>> cells. The <<cost_dff_extra>> extra flip-flops of the barrier make them
   <<cost_DA_area_vs_N_pct>> % larger than N (<<cost_DA_area_um2>> against <<cost_N_area_um2>> µm² of cell area, without
-  placement utilization or a clock tree). After place and route at 40 % core utilisation, DA's core is
-  <<lay_DA_core>> µm² against N's <<lay_N_core>> µm² (+<<lay_core_DA_vs_N_pct>> %), and its die is +<<lay_die_DA_vs_N_pct>> %.
+  placement utilization or a clock tree). In gate equivalents (GE; one `sky130_fd_sc_hd__nand2_1` is <<ge_nand2_um2>> µm²),
+  the unit in which ASIC area is usually compared across processes, that is <<cost_U_ge>> GE for U, <<cost_N_ge>> GE for N
+  and <<cost_DA_ge>> GE for D and DA. After place and route with a <<lay_fp_util>> % core-utilisation target
+  (`FP_CORE_UTIL`), DA's core is <<lay_DA_core>> µm² against N's <<lay_N_core>> µm² (+<<lay_core_DA_vs_N_pct>> %), and
+  its die is +<<lay_die_DA_vs_N_pct>> %.
 * **Energy.** In SPICE, DA draws <<cost_DA_e_eval_fJ>> fJ per evaluation against N's <<cost_N_e_eval_fJ>> fJ
   (+<<cost_DA_energy_vs_N_pct>> %). With the flip-flops' clock-pin charge, which the simulated current leaves out
   (ideal clock), it is +<<cost_DA_total_vs_N_pct>> %. These are pipelined figures: a new input enters every cycle, so the
@@ -923,7 +1047,8 @@ md(r"""
   costs no extra randomness.
 * **What the cost buys** (§4, §5): N leaks at first order and gives up its key (with the post hoc per-key-bit points
   of interest); DA shows no first-order leak at <<DA_n>> traces and no first-order key recovery, down to a leak
-  <<kr_DA_alpha_words>> as strong as N's (§5). TVLA on the same traces is more sensitive: it excludes a leak <<DA_detect_frac_words>> as strong (§4.5).
+  <<kr_DA_alpha_words>> as strong as N's (§5). TVLA on the same traces is more sensitive: it reaches 4.5 on average for a leak <<DA_detect_frac_words>> as strong
+  (§4.5).
   After place and route N still leaks, and DA still shows no first-order leak at <<pl_DA_n>> traces (§6).
 """)
 
@@ -945,13 +1070,16 @@ md(r"""
 * **Idealized environment.** The supply is an ideal 1.8 V source: no package, power grid, decoupling, probe or
   measurement noise. Before layout, wire capacitances go to ground only, so coupling between nets of different share
   domains [15] is not modelled there. The extracted layouts of §6 include it (<<lay_N_s0s1_fF>> fF between N's share-0
-  and share-1 nets), but no resistance. There is one process corner and one temperature, and no mismatch Monte
+  and share-1 nets), but the campaigns' extraction has no resistance (the RC bracket of §6.3 delays N's evaluation by
+  about <<rc_last_ps>> ps). There is one process corner and one temperature, and no mismatch Monte
   Carlo. The measured current is the DUT's VPWR only. Before layout, the gate charge of the clock pins and of the
   input D pins comes from ideal sources; it is data-independent or share-wise, so no first-order result changes.
   After layout, the clock tree drives the clock pins from the DUT supply.
-* **The post-layout model** (§6). It is capacitance only, with one placement per variant, an ideal supply, clock and
+* **The post-layout model** (§6). The campaigns' extraction is capacitance only (§6.3 brackets resistance on
+  <<rc_rows>> rows, not with a TVLA), with one placement per variant, an ideal supply, clock and
   inputs at the block's pins, and tt only. D was not laid out. DA's post-layout campaign has half the pre-layout trace
-  count, so it rules out only leaks at least <<pl_DA_detect_frac>> times as strong as N's post-layout one.
+  count: there TVLA reaches 4.5 on average for a leak <<pl_DA_detect_frac>> times as strong as N's post-layout one
+  (before layout: <<DA_detect_frac_of_N>>).
 * **One S-box column, not a cipher.** There is no round structure, no state register feedback and no key
   schedule. The randomness is assumed ideal (fresh and uniform).
 * **What TVLA shows.** TVLA detects leakage; it does not measure how exploitable it is (§5 does, for a two-bit key).
@@ -975,9 +1103,12 @@ An exact glitch-extended probing check that runs in seconds finds the problem in
 carry it. It also shows that DOM's register barrier must sit *after* Ascon's input affine layer: textbook
 placement (D) keeps a net-level leak, and the corrected placement (DA) shows no first-order leak at <<DA_n>>
 traces. D's net-level leak does not show in the supply current at <<D_n>> traces, although the timing-aware model
-predicts it. The verdicts for N and DA hold after place and route. The OpenLane layouts are DRC and LVS clean, and
-the extraction is capacitance only at tt. On the same rows N leaks as strongly as before layout (<<pl_N_t>> at
-<<pl_N_n>> traces), <<pl_N_shift_ns>> ns later, and DA shows no first-order leak at <<pl_DA_n>> traces. A profiled attack on the same traces recovers N's two key bits at first order (with points of interest
+predicts it. The verdicts for N and DA hold after place and route, DA's at half the traces. The OpenLane layouts are
+DRC and LVS clean (and both checks fail on injected faults, including one swapped share input), and the extraction is
+capacitance only at tt; a post-hoc RC bracket moves N's evaluation about <<rc_last_ps>> ps later and changes little
+else. On the same rows N leaks as strongly as before layout (<<pl_N_t>> at
+<<pl_N_n>> traces), <<pl_N_shift_ns>> ns later, and DA shows no first-order leak at <<pl_DA_n>> traces, where TVLA reaches
+4.5 on average for a leak <<pl_DA_detect_frac>> times as strong as N's. A profiled attack on the same traces recovers N's two key bits at first order (with points of interest
 chosen post hoc) and finds no first-order key in D or DA, where it would detect a leak <<kr_alpha_range>> times as strong as
 N's. TVLA on the same traces is more sensitive (about <<DA_detect_frac_of_N>>), so for D and DA the attack adds no evidence
 beyond it (§5). The corrected barrier costs <<cost_DA_area_vs_N_pct>> % more cell area, <<cost_DA_energy_vs_N_pct>> % more energy per
@@ -988,8 +1119,8 @@ simulated supply. A designer can take three things from this: a *method* (probin
 screening, then SPICE on the same netlist, before and after layout), a
 concrete *design rule* for masked Ascon datapaths, and an honest account of how far each cheap model can be trusted.
 
-**Next steps:** resistive extraction with a power grid and a package model, process corners, and a full masked
-Ascon round.
+**Next steps:** a post-layout campaign with resistive extraction, a power grid and a package model, process corners,
+and a full masked Ascon round.
 """)
 
 # ================================================================= 10 references
@@ -1045,9 +1176,8 @@ events are in `media/glitch_events.json`, and the layout images of §6 are small
 project repository (`gen/`, `model/`, `sim/`, `layout/`, `analysis/`), and the pre-registrations
 (`docs/KILL_TEST.md`, `docs/POSTLAYOUT.md`) and reviews are in `docs/`.
 
-**AI-use disclosure.** AI coding assistants were used in this project. All results come from open-source tools (ngspice, the sky130 PDK, OpenLane, Magic, KLayout, netgen, Python), and the author is responsible for all content.
-
-**Acknowledgments.** TODO(user).
+**AI-use disclosure.** AI coding assistants were used in this project. All results come from open-source tools
+(ngspice, the sky130 PDK, OpenLane, Magic, KLayout, netgen, Python), and the author is responsible for all content.
 
 *Licensed under the Apache License, Version 2.0.*
 """)
@@ -1074,12 +1204,64 @@ def lines(text):
     return [p + "\n" for p in parts[:-1]] + [parts[-1]]
 
 
+def live_values():
+    """The measured live-path times (LIVE), the pinned versions and the repository links, as text for
+    the placeholders."""
+    L = LIVE
+    mant, ex = ("%.0e" % L["demo_diff_uA"]).split("e")
+    return {"repo_tree": "%s/tree/%s" % (REPO_URL, REPO_REF),
+            "live_total_min": "%.0f" % ((L["clone"] + L["setup"] + L["notebook"]) / 60.0),
+            "live_clone_s": "%.0f" % L["clone"], "live_setup_s": "%.0f" % L["setup"],
+            "live_apt_s": "%.0f" % L["apt"], "live_pip_s": "%.0f" % L["pip"], "live_pdk_s": "%.0f" % L["pdk"],
+            "live_nb_s": "%.0f" % L["notebook"], "live_demo_s": "%.0f" % L["demo"],
+            "live_anim_s": "%.0f" % L["anim"], "live_cpus": str(L["cpus"]), "live_ngspice": L["ngspice"],
+            "live_demo_diff_uA": "%se%d" % (mant, int(ex)),
+            "ciel_version": setup_env.CIEL_VERSION, "openlane_commit": OPENLANE_COMMIT}
+
+
+# Top-level folders of the public repository that the notebook may link to (build/ and runs/ are not
+# committed); files of notebook/ that the pull-request folder ships are left as plain code spans.
+REPO_ROOT = os.path.dirname(HERE)
+LINKED_DIRS = (".github", "analysis", "docker", "docs", "gen", "layout", "model", "notebook", "results", "sim", "tb",
+               "tools")
+
+
+def shipped_in_folder(rel):
+    """True for a notebook/ path that the pull-request folder holds: data/, media/, the notebook and
+    the helper modules its code cells import."""
+    helpers = {m + ".py" for kind, text in CELLS if kind == "code"
+               for m in re.findall(r"^import (\w+)", text, flags=re.M)}
+    return rel.split("/")[0] in ("data", "media") or rel in helpers or rel == os.path.basename(OUT)
+
+
+def link_repo_paths(text):
+    """Turn a code span that names a project file or folder (`docs/KILL_TEST.md`, `gen/`, or a path
+    relative to notebook/ such as `colab_check.py`) into a link to it in the public repository at
+    REPO_REF, unless the pull-request folder ships it. Spans that are already link text, that name
+    no existing path or that hold wildcards or placeholders stay as they are."""
+    def sub(m):
+        span = m.group(1)
+        path = span.rstrip("/")
+        for rel in ("notebook/" + path, path):
+            if rel.split("/")[0] in LINKED_DIRS and os.path.exists(os.path.join(REPO_ROOT, rel)):
+                break
+        else:
+            return m.group(0)
+        if rel.startswith("notebook/") and shipped_in_folder(rel[len("notebook/"):]):
+            return m.group(0)
+        kind = "tree" if os.path.isdir(os.path.join(REPO_ROOT, rel)) else "blob"
+        return "[`%s`](%s/%s/%s/%s)" % (span, REPO_URL, kind, REPO_REF, rel)
+    return re.sub(r"(?<!\[)`([A-Za-z0-9_.][A-Za-z0-9_./-]*)`(?!\]|\()", sub, text)
+
+
 def build(values=None):
-    values = values or nbdata.fmt_headline()
+    values = dict(values or nbdata.fmt_headline())
+    values.update(live_values())
     cells = []
     for kind, text in CELLS:
         if kind == "markdown":
-            cells.append({"cell_type": "markdown", "metadata": {}, "source": lines(fill(text, values))})
+            cells.append({"cell_type": "markdown", "metadata": {},
+                          "source": lines(link_repo_paths(fill(text, values)))})
         else:
             cells.append({"cell_type": "code", "execution_count": None, "metadata": {}, "outputs": [],
                           "source": lines(text)})
