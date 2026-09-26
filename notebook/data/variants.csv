@@ -1,0 +1,5 @@
+variant,cells,flip_flops,latency_cycles,cell_area_um2,reg_to_reg_ps_liberty,wire_cap_fF,dut_sp_sha256,description
+U,27,10,1,337.824,1267.4,1.0,916d0f33428c292829814331ea9718ff9125ff3c4409e6f504e3b3ebd29c92c3,unmasked Ascon S-box column: input regs -> S-box -> output regs
+N,88,25,1,1009.718,1766.5,1.0,00f38c6b7c3aa79c8b28d33a5b9b31b147f72fdec91d8b69c3ae019874df1785,2-share DOM Ascon S-box column without register barrier (naive)
+D,118,55,2,1610.294,1062.6,1.0,60fd9a9f9be887c7db435865b8bf12cc2f42bac5bf710afe9ab2094c865e77a6,2-share DOM Ascon S-box column with register barrier before integration
+DA,118,55,2,1610.294,935.5,1.0,38eca68f5e97de80a4efbd2a92965da66e267e0e044155623369bc336343f141,"as D, with the input affine layer in front of the input registers"

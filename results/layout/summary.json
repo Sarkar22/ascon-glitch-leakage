@@ -1,0 +1,501 @@
+{
+ "N": {
+  "variant": "N",
+  "design": "dut_N",
+  "die_um": [
+   61.28,
+   72.0
+  ],
+  "die_area_um2": 4412.2,
+  "core_area_um2": 2454.9,
+  "placement_utilisation_pct": 44.24,
+  "fp_core_util_pct": 40.0,
+  "cells_generator": 88,
+  "cells_synthesized": 88,
+  "cells_final_by_category": {
+   "clock_buffer": 3,
+   "decap": 148,
+   "fill": 54,
+   "logic": 88,
+   "tap": 30
+  },
+  "cells_final_by_type": {
+   "clock_buffer": {
+    "sky130_fd_sc_hd__clkbuf_16": 3
+   },
+   "decap": {
+    "sky130_ef_sc_hd__decap_12": 45,
+    "sky130_fd_sc_hd__decap_3": 49,
+    "sky130_fd_sc_hd__decap_4": 24,
+    "sky130_fd_sc_hd__decap_6": 11,
+    "sky130_fd_sc_hd__decap_8": 19
+   },
+   "fill": {
+    "sky130_fd_sc_hd__fill_1": 44,
+    "sky130_fd_sc_hd__fill_2": 10
+   },
+   "logic": {
+    "sky130_fd_sc_hd__and2_1": 10,
+    "sky130_fd_sc_hd__and2b_1": 10,
+    "sky130_fd_sc_hd__dfxtp_1": 25,
+    "sky130_fd_sc_hd__inv_1": 1,
+    "sky130_fd_sc_hd__xor2_1": 42
+   },
+   "tap": {
+    "sky130_fd_sc_hd__tapvpwrvgnd_1": 30
+   }
+  },
+  "cells_final_total": 323,
+  "synthesis_vs_generator": {
+   "missing_instances": [],
+   "changed_cell_type": [],
+   "changed_pins": [],
+   "clk_pins_on_clock_tree_nets": 0,
+   "added_instances": {},
+   "logic_unchanged": true
+  },
+  "final_vs_generator": {
+   "missing_instances": [],
+   "changed_cell_type": [],
+   "changed_pins": [],
+   "clk_pins_on_clock_tree_nets": 25,
+   "added_instances": {
+    "fill": {
+     "sky130_fd_sc_hd__fill_1": 44,
+     "sky130_fd_sc_hd__fill_2": 10
+    },
+    "decap": {
+     "sky130_fd_sc_hd__decap_8": 19,
+     "sky130_fd_sc_hd__decap_3": 49,
+     "sky130_ef_sc_hd__decap_12": 45,
+     "sky130_fd_sc_hd__decap_4": 24,
+     "sky130_fd_sc_hd__decap_6": 11
+    },
+    "tap": {
+     "sky130_fd_sc_hd__tapvpwrvgnd_1": 30
+    },
+    "clock_buffer": {
+     "sky130_fd_sc_hd__clkbuf_16": 3
+    }
+   },
+   "logic_unchanged": true
+  },
+  "clock_tree": {
+   "buffers": {
+    "sky130_fd_sc_hd__clkbuf_16": 3
+   },
+   "skew_ns": 0.01,
+   "max_fanout_violations": [
+    {
+     "pin": "clkbuf_1_0__f_CLK/X",
+     "limit": 10,
+     "fanout": 13
+    },
+    {
+     "pin": "clkbuf_1_1__f_CLK/X",
+     "limit": 10,
+     "fanout": 12
+    }
+   ]
+  },
+  "timing_tt_ns": {
+   "clock_period": 4.0,
+   "setup_worst_slack": 1.78,
+   "hold_worst_slack": 0.25,
+   "critical_path": 2.22
+  },
+  "wire_length_um": 1537,
+  "vias": 524,
+  "drc_router": 0,
+  "drc_magic": 0,
+  "drc_klayout": 0,
+  "lvs": "Circuits match uniquely.",
+  "antenna_pin_violations": 0,
+  "antenna_net_violations": 0,
+  "klayout_xor_vs_magic_gds": "XOR differences: 0",
+  "run_dir": "runs/pex/ol/N/runs/pex",
+  "pex": {
+   "n_devices": 1578,
+   "devices": {
+    "sky130_fd_pr__special_nfet_01v8": 100,
+    "sky130_fd_pr__pfet_01v8_hvt": 789,
+    "sky130_fd_pr__nfet_01v8": 689
+   },
+   "supply_only_devices": 296,
+   "supply_only_devices_dropped": 0,
+   "caps_fF": {
+    "to_VGND": 213.841,
+    "to_VPWR": 186.289,
+    "VPWR_VGND": 395.0,
+    "signal_signal": 236.757,
+    "count": 7105
+   },
+   "named_nets_cap_fF_sum": {
+    "prelayout": 178.0,
+    "extracted": 391.71
+   },
+   "coupling_between_named_nets_by_domain": {
+    "cross-cross": {
+     "caps": 12,
+     "fF": 0.29
+    },
+    "cross-r": {
+     "caps": 29,
+     "fF": 4.128
+    },
+    "cross-s0": {
+     "caps": 63,
+     "fF": 2.013
+    },
+    "cross-s1": {
+     "caps": 77,
+     "fF": 3.123
+    },
+    "r-r": {
+     "caps": 28,
+     "fF": 2.079
+    },
+    "r-s0": {
+     "caps": 37,
+     "fF": 0.781
+    },
+    "r-s1": {
+     "caps": 77,
+     "fF": 5.693
+    },
+    "s0-s0": {
+     "caps": 252,
+     "fF": 21.028
+    },
+    "s0-s1": {
+     "caps": 112,
+     "fF": 6.959
+    },
+    "s1-s1": {
+     "caps": 234,
+     "fF": 17.233
+    }
+   }
+  }
+ },
+ "DA": {
+  "variant": "DA",
+  "design": "dut_DA",
+  "die_um": [
+   74.49,
+   85.21
+  ],
+  "die_area_um2": 6347.3,
+  "core_area_um2": 3942.5,
+  "placement_utilisation_pct": 43.44,
+  "fp_core_util_pct": 40.0,
+  "cells_generator": 118,
+  "cells_synthesized": 118,
+  "cells_final_by_category": {
+   "clock_buffer": 5,
+   "decap": 224,
+   "fill": 72,
+   "logic": 118,
+   "tap": 50
+  },
+  "cells_final_by_type": {
+   "clock_buffer": {
+    "sky130_fd_sc_hd__clkbuf_16": 5
+   },
+   "decap": {
+    "sky130_ef_sc_hd__decap_12": 82,
+    "sky130_fd_sc_hd__decap_3": 68,
+    "sky130_fd_sc_hd__decap_4": 28,
+    "sky130_fd_sc_hd__decap_6": 22,
+    "sky130_fd_sc_hd__decap_8": 24
+   },
+   "fill": {
+    "sky130_fd_sc_hd__fill_1": 54,
+    "sky130_fd_sc_hd__fill_2": 18
+   },
+   "logic": {
+    "sky130_fd_sc_hd__and2_1": 10,
+    "sky130_fd_sc_hd__and2b_1": 10,
+    "sky130_fd_sc_hd__dfxtp_1": 55,
+    "sky130_fd_sc_hd__inv_1": 1,
+    "sky130_fd_sc_hd__xor2_1": 42
+   },
+   "tap": {
+    "sky130_fd_sc_hd__tapvpwrvgnd_1": 50
+   }
+  },
+  "cells_final_total": 469,
+  "synthesis_vs_generator": {
+   "missing_instances": [],
+   "changed_cell_type": [],
+   "changed_pins": [],
+   "clk_pins_on_clock_tree_nets": 0,
+   "added_instances": {},
+   "logic_unchanged": true
+  },
+  "final_vs_generator": {
+   "missing_instances": [],
+   "changed_cell_type": [],
+   "changed_pins": [],
+   "clk_pins_on_clock_tree_nets": 55,
+   "added_instances": {
+    "decap": {
+     "sky130_fd_sc_hd__decap_3": 68,
+     "sky130_ef_sc_hd__decap_12": 82,
+     "sky130_fd_sc_hd__decap_8": 24,
+     "sky130_fd_sc_hd__decap_6": 22,
+     "sky130_fd_sc_hd__decap_4": 28
+    },
+    "fill": {
+     "sky130_fd_sc_hd__fill_1": 54,
+     "sky130_fd_sc_hd__fill_2": 18
+    },
+    "tap": {
+     "sky130_fd_sc_hd__tapvpwrvgnd_1": 50
+    },
+    "clock_buffer": {
+     "sky130_fd_sc_hd__clkbuf_16": 5
+    }
+   },
+   "logic_unchanged": true
+  },
+  "clock_tree": {
+   "buffers": {
+    "sky130_fd_sc_hd__clkbuf_16": 5
+   },
+   "skew_ns": 0.02,
+   "max_fanout_violations": [
+    {
+     "pin": "clkbuf_2_2__f_CLK/X",
+     "limit": 10,
+     "fanout": 15
+    },
+    {
+     "pin": "clkbuf_2_3__f_CLK/X",
+     "limit": 10,
+     "fanout": 14
+    },
+    {
+     "pin": "clkbuf_2_0__f_CLK/X",
+     "limit": 10,
+     "fanout": 13
+    },
+    {
+     "pin": "clkbuf_2_1__f_CLK/X",
+     "limit": 10,
+     "fanout": 13
+    }
+   ]
+  },
+  "timing_tt_ns": {
+   "clock_period": 4.0,
+   "setup_worst_slack": 2.05,
+   "hold_worst_slack": 0.13,
+   "critical_path": 0.9
+  },
+  "wire_length_um": 2162,
+  "vias": 708,
+  "drc_router": 0,
+  "drc_magic": 0,
+  "drc_klayout": 0,
+  "lvs": "Circuits match uniquely.",
+  "antenna_pin_violations": 0,
+  "antenna_net_violations": 0,
+  "klayout_xor_vs_magic_gds": "XOR differences: 0",
+  "run_dir": "runs/pex/ol/DA/runs/pex",
+  "pex": {
+   "n_devices": 2530,
+   "devices": {
+    "sky130_fd_pr__pfet_01v8_hvt": 1265,
+    "sky130_fd_pr__nfet_01v8": 1045,
+    "sky130_fd_pr__special_nfet_01v8": 220
+   },
+   "supply_only_devices": 448,
+   "supply_only_devices_dropped": 0,
+   "caps_fF": {
+    "to_VGND": 329.48,
+    "to_VPWR": 292.29,
+    "VPWR_VGND": 641.0,
+    "signal_signal": 385.416,
+    "count": 12120
+   },
+   "named_nets_cap_fF_sum": {
+    "prelayout": 223.0,
+    "extracted": 498.44
+   },
+   "coupling_between_named_nets_by_domain": {
+    "cross-cross": {
+     "caps": 7,
+     "fF": 0.057
+    },
+    "cross-r": {
+     "caps": 24,
+     "fF": 4.01
+    },
+    "cross-s0": {
+     "caps": 36,
+     "fF": 1.539
+    },
+    "cross-s1": {
+     "caps": 57,
+     "fF": 1.094
+    },
+    "r-r": {
+     "caps": 24,
+     "fF": 1.473
+    },
+    "r-s0": {
+     "caps": 29,
+     "fF": 4.01
+    },
+    "r-s1": {
+     "caps": 84,
+     "fF": 4.231
+    },
+    "s0-s0": {
+     "caps": 305,
+     "fF": 18.386
+    },
+    "s0-s1": {
+     "caps": 106,
+     "fF": 7.807
+    },
+    "s1-s1": {
+     "caps": 281,
+     "fF": 19.919
+    }
+   }
+  }
+ },
+ "U": {
+  "variant": "U",
+  "design": "dut_U",
+  "die_um": [
+   40.1,
+   50.82
+  ],
+  "die_area_um2": 2037.9,
+  "core_area_um2": 788.3,
+  "placement_utilisation_pct": 48.39,
+  "fp_core_util_pct": 40.0,
+  "cells_generator": 27,
+  "cells_synthesized": 27,
+  "cells_final_by_category": {
+   "clock_buffer": 3,
+   "decap": 52,
+   "fill": 14,
+   "logic": 27,
+   "tap": 12
+  },
+  "cells_final_by_type": {
+   "clock_buffer": {
+    "sky130_fd_sc_hd__clkbuf_16": 3
+   },
+   "decap": {
+    "sky130_ef_sc_hd__decap_12": 10,
+    "sky130_fd_sc_hd__decap_3": 31,
+    "sky130_fd_sc_hd__decap_4": 6,
+    "sky130_fd_sc_hd__decap_6": 3,
+    "sky130_fd_sc_hd__decap_8": 2
+   },
+   "fill": {
+    "sky130_fd_sc_hd__fill_1": 11,
+    "sky130_fd_sc_hd__fill_2": 3
+   },
+   "logic": {
+    "sky130_fd_sc_hd__and2b_1": 5,
+    "sky130_fd_sc_hd__dfxtp_1": 10,
+    "sky130_fd_sc_hd__inv_1": 1,
+    "sky130_fd_sc_hd__xor2_1": 11
+   },
+   "tap": {
+    "sky130_fd_sc_hd__tapvpwrvgnd_1": 12
+   }
+  },
+  "cells_final_total": 108,
+  "synthesis_vs_generator": {
+   "missing_instances": [],
+   "changed_cell_type": [],
+   "changed_pins": [],
+   "clk_pins_on_clock_tree_nets": 0,
+   "added_instances": {},
+   "logic_unchanged": true
+  },
+  "final_vs_generator": {
+   "missing_instances": [],
+   "changed_cell_type": [],
+   "changed_pins": [],
+   "clk_pins_on_clock_tree_nets": 10,
+   "added_instances": {
+    "decap": {
+     "sky130_fd_sc_hd__decap_8": 2,
+     "sky130_ef_sc_hd__decap_12": 10,
+     "sky130_fd_sc_hd__decap_3": 31,
+     "sky130_fd_sc_hd__decap_4": 6,
+     "sky130_fd_sc_hd__decap_6": 3
+    },
+    "fill": {
+     "sky130_fd_sc_hd__fill_1": 11,
+     "sky130_fd_sc_hd__fill_2": 3
+    },
+    "tap": {
+     "sky130_fd_sc_hd__tapvpwrvgnd_1": 12
+    },
+    "clock_buffer": {
+     "sky130_fd_sc_hd__clkbuf_16": 3
+    }
+   },
+   "logic_unchanged": true
+  },
+  "clock_tree": {
+   "buffers": {
+    "sky130_fd_sc_hd__clkbuf_16": 3
+   },
+   "skew_ns": 0.01,
+   "max_fanout_violations": []
+  },
+  "timing_tt_ns": {
+   "clock_period": 4.0,
+   "setup_worst_slack": 2.12,
+   "hold_worst_slack": 0.29,
+   "critical_path": 0.83
+  },
+  "wire_length_um": 487,
+  "vias": 173,
+  "drc_router": 0,
+  "drc_magic": 0,
+  "drc_klayout": 0,
+  "lvs": "Circuits match uniquely.",
+  "antenna_pin_violations": 0,
+  "antenna_net_violations": 0,
+  "klayout_xor_vs_magic_gds": "XOR differences: 0",
+  "run_dir": "runs/pex/ol/U/runs/pex",
+  "pex": {
+   "n_devices": 616,
+   "devices": {
+    "sky130_fd_pr__pfet_01v8_hvt": 308,
+    "sky130_fd_pr__special_nfet_01v8": 40,
+    "sky130_fd_pr__nfet_01v8": 268
+   },
+   "supply_only_devices": 104,
+   "supply_only_devices_dropped": 0,
+   "caps_fF": {
+    "to_VGND": 81.518,
+    "to_VPWR": 64.813,
+    "VPWR_VGND": 115.0,
+    "signal_signal": 85.356,
+    "count": 2466
+   },
+   "named_nets_cap_fF_sum": {
+    "prelayout": 53.5,
+    "extracted": 118.2
+   },
+   "coupling_between_named_nets_by_domain": {
+    "x-x": {
+     "caps": 207,
+     "fF": 17.567
+    }
+   }
+  }
+ }
+}

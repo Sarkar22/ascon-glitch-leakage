@@ -1,0 +1,370 @@
+variant,net,kind,domain,value_model_fail,glitch_extended_fail,both_shares_of
+N,xs0_0,port,s0,0,0,
+N,xs0_1,port,s0,0,0,
+N,xs0_2,port,s0,0,0,
+N,xs0_3,port,s0,0,0,
+N,xs0_4,port,s0,0,0,
+N,xs1_0,port,s1,0,0,
+N,xs1_1,port,s1,0,0,
+N,xs1_2,port,s1,0,0,
+N,xs1_3,port,s1,0,0,
+N,xs1_4,port,s1,0,0,
+N,r_0,port,r,0,0,
+N,r_1,port,r,0,0,
+N,r_2,port,r,0,0,
+N,r_3,port,r,0,0,
+N,r_4,port,r,0,0,
+N,xs0_0_q,dff,s0,0,0,
+N,xs0_1_q,dff,s0,0,0,
+N,xs0_2_q,dff,s0,0,0,
+N,xs0_3_q,dff,s0,0,0,
+N,xs0_4_q,dff,s0,0,0,
+N,as0_0,comb,s0,0,0,
+N,as0_4,comb,s0,0,0,
+N,as0_2,comb,s0,0,0,
+N,xs1_0_q,dff,s1,0,0,
+N,xs1_1_q,dff,s1,0,0,
+N,xs1_2_q,dff,s1,0,0,
+N,xs1_3_q,dff,s1,0,0,
+N,xs1_4_q,dff,s1,0,0,
+N,as1_0,comb,s1,0,0,
+N,as1_4,comb,s1,0,0,
+N,as1_2,comb,s1,0,0,
+N,r_0_q,dff,r,0,0,
+N,r_1_q,dff,r,0,0,
+N,r_2_q,dff,r,0,0,
+N,r_3_q,dff,r,0,0,
+N,r_4_q,dff,r,0,0,
+N,p00_0,comb,s0,0,0,
+N,m01_0,comb,cross,0,0,
+N,p01_0,comb,s0,0,0,
+N,p11_0,comb,s1,0,0,
+N,m10_0,comb,cross,0,0,
+N,p10_0,comb,s1,0,0,
+N,ts0_0,comb,s0,0,1,x1
+N,ts1_0,comb,s1,0,1,x1
+N,p00_1,comb,s0,0,0,
+N,m01_1,comb,cross,0,1,x1
+N,p01_1,comb,s0,0,1,x1
+N,p11_1,comb,s1,0,0,
+N,m10_1,comb,cross,0,1,x1
+N,p10_1,comb,s1,0,1,x1
+N,ts0_1,comb,s0,0,1,x1 x2
+N,ts1_1,comb,s1,0,1,x1 x2
+N,p00_2,comb,s0,0,0,
+N,m01_2,comb,cross,0,0,
+N,p01_2,comb,s0,0,0,
+N,p11_2,comb,s1,0,0,
+N,m10_2,comb,cross,0,0,
+N,p10_2,comb,s1,0,0,
+N,ts0_2,comb,s0,0,1,x3
+N,ts1_2,comb,s1,0,1,x3
+N,p00_3,comb,s0,0,0,
+N,m01_3,comb,cross,0,1,x3
+N,p01_3,comb,s0,0,1,x3
+N,p11_3,comb,s1,0,0,
+N,m10_3,comb,cross,0,1,x3
+N,p10_3,comb,s1,0,1,x3
+N,ts0_3,comb,s0,0,1,x3 x4
+N,ts1_3,comb,s1,0,1,x3 x4
+N,p00_4,comb,s0,0,0,
+N,m01_4,comb,cross,0,1,x4
+N,p01_4,comb,s0,0,1,x4
+N,p11_4,comb,s1,0,0,
+N,m10_4,comb,cross,0,1,x4
+N,p10_4,comb,s1,0,1,x4
+N,ts0_4,comb,s0,0,1,x0 x4
+N,ts1_4,comb,s1,0,1,x0 x4
+N,bs0_0,comb,s0,0,1,x1 x2
+N,bs0_1,comb,s0,0,1,x3
+N,bs0_2,comb,s0,0,1,x3 x4
+N,bs0_3,comb,s0,0,1,x0 x4
+N,bs0_4,comb,s0,0,1,x1
+N,ys0_1_d,comb,s0,0,1,x1 x2 x3
+N,ys0_0_d,comb,s0,0,1,x1 x2
+N,ys0_3_d,comb,s0,0,1,x0 x3 x4
+N,ys0_2_d,comb,s0,0,1,x3 x4
+N,ys0_0,dff,s0,0,0,x1 x2
+N,ys0_1,dff,s0,0,0,x1 x2 x3
+N,ys0_2,dff,s0,0,0,x3 x4
+N,ys0_3,dff,s0,0,0,x0 x3 x4
+N,ys0_4,dff,s0,0,0,x1
+N,bs1_0,comb,s1,0,1,x1 x2
+N,bs1_1,comb,s1,0,1,x3
+N,bs1_2,comb,s1,0,1,x3 x4
+N,bs1_3,comb,s1,0,1,x0 x4
+N,bs1_4,comb,s1,0,1,x1
+N,ys1_1_d,comb,s1,0,1,x1 x2 x3
+N,ys1_0_d,comb,s1,0,1,x1 x2
+N,ys1_3_d,comb,s1,0,1,x0 x3 x4
+N,ys1_0,dff,s1,0,0,x1 x2
+N,ys1_1,dff,s1,0,0,x1 x2 x3
+N,ys1_2,dff,s1,0,0,x3 x4
+N,ys1_3,dff,s1,0,0,x0 x3 x4
+N,ys1_4,dff,s1,0,0,x1
+D,xs0_0,port,s0,0,0,
+D,xs0_1,port,s0,0,0,
+D,xs0_2,port,s0,0,0,
+D,xs0_3,port,s0,0,0,
+D,xs0_4,port,s0,0,0,
+D,xs1_0,port,s1,0,0,
+D,xs1_1,port,s1,0,0,
+D,xs1_2,port,s1,0,0,
+D,xs1_3,port,s1,0,0,
+D,xs1_4,port,s1,0,0,
+D,r_0,port,r,0,0,
+D,r_1,port,r,0,0,
+D,r_2,port,r,0,0,
+D,r_3,port,r,0,0,
+D,r_4,port,r,0,0,
+D,xs0_0_q,dff,s0,0,0,
+D,xs0_1_q,dff,s0,0,0,
+D,xs0_2_q,dff,s0,0,0,
+D,xs0_3_q,dff,s0,0,0,
+D,xs0_4_q,dff,s0,0,0,
+D,as0_0,comb,s0,0,0,
+D,as0_4,comb,s0,0,0,
+D,as0_2,comb,s0,0,0,
+D,xs1_0_q,dff,s1,0,0,
+D,xs1_1_q,dff,s1,0,0,
+D,xs1_2_q,dff,s1,0,0,
+D,xs1_3_q,dff,s1,0,0,
+D,xs1_4_q,dff,s1,0,0,
+D,as1_0,comb,s1,0,0,
+D,as1_4,comb,s1,0,0,
+D,as1_2,comb,s1,0,0,
+D,r_0_q,dff,r,0,0,
+D,r_1_q,dff,r,0,0,
+D,r_2_q,dff,r,0,0,
+D,r_3_q,dff,r,0,0,
+D,r_4_q,dff,r,0,0,
+D,p00_0,comb,s0,0,0,
+D,m01_0,comb,cross,0,0,
+D,p01_0,comb,s0,0,0,
+D,p11_0,comb,s1,0,0,
+D,m10_0,comb,cross,0,0,
+D,p10_0,comb,s1,0,0,
+D,p00_0_q,dff,s0,0,0,
+D,p01_0_q,dff,s0,0,0,
+D,p11_0_q,dff,s1,0,0,
+D,p10_0_q,dff,s1,0,0,
+D,ts0_0,comb,s0,0,0,x1
+D,ts1_0,comb,s1,0,0,x1
+D,p00_1,comb,s0,0,0,
+D,m01_1,comb,cross,0,1,x1
+D,p01_1,comb,s0,0,1,x1
+D,p11_1,comb,s1,0,0,
+D,m10_1,comb,cross,0,1,x1
+D,p10_1,comb,s1,0,1,x1
+D,p00_1_q,dff,s0,0,0,
+D,p01_1_q,dff,s0,0,0,x1
+D,p11_1_q,dff,s1,0,0,
+D,p10_1_q,dff,s1,0,0,x1
+D,ts0_1,comb,s0,0,0,x1 x2
+D,ts1_1,comb,s1,0,0,x1 x2
+D,p00_2,comb,s0,0,0,
+D,m01_2,comb,cross,0,0,
+D,p01_2,comb,s0,0,0,
+D,p11_2,comb,s1,0,0,
+D,m10_2,comb,cross,0,0,
+D,p10_2,comb,s1,0,0,
+D,p00_2_q,dff,s0,0,0,
+D,p01_2_q,dff,s0,0,0,
+D,p11_2_q,dff,s1,0,0,
+D,p10_2_q,dff,s1,0,0,
+D,ts0_2,comb,s0,0,0,x3
+D,ts1_2,comb,s1,0,0,x3
+D,p00_3,comb,s0,0,0,
+D,m01_3,comb,cross,0,1,x3
+D,p01_3,comb,s0,0,1,x3
+D,p11_3,comb,s1,0,0,
+D,m10_3,comb,cross,0,1,x3
+D,p10_3,comb,s1,0,1,x3
+D,p00_3_q,dff,s0,0,0,
+D,p01_3_q,dff,s0,0,0,x3
+D,p11_3_q,dff,s1,0,0,
+D,p10_3_q,dff,s1,0,0,x3
+D,ts0_3,comb,s0,0,0,x3 x4
+D,ts1_3,comb,s1,0,0,x3 x4
+D,p00_4,comb,s0,0,0,
+D,m01_4,comb,cross,0,1,x4
+D,p01_4,comb,s0,0,1,x4
+D,p11_4,comb,s1,0,0,
+D,m10_4,comb,cross,0,1,x4
+D,p10_4,comb,s1,0,1,x4
+D,p00_4_q,dff,s0,0,0,
+D,p01_4_q,dff,s0,0,0,x4
+D,p11_4_q,dff,s1,0,0,
+D,p10_4_q,dff,s1,0,0,x4
+D,ts0_4,comb,s0,0,0,x0 x4
+D,ts1_4,comb,s1,0,0,x0 x4
+D,as0_0_q,dff,s0,0,0,
+D,as0_1_q,dff,s0,0,0,
+D,as0_2_q,dff,s0,0,0,
+D,as0_3_q,dff,s0,0,0,
+D,as0_4_q,dff,s0,0,0,
+D,as1_0_q,dff,s1,0,0,
+D,as1_1_q,dff,s1,0,0,
+D,as1_2_q,dff,s1,0,0,
+D,as1_3_q,dff,s1,0,0,
+D,as1_4_q,dff,s1,0,0,
+D,bs0_0,comb,s0,0,0,x1 x2
+D,bs0_1,comb,s0,0,0,x3
+D,bs0_2,comb,s0,0,0,x3 x4
+D,bs0_3,comb,s0,0,0,x0 x4
+D,bs0_4,comb,s0,0,0,x1
+D,ys0_1_d,comb,s0,0,0,x1 x2 x3
+D,ys0_0_d,comb,s0,0,0,x1 x2
+D,ys0_3_d,comb,s0,0,0,x0 x3 x4
+D,ys0_2_d,comb,s0,0,0,x3 x4
+D,ys0_0,dff,s0,0,0,x1 x2
+D,ys0_1,dff,s0,0,0,x1 x2 x3
+D,ys0_2,dff,s0,0,0,x3 x4
+D,ys0_3,dff,s0,0,0,x0 x3 x4
+D,ys0_4,dff,s0,0,0,x1
+D,bs1_0,comb,s1,0,0,x1 x2
+D,bs1_1,comb,s1,0,0,x3
+D,bs1_2,comb,s1,0,0,x3 x4
+D,bs1_3,comb,s1,0,0,x0 x4
+D,bs1_4,comb,s1,0,0,x1
+D,ys1_1_d,comb,s1,0,0,x1 x2 x3
+D,ys1_0_d,comb,s1,0,0,x1 x2
+D,ys1_3_d,comb,s1,0,0,x0 x3 x4
+D,ys1_0,dff,s1,0,0,x1 x2
+D,ys1_1,dff,s1,0,0,x1 x2 x3
+D,ys1_2,dff,s1,0,0,x3 x4
+D,ys1_3,dff,s1,0,0,x0 x3 x4
+D,ys1_4,dff,s1,0,0,x1
+DA,xs0_0,port,s0,0,0,
+DA,xs0_1,port,s0,0,0,
+DA,xs0_2,port,s0,0,0,
+DA,xs0_3,port,s0,0,0,
+DA,xs0_4,port,s0,0,0,
+DA,xs1_0,port,s1,0,0,
+DA,xs1_1,port,s1,0,0,
+DA,xs1_2,port,s1,0,0,
+DA,xs1_3,port,s1,0,0,
+DA,xs1_4,port,s1,0,0,
+DA,r_0,port,r,0,0,
+DA,r_1,port,r,0,0,
+DA,r_2,port,r,0,0,
+DA,r_3,port,r,0,0,
+DA,r_4,port,r,0,0,
+DA,as0_0,comb,s0,0,0,
+DA,as0_4,comb,s0,0,0,
+DA,as0_2,comb,s0,0,0,
+DA,as0_0_q,dff,s0,0,0,
+DA,as0_1_q,dff,s0,0,0,
+DA,as0_2_q,dff,s0,0,0,
+DA,as0_3_q,dff,s0,0,0,
+DA,as0_4_q,dff,s0,0,0,
+DA,as1_0,comb,s1,0,0,
+DA,as1_4,comb,s1,0,0,
+DA,as1_2,comb,s1,0,0,
+DA,as1_0_q,dff,s1,0,0,
+DA,as1_1_q,dff,s1,0,0,
+DA,as1_2_q,dff,s1,0,0,
+DA,as1_3_q,dff,s1,0,0,
+DA,as1_4_q,dff,s1,0,0,
+DA,r_0_q,dff,r,0,0,
+DA,r_1_q,dff,r,0,0,
+DA,r_2_q,dff,r,0,0,
+DA,r_3_q,dff,r,0,0,
+DA,r_4_q,dff,r,0,0,
+DA,p00_0,comb,s0,0,0,
+DA,m01_0,comb,cross,0,0,
+DA,p01_0,comb,s0,0,0,
+DA,p11_0,comb,s1,0,0,
+DA,m10_0,comb,cross,0,0,
+DA,p10_0,comb,s1,0,0,
+DA,p00_0_q,dff,s0,0,0,
+DA,p01_0_q,dff,s0,0,0,
+DA,p11_0_q,dff,s1,0,0,
+DA,p10_0_q,dff,s1,0,0,
+DA,ts0_0,comb,s0,0,0,x1
+DA,ts1_0,comb,s1,0,0,x1
+DA,p00_1,comb,s0,0,0,
+DA,m01_1,comb,cross,0,0,x1
+DA,p01_1,comb,s0,0,0,x1
+DA,p11_1,comb,s1,0,0,
+DA,m10_1,comb,cross,0,0,x1
+DA,p10_1,comb,s1,0,0,x1
+DA,p00_1_q,dff,s0,0,0,
+DA,p01_1_q,dff,s0,0,0,x1
+DA,p11_1_q,dff,s1,0,0,
+DA,p10_1_q,dff,s1,0,0,x1
+DA,ts0_1,comb,s0,0,0,x1 x2
+DA,ts1_1,comb,s1,0,0,x1 x2
+DA,p00_2,comb,s0,0,0,
+DA,m01_2,comb,cross,0,0,
+DA,p01_2,comb,s0,0,0,
+DA,p11_2,comb,s1,0,0,
+DA,m10_2,comb,cross,0,0,
+DA,p10_2,comb,s1,0,0,
+DA,p00_2_q,dff,s0,0,0,
+DA,p01_2_q,dff,s0,0,0,
+DA,p11_2_q,dff,s1,0,0,
+DA,p10_2_q,dff,s1,0,0,
+DA,ts0_2,comb,s0,0,0,x3
+DA,ts1_2,comb,s1,0,0,x3
+DA,p00_3,comb,s0,0,0,
+DA,m01_3,comb,cross,0,0,x3
+DA,p01_3,comb,s0,0,0,x3
+DA,p11_3,comb,s1,0,0,
+DA,m10_3,comb,cross,0,0,x3
+DA,p10_3,comb,s1,0,0,x3
+DA,p00_3_q,dff,s0,0,0,
+DA,p01_3_q,dff,s0,0,0,x3
+DA,p11_3_q,dff,s1,0,0,
+DA,p10_3_q,dff,s1,0,0,x3
+DA,ts0_3,comb,s0,0,0,x3 x4
+DA,ts1_3,comb,s1,0,0,x3 x4
+DA,p00_4,comb,s0,0,0,
+DA,m01_4,comb,cross,0,0,x4
+DA,p01_4,comb,s0,0,0,x4
+DA,p11_4,comb,s1,0,0,
+DA,m10_4,comb,cross,0,0,x4
+DA,p10_4,comb,s1,0,0,x4
+DA,p00_4_q,dff,s0,0,0,
+DA,p01_4_q,dff,s0,0,0,x4
+DA,p11_4_q,dff,s1,0,0,
+DA,p10_4_q,dff,s1,0,0,x4
+DA,ts0_4,comb,s0,0,0,x0 x4
+DA,ts1_4,comb,s1,0,0,x0 x4
+DA,as0_0_qq,dff,s0,0,0,
+DA,as0_1_qq,dff,s0,0,0,
+DA,as0_2_qq,dff,s0,0,0,
+DA,as0_3_qq,dff,s0,0,0,
+DA,as0_4_qq,dff,s0,0,0,
+DA,as1_0_qq,dff,s1,0,0,
+DA,as1_1_qq,dff,s1,0,0,
+DA,as1_2_qq,dff,s1,0,0,
+DA,as1_3_qq,dff,s1,0,0,
+DA,as1_4_qq,dff,s1,0,0,
+DA,bs0_0,comb,s0,0,0,x1 x2
+DA,bs0_1,comb,s0,0,0,x3
+DA,bs0_2,comb,s0,0,0,x3 x4
+DA,bs0_3,comb,s0,0,0,x0 x4
+DA,bs0_4,comb,s0,0,0,x1
+DA,ys0_1_d,comb,s0,0,0,x1 x2 x3
+DA,ys0_0_d,comb,s0,0,0,x1 x2
+DA,ys0_3_d,comb,s0,0,0,x0 x3 x4
+DA,ys0_2_d,comb,s0,0,0,x3 x4
+DA,ys0_0,dff,s0,0,0,x1 x2
+DA,ys0_1,dff,s0,0,0,x1 x2 x3
+DA,ys0_2,dff,s0,0,0,x3 x4
+DA,ys0_3,dff,s0,0,0,x0 x3 x4
+DA,ys0_4,dff,s0,0,0,x1
+DA,bs1_0,comb,s1,0,0,x1 x2
+DA,bs1_1,comb,s1,0,0,x3
+DA,bs1_2,comb,s1,0,0,x3 x4
+DA,bs1_3,comb,s1,0,0,x0 x4
+DA,bs1_4,comb,s1,0,0,x1
+DA,ys1_1_d,comb,s1,0,0,x1 x2 x3
+DA,ys1_0_d,comb,s1,0,0,x1 x2
+DA,ys1_3_d,comb,s1,0,0,x0 x3 x4
+DA,ys1_0,dff,s1,0,0,x1 x2
+DA,ys1_1,dff,s1,0,0,x1 x2 x3
+DA,ys1_2,dff,s1,0,0,x3 x4
+DA,ys1_3,dff,s1,0,0,x0 x3 x4
+DA,ys1_4,dff,s1,0,0,x1
