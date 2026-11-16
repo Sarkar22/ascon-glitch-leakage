@@ -3,8 +3,8 @@
 A first-order masked Ascon S-box that a zero-delay model calls secure leaks at first order in transistor-level SPICE
 on the open sky130 PDK. This repository contains the whole study: one generated netlist per design, three leakage
 models of increasing fidelity, an exact probing check, SPICE campaigns with first-order TVLA, a profiled key-recovery
-attack, DRC/LVS-clean layouts with parasitic extraction, and the post-layout re-test. It is the code behind an
-IEEE SSCS Code-a-Chip notebook for ISSCC 2027 (`notebook/ascon_glitch_leakage.ipynb`).
+attack, DRC/LVS-clean layouts with parasitic extraction, and the post-layout re-test. A walkthrough notebook,
+`notebook/ascon_glitch_leakage.ipynb`, presents the study.
 
 No chip was fabricated. SPICE with the foundry's device models is the reference, and the limits of that are stated
 in the documents below.
@@ -56,7 +56,7 @@ stage are in [`docs/reviews/`](docs/reviews/). The negative controls and the RC 
 | `analysis/` | kill-test and post-layout analysis, key recovery, cost table, figures |
 | `layout/` | OpenLane flows, extraction into SPICE, sign-off summaries |
 | `results/` | small result files (JSON, CSV, figures, final GDS); raw traces are not committed |
-| `notebook/` | the Code-a-Chip notebook, its setup helper, cached data and media |
+| `notebook/` | the walkthrough notebook, its setup helper, cached data and media |
 | `docs/` | registrations, results and reviews |
 
 ## Reproduce
