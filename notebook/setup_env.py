@@ -10,9 +10,10 @@
 Modes
   live    the repository code, ngspice and the sky130A PDK at the pinned version are present.
           The notebook regenerates the netlists, runs the Python models and a short SPICE demo.
-  cached  something is missing (for example in the organizers' CI, which installs only pytest,
-          nbmake, pandas, graphviz and matplotlib). The notebook plots the precomputed results
-          in data/ (written by make_cached_data.py) and calls no external tool.
+  cached  something is missing (for example in the notebook job of CI, which installs only
+          flake8, nbQA, pytest, nbmake, pandas, graphviz and matplotlib). The notebook plots
+          the precomputed results in data/ (written by make_cached_data.py) and calls no
+          external tool.
   The environment variable ASCON_MODE=live|cached, or setup(mode=...), overrides the choice.
   Forcing live when a tool is missing raises an error that names it.
 
@@ -52,7 +53,7 @@ CIEL_VERSION = "3.0.0"
 APT_PACKAGES = ("ngspice", "iverilog")
 # The public repository and the ref (branch or tag) that Colab fetches. DEFAULT_REPO_REF is the one
 # place to pin a release: set it to a tag (e.g. "v1.0") after the tag is pushed, then re-run
-# make_notebook.py, which writes it into the notebook's setup cell and its "run now" link.
+# make_notebook.py, which writes it into the notebook's setup cell and its Colab badge.
 # $ASCON_REPO_URL and $ASCON_REPO_REF override both at run time (the setup cell sets the ref).
 DEFAULT_REPO_URL = "https://github.com/Sarkar22/ascon-glitch-leakage"
 DEFAULT_REPO_REF = "main"

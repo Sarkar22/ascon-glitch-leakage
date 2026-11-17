@@ -2,7 +2,7 @@
 """Export the small data set the notebook plots in cached mode (notebook/data/, CSV).
 
 The notebook runs in two modes (notebook/setup_env.py). In cached mode (no ngspice or PDK,
-e.g. the organizers' CI) it plots only what this script writes. The raw SPICE trace matrices
+e.g. in CI's notebook job) it plots only what this script writes. The raw SPICE trace matrices
 (runs/kt/<campaign>/traces.npy, up to 64 MB each) are not exported. They are reduced to the
 curves the notebook shows, plus small subsets. Everything is CSV except the JSON summaries
 (the kill test's and those of later steps, see below), and MANIFEST.csv lists each file with

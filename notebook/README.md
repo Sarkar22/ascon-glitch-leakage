@@ -1,15 +1,15 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
-# The submission notebook
+# The walkthrough notebook
 
-`ascon_glitch_leakage.ipynb` is the Code-a-Chip notebook. It is written as a guided tour, in the style of a paper.
+`ascon_glitch_leakage.ipynb` presents the study. It is written as a guided tour, in the style of a paper.
 In its default *cached* mode it reads only the notebook's own data set in `data/` (CSV files and a few JSON
 summaries), so it runs in under a minute with numpy and matplotlib. It needs no ngspice and no PDK, which is also how
-the organizers' CI runs it (`pytest --nbmake`).
+CI runs it (`pytest --nbmake`).
 
 | File | Role |
 |---|---|
 | `ascon_glitch_leakage.ipynb` | The notebook, with saved outputs, so that it reads on GitHub without running it |
-| `make_notebook.py` | Holds the narrative and builds the notebook's cells. The numbers quoted from the result files are filled in from the data (`<<key>>` placeholders); a few numbers from the reviews in `docs/reviews/` are fixed text (for example 7.20 against 9.20, 2.30 against 2.29, 28 % against 8.7 %). Project files that the text names and the pull-request folder does not ship (for example `docs/KILL_TEST.md`, `colab_check.py`) become links to the public repository at `REPO_REF`; `LIVE` holds the measured live-path times |
+| `make_notebook.py` | Holds the narrative and builds the notebook's cells. The numbers quoted from the result files are filled in from the data (`<<key>>` placeholders); a few numbers from the reviews in `docs/reviews/` are fixed text (for example 7.20 against 9.20, 2.30 against 2.29, 28 % against 8.7 %). Project files that the text names (for example `docs/KILL_TEST.md`, `colab_check.py`) become links to the public repository at `REPO_REF`, except the files the notebook uses at run time (`data/`, `media/`, the helpers it imports); `LIVE` holds the measured live-path times |
 | `nbdata.py` | Reads the data: `data/` first, else the repository's `results/`. `headline()` holds the quoted numbers |
 | `nbfigs.py` | The figures and tables (matplotlib; same colors as `analysis/plots.py`) |
 | `nbanim.py` | The animation of one input change in N and DA (level-2 events). `python3 notebook/nbanim.py` rewrites `media/glitch_events.json` from `build/` |
@@ -18,7 +18,7 @@ the organizers' CI runs it (`pytest --nbmake`).
 | `make_layout_media.py` | Writes the layout copies in `media/` from `results/layout/*_layout.png` (matplotlib and Pillow; run it in the cac-sca image) |
 | `test_notebook.py` | Unit tests: the text matches the data, `data/` is current, lint-friendly code cells, badge, SPDX, no private paths, figures and tables |
 | `setup_env.py`, `make_cached_data.py`, `colab_check.py`, `data/` | The environment helper, the export of `data/` and the live-path check (see their docstrings) |
-| `tests/` | `ci_container.sh`: the organizers' two CI jobs in clean `python:3.10-slim` containers. `colab_live.sh` (with `colab_live.py`): the live path as Colab runs it, timed, in a clean `ubuntu:22.04` container that fetches everything from GitHub; its times are the ones in "How to run". `colab_container.sh`: the older live-path check on a copy of the repository |
+| `tests/` | `ci_container.sh`: CI's notebook job (lint and `pytest --nbmake`) in clean `python:3.10-slim` containers that see only `notebook/`. `colab_live.sh` (with `colab_live.py`): the live path as Colab runs it, timed, in a clean `ubuntu:22.04` container that fetches everything from GitHub; its times are the ones in "How to run". `colab_container.sh`: the older live-path check on a copy of the repository |
 
 ## Rebuild after the results change
 
@@ -31,21 +31,20 @@ jupyter nbconvert --to notebook --execute --inplace notebook/ascon_glitch_leakag
 python3 -m unittest discover -s notebook -p 'test_*.py'
 ```
 
-The organizers' checks are `nbqa flake8 --ignore=E402,E226` on the notebook, a `colab-badge` line that points to
-`sscs-ose`, and `pytest --nbmake`. All three pass in a Python 3.10 environment with only
-`pytest nbmake pandas graphviz matplotlib` installed, which is the organizers' CI. Execute the notebook without
-ipywidgets installed when saving its outputs, so that GitHub shows the static explorer views instead of an
-unrendered widget.
+CI's notebook job runs `nbqa flake8 --ignore=E402,E226` on the notebooks, checks that a `colab-badge` line exists,
+and runs `pytest --nbmake`, in a Python 3.10 environment with only
+`flake8 nbQA pytest nbmake pandas graphviz matplotlib` installed; `bash notebook/tests/ci_container.sh` runs the same
+checks locally. Execute the notebook without ipywidgets installed when saving its outputs, so that GitHub shows the
+static explorer views instead of an unrendered widget.
 
-## Colab before and after the merge
+## Colab
 
-The organizers' badge opens the notebook in `sscs-ose`, which exists only after they merge the entry. The line under
-the badge opens the same notebook from the author's public repository. On Colab the setup cell fetches the notebook's
-folder: the `sscs-ose` copy when it is there, else the public repository at `REPO_REF`. Live mode clones the public
-repository at the same ref when the code is missing.
+The badge opens the notebook in Colab from the author's public repository at `REPO_REF`. On Colab the setup cell
+clones that repository at the same ref and runs from its `notebook/` folder. Live mode clones the public repository at
+the same ref when the code is missing.
 
 `REPO_REF` is `setup_env.DEFAULT_REPO_REF` (now `main`). To pin a release, push a tag, set `DEFAULT_REPO_REF` to it, run
-`make_notebook.py` (which writes the ref into the setup cell and the "run now" link) and execute the notebook again.
+`make_notebook.py` (which writes the ref into the setup cell and the Colab badge) and execute the notebook again.
 At run time `$ASCON_REPO_REF` overrides the ref (in the setup cell and in `setup_env`), and `$ASCON_REPO_URL` the
 repository that `setup_env` clones in live mode.
 

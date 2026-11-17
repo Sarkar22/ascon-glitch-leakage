@@ -7,14 +7,14 @@
 - the claim screen and the abstract;
 - §4.4 and §4.5 (D and DA at 19,997 traces);
 - §5 (key recovery) and §7 (cost);
-- the conclusion, the team table and the AI-use disclosure.
+- the conclusion, the author table and the AI-use disclosure.
 
 None of these files is committed yet. The layout and post-layout work (§6, `layout/`, `results/layout`, `results/pex`)
 is not reviewed here.
 
 **Lens.** I tried to refute the fixes. For each stage-2 item I asked whether it was really addressed, and I re-ran
 the parts where a mistake would change a number. I compared every number the notebook quotes in these sections
-with `results/*.json` and `results/cost/cost.csv`. I re-ran the organizers' CI checks myself.
+with `results/*.json` and `results/cost/cost.csv`. I re-ran the notebook CI checks myself.
 
 **What I changed.** Nothing in the repository except this file. The re-runs used scratch copies of the code, with
 `runs/kt` linked read-only. While I set up the first copy I created a stray symlink `runs/kt/kt` inside the
@@ -69,7 +69,7 @@ has to be rebuilt and re-executed, and the CI checks run again. No number change
 | 1 | Full `python3 analysis/key_recovery.py --jobs 3` in a scratch copy | Exit 0 after 1,869 s (the machine was also running other SPICE containers). `summary.json` equals the repository's in every field except `runtime_s_last_invocation` (a recursive JSON diff finds 0 differences). `ge_vs_traces.csv` is byte-identical. The log matches `runs/kr/full.log` line for line. |
 | 2 | `python3 analysis/cost_table.py` in the same copy, on the outputs of #1 | `cost.csv` and `cost.md` are byte-identical to the repository's. |
 | 3 | Unit tests on the host (scratch copy) | analysis 32 OK. model 39 OK (1 skipped). sim 8 OK (1 skipped). notebook 29 OK (1 skipped: the figure class needs matplotlib). |
-| 4 | Organizers' CI: `CPUS=2 bash notebook/tests/ci_container.sh <scratch>` (python:3.10-slim, with the workflows' commands) | flake8 PASS, has colab-badge PASS, colab-badge is sscs-ose PASS. `pytest --nbmake`: 2 passed (the main notebook and `ci_smoke.ipynb`, 12.3 s). |
+| 4 | Notebook CI checks: `CPUS=2 bash notebook/tests/ci_container.sh <scratch>` (python:3.10-slim, with the CI commands) | flake8 PASS, has colab-badge PASS. `pytest --nbmake`: 2 passed (the main notebook and `ci_smoke.ipynb`, 12.3 s). |
 | 5 | Per-key-bit POIs, re-implemented: per-input means, pooled variance, F, and my own in-cell chi2 per key bit, on the profiling rows of each of the 10 splits of N_pooled | These equal `per_bit_pois` in 10 of 10 splits. The x2 candidate sits at samples 147-149 (1.275-1.295 ns). Its chi2 is 75-116 against a 99.9 % point of 39.3 for chi2(16). The x1 candidate lies within 1-2 samples of the top-F sample, so it is dropped in 9 splits and kept in split 2 (top F 111, x1 115). So the "x2 POI at 1.275-1.295 ns" in §5 is x2's own POI. |
 | 6 | Gaussian template, re-implemented (pooled covariance, same ridge): key rank on each unit's full attack set | This agrees with `attack()` in **400/400** cases: N_pooled `tmpl_bits` 80/80, and `tmpl` and `tmpl_bits` 80/80 each on D_tvla, DA_tvla and N_tvla. With my own random subsets at n = 765 on N_pooled, the per-key-bit template gives GE 0.061 and SR 0.94 (reported 0.07 / 0.93). |
 | 7 | Injection, re-implemented. The pattern is N_pooled's per-input mean at its top-F sample (114, 0.945 ns), minus its mean, over the within-input SD (pattern SD 0.2572, as reported). It is added at sample 514 of D and DA. Then my own 1-POI template runs on the module's splits, with 20 subsets per unit | D at 521 per key, α 0 / 0.25 / 0.35 / 0.5 / 1: GE 1.46 / 1.52 / 1.19 / 0.77 / 0.31 (reported 1.48 / 1.55 / 1.22 / 0.83 / 0.35). DA at 533: 1.54 / 1.58 / 1.41 / 0.94 / 0.39 (reported 1.54 / 1.58 / 1.38 / 1.03 / 0.45). The detection limits agree: D from 0.35, DA from 0.5. My fixed single POI is slightly stronger than the cross-validated choice. |
@@ -78,7 +78,7 @@ has to be rebuilt and re-executed, and the CI checks run again. No number change
 | 10 | TVLA sensitivity | 4.5 / 13.23 × sqrt(9,998 / 19,997) = 0.2405 of N's effect. δ_N = 2 × 13.23 / sqrt(9,998) = 0.2646. δ at 19,997 traces = 9 / sqrt(19,997) = 0.0636. These match `cost.md` ("0.24 x"), §2.5 ("0.265") and §4.5 ("0.064", "a quarter"). |
 | 11 | Every number in the claim screen, the abstract, §4.4, §4.5, §5, §7 and §9, against `results/kill_test/summary.json`, `results/key_recovery/summary.json` and `results/cost/cost.csv` | All agree, for example: D 3.08 at 19,997 (at most 3.622); level 2 cap-weighted 15.159, worst 16.734, 100 ps 2.705; level 1 D 2.113; DA 3.08 (at most 3.605), level 2 2.964, second order 21.475; N 0.38 / 0.62 / P(x1) 0.998 / P(x2) 0.626, per-key-bit 0.066 / 0.934 / 0.934, null 1.476 ± 0.092; N_tvla 0.43 / 0.64; N at 1x 0.97 / 0.99; D 1.475 (null 1.512 ± 0.066, p 0.286), DA 1.537 (1.505 ± 0.085, p 0.667); order 2 DA 0.266 / 0.783, D 0.568 / 0.614; U_cpa SR ≥ 0.9 from 2; area +59 %, energy +39 % (SPICE) and +46 % (with CLK pins), latency +13 % / +28 %, 141 ps. The saved outputs (the key-recovery table, the cost table and Figures 10-12) show the same values. `test_text_matches_results` confirms that the saved cells are what the generator builds from these files. |
 | 12 | `notebook/data/` copies | `key_recovery__summary.json`, `key_recovery__ge_vs_traces.csv`, `cost__cost.csv` and `kill_test_summary.json` are byte-identical to `results/`. MANIFEST lists 53 files. |
-| 13 | Team table and AI-use disclosure | Author row: IEEE member **yes**, SSCS member **no**, contact `TODO(user)`. The advisor row is `TODO(user)`. The disclosure sentence is in the closing cell. |
+| 13 | Author table and AI-use disclosure | Author row: contact `TODO(user)`. The advisor row is `TODO(user)`. The disclosure sentence is in the closing cell. |
 | 14 | Hygiene of all new files (the untracked files except `layout/`, `results/layout`, `results/pex`) | No absolute home-directory or mount path, host name or e-mail address. The only hits of the scan are the generic `~/.ciel` default in the setup helper and a NIST reference URL. Every new `.py`, `.sh` and `.md` file has the SPDX line (the shell scripts on line 2, after the shebang). |
 
 ## Findings

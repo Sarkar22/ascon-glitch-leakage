@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 """Figures and tables of the notebook, drawn from the committed result files.
 
-Needs numpy and matplotlib only (the organizers' CI has both). Every function reads
+Needs numpy and matplotlib only (CI's notebook job has both). Every function reads
 results/kill_test/*.csv, summary.json or results/probing/*.json through nbdata and
 returns a matplotlib figure (the notebook shows it) or a markdown table string.
 

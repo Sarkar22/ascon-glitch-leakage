@@ -6,7 +6,7 @@ Needs only the Python standard library and numpy, so it also runs on a bare host
 Where the data come from, in this order:
   1. data/ next to this file: the notebook's own data set (CSV and a few JSON summaries, listed
      in data/MANIFEST.csv; written by make_cached_data.py from results/ and the SPICE runs).
-     This is what the submission folder ships and what CI reads.
+     This is what cached mode and CI read.
   2. results/ of the repository (results/kill_test/, results/probing/), when data/ lacks a file.
 
   root()                 the repository root (holds build/, model/) or, without it, this folder

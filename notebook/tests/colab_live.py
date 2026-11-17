@@ -2,8 +2,8 @@
 """The notebook's live path as Colab runs it, step by step, with wall times (run by colab_live.sh).
 
 Colab is emulated by a stub google.colab module, and the working directory is an empty /content,
-so the setup cell's bootstrap has to fetch the notebook folder from GitHub: sscs-ose first, then
-the author's public repository at REPO_REF. The steps and what they run:
+so the setup cell's bootstrap has to fetch the notebook folder from GitHub: it clones the author's
+public repository at REPO_REF. The steps and what they run:
   bootstrap      the setup cell's lines up to sys.path.insert (taken from the notebook itself)
   setup          setup_env.setup(): on Colab it installs ngspice and iverilog (apt), ciel (pip)
                  and the pinned sky130 PDK (ciel), then picks the mode

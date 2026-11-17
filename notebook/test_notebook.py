@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Checks of the submission notebook and its helpers (stdlib unittest; numpy needed,
+"""Checks of the notebook and its helpers (stdlib unittest; numpy needed,
 matplotlib optional: the figure tests are skipped without it).
 
   python3 -m unittest discover -s notebook -p 'test_*.py'
@@ -54,27 +54,19 @@ class TestNotebook(unittest.TestCase):
         for c in load_nb()["cells"]:
             self.assertNotIn("<<", src(c).replace("\\ll", ""))
 
-    def test_colab_badge(self):
-        """Organizer CI: a colab-badge line exists and every such line points to sscs-ose."""
+    def test_colab_badge_and_pinned_ref(self):
+        """A colab-badge line exists (CI checks for one), every such line opens this notebook from the
+        author's repository at the pinned ref, and the setup cell fetches the same repository and ref."""
+        cells = load_nb()["cells"]
+        ref, url = setup_env.DEFAULT_REPO_REF, setup_env.DEFAULT_REPO_URL
+        colab = "https://colab.research.google.com/github/%s/blob/%s/notebook/ascon_glitch_leakage.ipynb" % (
+            url[len("https://github.com/"):], ref)
         with open(NB) as f:
             lines = [ln for ln in f if "colab-badge" in ln]
         self.assertTrue(lines)
         for ln in lines:
-            self.assertIn("sscs-ose", ln)
-        self.assertIn("ISSCC27/submitted_notebooks/ascon_glitch_leakage/ascon_glitch_leakage.ipynb", lines[0])
-
-    def test_run_now_link_and_pinned_ref(self):
-        """The second Colab link opens the author's repository at the pinned ref, is not a badge (the
-        organizers' check requires every colab-badge line to point to sscs-ose), and the setup cell
-        fetches the same repository and ref."""
-        cells = load_nb()["cells"]
-        ref, url = setup_env.DEFAULT_REPO_REF, setup_env.DEFAULT_REPO_URL
-        run_now = "https://colab.research.google.com/github/%s/blob/%s/notebook/ascon_glitch_leakage.ipynb" % (
-            url[len("https://github.com/"):], ref)
-        self.assertIn(run_now, src(cells[0]))
-        for ln in cells[0]["source"]:
-            if "Sarkar22" in ln:
-                self.assertNotIn("colab-badge", ln)
+            self.assertIn(colab, ln)
+        self.assertIn(colab, src(cells[0]))
         setup = next(src(c) for c in cells if c["cell_type"] == "code")
         self.assertIn("REPO = '%s'" % url, setup)
         self.assertIn("os.environ.setdefault('ASCON_REPO_REF', '%s')" % ref, setup)
@@ -86,18 +78,16 @@ class TestNotebook(unittest.TestCase):
         self.assertNotIn("Acknowledgments", text)
 
     def test_ai_use_text(self):
-        """The AI-use statement is the same sentence in the notebook, README.md and the PR body."""
+        """The AI-use statement is the same sentence in the notebook and in README.md."""
         text = "\n".join(src(c) for c in load_nb()["cells"] if c["cell_type"] == "markdown")
         par = next(p for p in text.split("\n\n") if p.startswith("**AI-use disclosure.**"))
         self.assertEqual(" ".join(par.split()), "**AI-use disclosure.** " + AI_USE)
-        for rel in ("README.md", os.path.join("docs", "PR_BODY.md")):
-            p = os.path.join(os.path.dirname(HERE), rel)
-            if not os.path.exists(p):
-                continue
+        p = os.path.join(os.path.dirname(HERE), "README.md")
+        if os.path.exists(p):
             with open(p) as f:
                 flat = " ".join(f.read().split())
-            self.assertIn(AI_USE, flat, rel)
-            self.assertEqual(flat.count("AI coding assistants"), 1, rel)
+            self.assertIn(AI_USE, flat)
+            self.assertEqual(flat.count("AI coding assistants"), 1)
 
     def test_repository_links(self):
         """Project files the notebook names are linked to the public repository at the pinned ref, and
@@ -117,7 +107,7 @@ class TestNotebook(unittest.TestCase):
             if shutil.which("git") and os.path.exists(os.path.join(repo, ".git")):
                 ignored = subprocess.run(["git", "-C", repo, "check-ignore", "-q", rel]).returncode == 0
                 self.assertFalse(ignored, rel)
-        for name in ("nbexplorer.py", "data/MANIFEST.csv", "LICENSE"):      # shipped: plain code spans
+        for name in ("nbexplorer.py", "data/MANIFEST.csv", "LICENSE"):      # run-time files, LICENSE: plain spans
             self.assertNotIn("/" + name + ")", text)
 
     def test_gif_plays_on_colab_only(self):
@@ -178,7 +168,7 @@ class TestNotebook(unittest.TestCase):
 class TestSetupCell(unittest.TestCase):
     """The setup cell's bootstrap on Colab, with git replaced by a stub that creates folders."""
 
-    def boot(self, colab=True, upstream_has_folder=False):
+    def boot(self, colab=True, cloned=False):
         cell = next(src(c) for c in load_nb()["cells"] if c["cell_type"] == "code").splitlines()
         code = "\n".join(cell[:cell.index("sys.path.insert(0, os.getcwd())")])
         calls = []
@@ -186,13 +176,8 @@ class TestSetupCell(unittest.TestCase):
         def fake_run(cmd, check=False, **kw):
             calls.append(cmd)
             if cmd[:2] == ["git", "clone"]:
-                os.makedirs(cmd[-1])
-                if cmd[-1] == "ascon-glitch-leakage":
-                    os.makedirs(os.path.join(cmd[-1], "notebook"))
-                    open(os.path.join(cmd[-1], "notebook", "nbdata.py"), "w").close()
-            elif "sparse-checkout" in cmd and upstream_has_folder:
-                os.makedirs(os.path.join("code-a-chip", cmd[-1]))
-                open(os.path.join("code-a-chip", cmd[-1], "nbdata.py"), "w").close()
+                os.makedirs(os.path.join(cmd[-1], "notebook"))
+                open(os.path.join(cmd[-1], "notebook", "nbdata.py"), "w").close()
             return types.SimpleNamespace(returncode=0)
         mods = {"google.colab": types.ModuleType("google.colab")} if colab else {}
         cwd = os.getcwd()
@@ -202,6 +187,8 @@ class TestSetupCell(unittest.TestCase):
             if not colab:
                 sys.modules.pop("google.colab", None)
             os.chdir(d)
+            if cloned:                                   # a clone from an earlier run of the cell
+                os.makedirs(os.path.join("ascon-glitch-leakage", "notebook"))
             try:
                 exec(compile(code, "setup cell", "exec"), {})
                 where = os.path.relpath(os.getcwd(), os.path.realpath(d))
@@ -209,17 +196,17 @@ class TestSetupCell(unittest.TestCase):
                 os.chdir(cwd)
         return where, calls
 
-    def test_before_the_merge_the_public_repository(self):
-        where, calls = self.boot(upstream_has_folder=False)
+    def test_on_colab_the_public_repository(self):
+        where, calls = self.boot()
         self.assertEqual(where, os.path.join("ascon-glitch-leakage", "notebook"))
-        self.assertIn("sscs-ose", " ".join(calls[0]))
-        self.assertEqual(calls[-1][-4:], ["--branch", setup_env.DEFAULT_REPO_REF, setup_env.DEFAULT_REPO_URL,
-                                          "ascon-glitch-leakage"])
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0][:2], ["git", "clone"])
+        self.assertEqual(calls[0][-4:], ["--branch", setup_env.DEFAULT_REPO_REF, setup_env.DEFAULT_REPO_URL,
+                                         "ascon-glitch-leakage"])
 
-    def test_after_the_merge_the_sscs_ose_folder(self):
-        where, calls = self.boot(upstream_has_folder=True)
-        self.assertEqual(where, os.path.join("code-a-chip", "ISSCC27", "submitted_notebooks", "ascon_glitch_leakage"))
-        self.assertEqual(len(calls), 2)                  # no clone of the author's repository
+    def test_an_earlier_clone_is_reused(self):
+        where, calls = self.boot(cloned=True)
+        self.assertEqual((where, calls), (os.path.join("ascon-glitch-leakage", "notebook"), []))
 
     def test_outside_colab_nothing_is_fetched(self):
         where, calls = self.boot(colab=False)

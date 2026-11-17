@@ -20,7 +20,7 @@ None of these files is committed yet.
 - every number in the Results section and in the notebook matches `results/pex/summary_postlayout.json` or
   `results/layout/summary.json`;
 - nothing overclaims (silicon, proofs, "secure");
-- the notebook executes, passes the organizers' CI and holds only the intended TODO markers, and no committed file
+- the notebook executes, passes the notebook CI checks and holds only the intended TODO markers, and no committed file
   contains a host path.
 
 **What I changed.** Nothing in the repository except this file. I re-ran `analysis/postlayout.py` with its output
@@ -41,7 +41,7 @@ the commit. The rest are wording and provenance notes.**
 - **The registered text is unchanged.** The first 3,106 bytes of `docs/POSTLAYOUT.md` are byte-identical to the
   committed version.
 - **The notebook's saved outputs are what the code produces.** A fresh execution gives identical outputs in every
-  code cell, PNG bytes included. The organizers' CI passes.
+  code cell, PNG bytes included. The notebook CI checks pass.
 
 **Blocking, a one-line fix in two places.** Both documents say that at 1x added noise "neither reaches 4.5 within
 4,998 traces". The summary file shows that both do, at small trace counts (B1 below).
@@ -65,7 +65,7 @@ the commit. The rest are wording and provenance notes.**
 | 13 | Solver claim, re-derived | On the 120 benchmark rows the KLU-minus-Sparse difference is sporadic: a few rows reach 4.9 uA (N) and 11.0 uA (DA). Its class-mean difference (fixed minus random) is at most 0.13 uA (N) and 0.28 uA (DA), against a 25.5 uA class effect in N. The conclusion stands, but see N2 |
 | 14 | The slow N_pex wave | Chunks 24-29 each took 9,410-9,422 s, and ngspice's own analysis time was 9,407 s. The host's system log shows a suspend at 20:31 on 09-25. The explanation is right, but see N1 |
 | 15 | Tests | Host (numpy only): analysis 44 OK, layout 8 OK, notebook 33 OK (1 skipped: figures). `python3 -m unittest analysis/test_postlayout.py` as written in Reproduce: 12 OK |
-| 16 | Organizers' CI (`CPUS=2 bash notebook/tests/ci_container.sh <scratch>`) | flake8 PASS, has colab-badge PASS, colab-badge is sscs-ose PASS, `pytest --nbmake` 2 passed (7.6 s for the notebook), nbmake PASS |
+| 16 | Notebook CI checks (`CPUS=2 bash notebook/tests/ci_container.sh <scratch>`) | flake8 PASS, has colab-badge PASS, `pytest --nbmake` 2 passed (7.6 s for the notebook), nbmake PASS |
 | 17 | Saved outputs | Fresh execution of a copy of `notebook/` in `python:3.10-slim` (numpy 2.2.6, matplotlib 3.10.9, nbconvert, no ipywidgets): every output of all 24 code cells equals the saved one (text, markdown and PNG bytes) |
 | 18 | TODO markers | In the notebook, only `TODO(user): e-mail`, `Acknowledgments. TODO(user)` and `TODO(setup): measure; target 10 min`. None in the new source files |
 | 19 | `data/` and media | 69 files plus `MANIFEST.csv`, 4.61 MB. Every sha256 matches, and nothing is unlisted or missing. The `pex__*` and `layout__*` copies are byte-identical to `results/`. `media/layout_{N,DA}.png` are 54 KB and 66 KB, 500 x 500 px. The notebook is 1.91 MB, 1.35 MB of it embedded PNGs (the layout figure 380 KB) |
@@ -146,7 +146,6 @@ would fix this.
 
 ## What remains open (by design)
 
-- `TODO(user)` (e-mail, acknowledgments) and `TODO(setup)` (measured live-mode Colab time), the submission README
-  and the final polish.
+- `TODO(user)` (e-mail, acknowledgments) and `TODO(setup)` (measured live-mode Colab time), and the final polish.
 - The post-layout model's limits are stated in both documents: C-only, tt only, one placement, ideal supply and
   sources at the block pins, noiseless traces, D not laid out, U not simulated.

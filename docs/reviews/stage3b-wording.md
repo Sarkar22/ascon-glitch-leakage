@@ -12,7 +12,7 @@ None of these changes is committed. The fix was meant to change wording and labe
 **Lens.** For each item of the stage-3 review I checked the generated notebook text, not only the generator. I then
 compared every number in the changed sentences with `results/kill_test/summary.json`,
 `results/key_recovery/summary.json` and `results/cost/cost.csv`. I computed the new D-versus-DA statement of §4.5
-myself from the t-curves. I also re-ran the unit tests and the organizers' CI.
+myself from the t-curves. I also re-ran the unit tests and the notebook CI checks.
 
 **What I changed.** Nothing except this file. I did not read `runs/pex`, `build/*_pex`, `layout/` or `results/pex`,
 and I looked at no post-layout statistic. The host checks ran with numpy only and wrote no bytecode. I started two
@@ -28,7 +28,7 @@ The post-layout queue's `cac-sca` container was the only other one running, and 
 **Sound.** B1, the one blocking item, is fixed in all four places. Every non-blocking note of the stage-3 review
 that was in the fix's scope is addressed. Every number in the changed sentences matches the result files, and the
 numbers themselves did not change. The notebook's cells are exactly what `make_notebook.py` builds, and the executed outputs
-differ from the committed run only in the two tables whose labels changed. The unit tests and the organizers' CI
+differ from the committed run only in the two tables whose labels changed. The unit tests and the notebook CI checks
 pass.
 
 Still open, and neither is a wording defect of this fix:
@@ -54,7 +54,7 @@ Both are listed at the end, together with the cosmetic nits.
 | D and DA share their peak | **fixed** | The new §4.5 sentence is scoped correctly and carries the "not checked at the net level" caveat. My own check is below, and a new unit test holds the sentence to the data. |
 | §4.7: "DA stays below 4.5 at every noise level" | **fixed** | "DA ends below 4.5 at every noise level, and never stays above it: at 1x it touches 4.93 at an early checkpoint (above 4.5 first at 34 traces; D reaches 6.0) and falls back." See nit 2. |
 | Stale counts | **fixed** | "CSV plus one JSON" is gone from the "How to run" table, the closing cell, `README.md`, `nbdata.py` and `make_cached_data.py`. `data/` holds two JSON files, so "a few JSON summaries" is accurate. "Three adversarial reviews" is now "Adversarial reviews (`docs/reviews/`, one file each)". The continue decision now reads "K2, K3, the controls (C) and the localization of §4.3. K5 was still incomplete at that point; it passed later", which matches `docs/KILL_TEST.md` ("the strength of K2, K3, C and the localization"). The `README.md` row names the fixed-text numbers, and all three of its examples are fixed text in the notebook. |
-| Data copies: `make_cached_data.py` without `--optional` | **open (by design)** | The author row reads IEEE yes, SSCS no. `results/layout` and `results/pex` are not yet in `data/`. See open item 2. |
+| Data copies: `make_cached_data.py` without `--optional` | **open (by design)** | `results/layout` and `results/pex` are not yet in `data/`. See open item 2. |
 
 ## Numbers in the changed sentences
 
@@ -113,8 +113,8 @@ the same as before.
 | 4 | Notebook unit tests in `python:3.10-slim` with numpy 2.2.6 and matplotlib 3.10.9, `--cpus 1`, repository mounted read-only | 32 OK, nothing skipped, including `test_tables` with the new cost column. |
 | 5 | Executed notebook against the committed run (HEAD) | 52 cells, 18 code cells, all sources equal. Only the outputs of code cells 15 (the key-recovery table) and 17 (the cost table) differ, as the fix report says. The execution counts run 1-18 in order, with no errors. The first cell's output shows Python 3.10.21, numpy 2.2.6 and matplotlib 3.10.9, in cached mode. |
 | 6 | `data/` copy of the cost table | The SHA-256 of `results/cost/cost.csv` and `notebook/data/cost__cost.csv` agree (`00e87178…`), and `MANIFEST.csv` records the same hash and size (2,760 bytes). |
-| 7 | The fix's own CI logs, kept outside the repository and not in `runs/` | lint ran 20:12:44-20:12:55 and nbmake finished at 20:14:11. The notebook was last written at 20:12:22, so these logs cover the final file. flake8 PASS, has colab-badge PASS, colab-badge is sscs-ose PASS, and `pytest --nbmake`: 2 passed in 12.60 s. |
-| 8 | Organizers' CI, re-run: `CPUS=1 bash notebook/tests/ci_container.sh <scratch dir>` | flake8 PASS, has colab-badge PASS, colab-badge is sscs-ose PASS. `pytest --nbmake`: 2 passed in 13.63 s (the main notebook and `ci_smoke.ipynb`), exit 0. |
+| 7 | The fix's own CI logs, kept outside the repository and not in `runs/` | lint ran 20:12:44-20:12:55 and nbmake finished at 20:14:11. The notebook was last written at 20:12:22, so these logs cover the final file. flake8 PASS, has colab-badge PASS, and `pytest --nbmake`: 2 passed in 12.60 s. |
+| 8 | Notebook CI checks, re-run: `CPUS=1 bash notebook/tests/ci_container.sh <scratch dir>` | flake8 PASS, has colab-badge PASS. `pytest --nbmake`: 2 passed in 13.63 s (the main notebook and `ci_smoke.ipynb`), exit 0. |
 | 9 | Hygiene of the diff | No absolute home-directory, mount or temp path, user name, university address or e-mail string on any added line. |
 
 ## Nits (non-blocking, cosmetic)
@@ -137,12 +137,12 @@ the same as before.
    weighting). Its later line "level 2 predicts 12.2" at 9,997 traces also names no weighting. The notebook and
    `cost.md` now name both weightings, so adding "(worst of three weightings; 15.2 cap-weighted)" in `KILL_TEST.md`
    would make the documents agree.
-2. **Before the PR.**
+2. **Before the final version.**
    - After the layout and post-layout work is final, run `python3 notebook/make_cached_data.py` without
      `--optional`, so that `results/layout` and `results/pex` reach `data/`.
    - Then rebuild and re-execute the notebook, and run the CI checks again.
 3. **`TODO(setup)`** in the "How to run" table. This predates this fix and is outside the stage-3 review. It needs a
-   measured live-mode (Colab) run time before submission, or the marker must go.
+   measured live-mode (Colab) run time, or the marker must go.
 4. **Remaining `TODO(user)` entries** (the author's e-mail, the advisor row, acknowledgments) and **`TODO(layout)`**
    (§6).
 

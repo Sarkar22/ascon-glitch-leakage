@@ -6,10 +6,10 @@
 # 1. baseline that mimics a Colab runtime, not timed as part of the recipe: Python 3.12 (uv), numpy
 #    2.0.2, scipy, matplotlib, pandas, nbconvert, ipykernel, git
 # 2. colab_live.py: the notebook's setup cell with google.colab stubbed and an empty /content, so its
-#    bootstrap clones the folder from GitHub (sscs-ose first, then the public repository at REPO_REF);
+#    bootstrap clones the public repository from GitHub at REPO_REF;
 #    then setup_env.setup() (apt, pip, ciel), the SPICE demo and the live animation, each timed
 # 3. the whole notebook, executed in live mode (jupyter nbconvert, google.colab stubbed), timed
-# The setup cell comes from the notebook on GitHub at REPO_REF (what the Colab links open), or with
+# The setup cell comes from the notebook on GitHub at REPO_REF (what the Colab badge opens), or with
 # LOCAL_NOTEBOOK=1 from this working tree, whose notebook/ folder is then also copied over the clone
 # before step 3 (to test changes before they are pushed; the rest of the code still comes from GitHub).
 # Results: OUTDIR/colab_live.json, colab_live.log, executed_live.ipynb, cell_times.json.

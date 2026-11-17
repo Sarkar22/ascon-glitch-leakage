@@ -15,9 +15,9 @@ The live-mode times in LIVE are measured with notebook/tests/colab_live.sh.
 Section 6 (layout and post-layout) is filled
 from results/layout/summary.json and results/pex/summary_postlayout.json (data/layout__*, pex__*); its
 post-hoc checks (6.3) from results/layout/negative_controls.json and results/pex/rc_check.json.
-Project files that the markdown names as code spans and that the pull-request folder does not ship
-(for example `docs/KILL_TEST.md` or `colab_check.py`) become links to the public repository at
-REPO_REF (link_repo_paths).
+Project files that the markdown names as code spans (for example `docs/KILL_TEST.md` or
+`colab_check.py`) become links to the public repository at REPO_REF, except the files the notebook
+uses at run time (link_repo_paths).
 """
 import json
 import os
@@ -30,13 +30,11 @@ import nbdata                                         # noqa: E402
 import setup_env                                      # noqa: E402
 
 OUT = os.path.join(HERE, "ascon_glitch_leakage.ipynb")
-COLAB = ("https://colab.research.google.com/github/sscs-ose/sscs-ose-code-a-chip.github.io/blob/main/"
-         "ISSCC27/submitted_notebooks/ascon_glitch_leakage/ascon_glitch_leakage.ipynb")
-# The author's public repository and the ref the setup cell fetches on Colab before the organizers merge
-# the entry. Pin a release by setting setup_env.DEFAULT_REPO_REF to a pushed tag and re-running this script.
+# The author's public repository and the ref that the Colab badge opens and that the setup cell fetches on
+# Colab. Pin a release by setting setup_env.DEFAULT_REPO_REF to a pushed tag and re-running this script.
 REPO_URL = setup_env.DEFAULT_REPO_URL
 REPO_REF = setup_env.DEFAULT_REPO_REF
-RUN_NOW = "%s/blob/%s/notebook/ascon_glitch_leakage.ipynb" % (
+COLAB = "%s/blob/%s/notebook/ascon_glitch_leakage.ipynb" % (
     REPO_URL.replace("https://github.com/", "https://colab.research.google.com/github/"), REPO_REF)
 # The live path, from ONE run (2026-09-26) of LOCAL_NOTEBOOK=1 CPUS=2 bash notebook/tests/colab_live.sh (clean
 # ubuntu:22.04 container, 2 CPUs, 8 GB; Python 3.12 and numpy 2.0.2 as on Colab; everything else fetched
@@ -66,13 +64,10 @@ md(r"""
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](""" + COLAB + r""")
 
-Run the submitted version now, before the organizers merge it: [open it in Colab from the author's
-repository](""" + RUN_NOW + r""").
-
 # Safe on Paper, Leaky in SPICE
 ### Pre-silicon glitch-leakage assessment of a masked Ascon S-box on SkyWater sky130, at three fidelity levels
 
-**IEEE SSCS Code-a-Chip, ISSCC 2027** &nbsp;|&nbsp; License: Apache-2.0 (see `LICENSE`) &nbsp;|&nbsp;
+License: Apache-2.0 (see `LICENSE`) &nbsp;|&nbsp;
 Tools: <<ngspice>>, sky130A (open_pdks `<<pdk_commit>>`), Icarus Verilog, OpenLane v1 (Yosys, OpenROAD, Magic,
 KLayout, Netgen), Python, NumPy, Matplotlib
 
@@ -81,9 +76,9 @@ apt, which matched the ngspice-42 reference within <<live_demo_diff_uA>> µA (§
 `<<pdk_commit>>`, installed with ciel <<ciel_version>>. OpenLane v1 at commit `<<openlane_commit>>`. Icarus Verilog 11
 or 12. Python 3.10 to 3.12 with NumPy and Matplotlib.
 
-| Name | Affiliation | Role | IEEE member | SSCS member | Contact |
-|---|---|---|---|---|---|
-| Emon Sarkar | University of Waterloo, Electrical and Computer Engineering | author | yes | no | esarkar@uwaterloo.ca |
+| Name | Affiliation | Role | Contact |
+|---|---|---|---|
+| Emon Sarkar | University of Waterloo, Electrical and Computer Engineering | author | esarkar@uwaterloo.ca |
 """)
 
 md(r"""
@@ -127,32 +122,22 @@ and reviews in the [project repository](<<repo_tree>>/docs).
 
 code(r"""
 # SPDX-License-Identifier: Apache-2.0
-# Setup. On Colab this notebook's folder is fetched first: the sscs-ose
-# copy once it is merged, else the author's public repository at REPO_REF
-# (a branch or tag). setup_env.setup() then finds (on Colab: installs)
-# ngspice and the sky130 PDK and picks the mode: 'live' when every tool
-# is there, else 'cached' (plots the data/ folder only).
+# Setup. On Colab the author's public repository is cloned first, at
+# REPO_REF (a branch or tag), and the notebook runs from its notebook/
+# folder. setup_env.setup() then finds (on Colab: installs) ngspice and
+# the sky130 PDK and picks the mode: 'live' when every tool is there,
+# else 'cached' (plots the data/ folder only).
 import os
 import subprocess
 import sys
 
-UPSTREAM = 'https://github.com/sscs-ose/sscs-ose-code-a-chip.github.io'
-FOLDER = 'ISSCC27/submitted_notebooks/ascon_glitch_leakage'
 REPO = '""" + REPO_URL + r"""'
 REPO_REF = os.environ.setdefault('ASCON_REPO_REF', '""" + REPO_REF + r"""')
 if 'google.colab' in sys.modules and not os.path.exists('nbdata.py'):
-    GIT = ['git', 'clone', '-q', '--depth', '1']
-    HOME = os.path.join('code-a-chip', FOLDER)
-    if not os.path.isdir('code-a-chip'):
-        subprocess.run(GIT + ['--filter=blob:none', '--sparse', UPSTREAM,
-                              'code-a-chip'])
-        subprocess.run(['git', '-C', 'code-a-chip', 'sparse-checkout',
-                        'set', FOLDER])
-    if not os.path.exists(os.path.join(HOME, 'nbdata.py')):
-        HOME = os.path.join('ascon-glitch-leakage', 'notebook')
-        if not os.path.isdir(HOME):
-            subprocess.run(GIT + ['--branch', REPO_REF, REPO,
-                                  'ascon-glitch-leakage'], check=True)
+    HOME = os.path.join('ascon-glitch-leakage', 'notebook')
+    if not os.path.isdir(HOME):
+        subprocess.run(['git', 'clone', '-q', '--depth', '1', '--branch',
+                        REPO_REF, REPO, 'ascon-glitch-leakage'], check=True)
     os.chdir(HOME)
 sys.path.insert(0, os.getcwd())
 import setup_env              # the environment helper in this folder
@@ -253,8 +238,8 @@ md(r"""
 | **Full reproduction** (outside the notebook) | All SPICE campaigns of §4, with the commands in `docs/KILL_TEST.md` ("Reproduce"); then the key recovery of §5 (`analysis/key_recovery.py`), the layouts and post-layout campaigns of §6 (`layout/README.md`, `docs/POSTLAYOUT.md`) and the cost table of §7 (`analysis/cost_table.py`) | <<spice_wall_h>> h of wall clock for the first run (10 ngspice processes on one laptop), plus about 18 h on 6 CPUs to extend DA and D to 20,000 rows; the key recovery about 25 min with 3 processes; the two post-layout campaigns <<pl_wall_h>> h of wall clock on 6 CPUs, including a pause while the laptop was suspended |
 
 Run the cells top to bottom. The first code cell chooses the mode and prints what it found. On Colab it first
-fetches this folder: from sscs-ose once the entry is merged, until then from the author's public repository at the
-ref in `REPO_REF` (<<repo_tree>>). Every figure is drawn from `data/`, which `make_cached_data.py` exports from
+fetches this folder from the author's public repository, at the ref in `REPO_REF` (<<repo_tree>>). Every figure
+is drawn from `data/`, which `make_cached_data.py` exports from
 `results/` and the SPICE runs. A review re-ran the kill
 test's reproduction and got its `results/` bit for bit (`docs/reviews/repro-code.md`); the layout and post-layout
 steps of §6 were not re-run that way.
@@ -268,8 +253,6 @@ md(r"""
 car's control unit runs its cipher where an attacker can put a probe on the supply pin. The attacker then
 correlates the current with the data. This is differential power analysis. Masking is the standard answer: every
 secret-dependent value is split into random shares, so that no single wire carries information about the secret.
-The ISSCC 2027 theme, *Trusted Sustainable Silicon Intelligence from Edge to Cloud*, asks for exactly this kind
-of trust at the edge.
 
 **Ascon is now the lightweight standard.** NIST standardized the Ascon family in SP 800-232 [2] for constrained
 devices. Its 5-bit S-box has algebraic degree 2, so a masked Ascon needs only five masked AND gates per S-box
@@ -1220,14 +1203,13 @@ def live_values():
 
 
 # Top-level folders of the public repository that the notebook may link to (build/ and runs/ are not
-# committed); files of notebook/ that the pull-request folder ships are left as plain code spans.
+# committed); files of notebook/ that the notebook uses at run time are left as plain code spans.
 REPO_ROOT = os.path.dirname(HERE)
-LINKED_DIRS = (".github", "analysis", "docker", "docs", "gen", "layout", "model", "notebook", "results", "sim", "tb",
-               "tools")
+LINKED_DIRS = (".github", "analysis", "docker", "docs", "gen", "layout", "model", "notebook", "results", "sim", "tb")
 
 
-def shipped_in_folder(rel):
-    """True for a notebook/ path that the pull-request folder holds: data/, media/, the notebook and
+def used_at_run_time(rel):
+    """True for a notebook/ path that the notebook uses when it runs: data/, media/, the notebook and
     the helper modules its code cells import."""
     helpers = {m + ".py" for kind, text in CELLS if kind == "code"
                for m in re.findall(r"^import (\w+)", text, flags=re.M)}
@@ -1237,7 +1219,7 @@ def shipped_in_folder(rel):
 def link_repo_paths(text):
     """Turn a code span that names a project file or folder (`docs/KILL_TEST.md`, `gen/`, or a path
     relative to notebook/ such as `colab_check.py`) into a link to it in the public repository at
-    REPO_REF, unless the pull-request folder ships it. Spans that are already link text, that name
+    REPO_REF, unless the notebook uses it at run time. Spans that are already link text, that name
     no existing path or that hold wildcards or placeholders stay as they are."""
     def sub(m):
         span = m.group(1)
@@ -1247,7 +1229,7 @@ def link_repo_paths(text):
                 break
         else:
             return m.group(0)
-        if rel.startswith("notebook/") and shipped_in_folder(rel[len("notebook/"):]):
+        if rel.startswith("notebook/") and used_at_run_time(rel[len("notebook/"):]):
             return m.group(0)
         kind = "tree" if os.path.isdir(os.path.join(REPO_ROOT, rel)) else "blob"
         return "[`%s`](%s/%s/%s/%s)" % (span, REPO_URL, kind, REPO_REF, rel)

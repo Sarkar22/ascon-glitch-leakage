@@ -107,9 +107,8 @@ class TestSmokeNotebook(unittest.TestCase):
             self.nb = json.load(f)
 
     def test_no_colab_badge(self):
-        """The smoke notebook is not in the pull-request folder, so a badge to sscs-ose would be dead,
-        and one to the author's repository would fail the organizers' "every colab-badge line points
-        to sscs-ose" check, which CI runs on notebook/*.ipynb; the main notebook carries the badge."""
+        """The smoke notebook is a CI check, not a notebook to open in Colab: only the main notebook
+        carries the badge."""
         lines = [ln for c in self.nb["cells"] for ln in c["source"] if "colab-badge" in ln]
         self.assertEqual(lines, [])
 
